@@ -27,8 +27,6 @@ THE SOFTWARE.
 
 #include <memory>
 
-#include <plf/ast/Node.hpp>
-
 namespace plf {
 	
 //forward declaration
@@ -42,7 +40,7 @@ class Visitor
 {
 
 public:	
-	virtual NodePtr visit(NodePtr& n){}
+	virtual NodePtr visit(std::shared_ptr<Node>& n)=0;
 	
 	
 };

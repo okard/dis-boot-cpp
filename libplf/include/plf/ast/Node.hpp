@@ -40,20 +40,39 @@ enum class NodeKind : unsigned short
 	
 };	
 
+//forward declaration
+//class Node;
+//typedef std::shared_ptr<Node> NodePtr;
+
 /**
 * Default Ast Node
 */
-class Node
+class Node : public std::enable_shared_from_this<Node>
 {
 private:
-	NodeKind kind_;
+	NodeKind kind_; //const
 	
 public:
 	
 	inline NodeKind Kind() const { return kind_; }
 	
 	//virtual print(Stream)
-	//virtual NodePtr accept(Visitor& v){return v.visit(this); };
+	
+	
+	template<class T>
+	inline NodePtr accept(Visitor& v)
+	{
+		//if(T::Kind == this->Kind())
+		auto o = std::static_pointer_cast<T>(shared_from_this());
+		return v.visit(o); 
+	}
+	
+	//move to src file?
+	virtual NodePtr accept(Visitor& v){
+		return accept<Node>(v);
+	};
+	
+	
 };
 	
 	
