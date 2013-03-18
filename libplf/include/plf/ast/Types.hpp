@@ -25,13 +25,21 @@ THE SOFTWARE.
 #ifndef __PLF_TYPES_HPP__
 #define __PLF_TYPES_HPP__
 
+#include <plf/ast/Node.hpp>
 
+namespace plf {
+
+/**
+* Represents a Datatype
+*/
 class Type : public Node
 {
 };
 
-
-class PrimaryType
+/**
+* Primary Number Types
+*/
+class PrimaryType : public Type
 {
 };
 
@@ -43,6 +51,6 @@ extern PrimaryType typeUInt32;
 //PrimaryType typeInt32(4, "Int32");
 
 
-
+} //end namespace plf
 
 #endif // __PLF_TYPES_HPP__

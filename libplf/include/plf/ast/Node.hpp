@@ -25,6 +25,10 @@ THE SOFTWARE.
 #ifndef __PLF_NODE_HPP__
 #define __PLF_NODE_HPP__
 
+#include <memory>
+
+#include <plf/ast/Visitor.hpp>
+
 
 namespace plf {
 	
@@ -49,11 +53,8 @@ public:
 	inline NodeKind Kind() const { return kind_; }
 	
 	//virtual print(Stream)
-	//virtual NodePtr accept(Visitor& v, VisitorArguments& args);
+	//virtual NodePtr accept(Visitor& v){return v.visit(this); };
 };
-
-
-//typedef std::shared_ptr<Node> NodePtr
 	
 	
 } //end namespace plf

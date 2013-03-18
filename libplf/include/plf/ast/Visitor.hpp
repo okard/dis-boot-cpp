@@ -21,3 +21,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+#pragma once
+#ifndef __PLF_VISITOR_HPP__
+#define __PLF_VISITOR_HPP__
+
+#include <memory>
+
+#include <plf/ast/Node.hpp>
+
+namespace plf {
+	
+//forward declaration
+class Node;
+typedef std::shared_ptr<Node> NodePtr;
+
+/**
+* Ast Visitor Class
+*/
+class Visitor
+{
+
+public:	
+	virtual NodePtr visit(NodePtr& n){}
+	
+	
+};
+
+
+} //end namespace plf
+
+#endif // __PLF_VISITOR_HPP__

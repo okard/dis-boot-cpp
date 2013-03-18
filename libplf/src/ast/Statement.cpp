@@ -21,18 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#pragma once
-#ifndef __PLF_STATEMENT_HPP__
-#define __PLF_STATEMENT_HPP__
+#include <plf/ast/Statement.hpp>
 
-#include <plf/ast/Node.hpp>
-
-namespace plf {
-
-class Statement : public Node
-{
-};
-
-} //end namespace plf
-
-#endif //__PLF_STATEMENT_HPP__
+using namespace plf;

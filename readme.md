@@ -1,6 +1,7 @@
-# Bootstrap Compiler for Dis written in C++11
+# Bootstrap Compiler for Dis
 
 
+Written in C++11
 License: MIT
 
 
@@ -18,4 +19,23 @@ License: MIT
 	- Parser
 	
 * disc - dis compiler binary
+	- use libdis & libplf
+	- compiler command line frontend
+
+# Build
+	
+## Dependencies
+
+* C++11 Compiler
+* CMake
+* make or ninja
+
+
+## Build on Linux/Posix
+
+	$ ./build.sh
+
+## Build on Windows
+
+TODO
 

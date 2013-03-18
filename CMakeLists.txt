@@ -13,11 +13,7 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11")
 
 # libplf
 add_subdirectory("libplf")
-include_directories("libplf/include")
-
 # libdis
 add_subdirectory("libdis")
-include_directories("libdis/include")
-
 # disc
 add_subdirectory("disc")
