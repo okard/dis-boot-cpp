@@ -25,14 +25,45 @@ THE SOFTWARE.
 #ifndef __DIS_TOKEN_HPP__
 #define __DIS_TOKEN_HPP__
 
+//Macros for Token Generationen
+#undef TOKEN
+#define DIS_TOKEN 								\
+		TOKEN(Unkown) 							\
+		TOKEN(Eof) 								\
+		/* LITERALE */ 							\
+		TOKEN(Ident) 							\
+		TOKEN(IntLiteral) 						\
+		TOKEN(FloatLiteral) 					\
+		/* SYMBOL */ 							\
+		TOKEN(Assign) 							\
+		TOKEN(Set) 								\
+		/* KEYWORDS DECLARATION */ 				\
+		TOKEN(KwDef) 							\
+		TOKEN(KwVar) 							\
+		TOKEN(KwLet) 							\
+		TOKEN(KwConst)
+
 namespace dis {
+	
+/**
+* TokenIds
+*/
+enum class TokenId
+{
+	#define TOKEN(x) x,
+	DIS_TOKEN
+};
 
 /**
 * Dis Lexer Token
 */
 struct Token
 {
+	TokenId id;
+	//buffer
 };
+
+const char* toString(TokenId id);
 
 
 } //end namespace dis

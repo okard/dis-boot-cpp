@@ -37,6 +37,7 @@ namespace plf {
 */
 enum class NodeKind : unsigned short
 {
+	PackageDecl,
 	
 };	
 
@@ -58,6 +59,8 @@ public:
 	
 	//virtual print(Stream)
 	
+	//move to src file?
+	virtual NodePtr accept(Visitor& v);
 	
 	template<class T>
 	inline NodePtr accept(Visitor& v)
@@ -66,13 +69,6 @@ public:
 		auto o = std::static_pointer_cast<T>(shared_from_this());
 		return v.visit(o); 
 	}
-	
-	//move to src file?
-	virtual NodePtr accept(Visitor& v){
-		return accept<Node>(v);
-	};
-	
-	
 };
 	
 	

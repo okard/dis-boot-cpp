@@ -25,3 +25,14 @@ THE SOFTWARE.
 
 using namespace dis;
 
+
+const char* dis::toString(TokenId id)
+{
+	#undef TOKEN
+	#define TOKEN(x) case TokenId::x: return #x; 
+	switch(id)
+	{
+		DIS_TOKEN
+	}
+	
+}

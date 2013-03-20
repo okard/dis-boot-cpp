@@ -35,6 +35,16 @@ class Declaration : public Node
 };
 
 
+//package
+//class
+//function
+
+//var
+//val
+//const
+
+
+
 } //end namespace plf
 
 #endif //__PLF_DECLARATION_HPP__

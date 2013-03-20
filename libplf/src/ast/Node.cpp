@@ -24,3 +24,9 @@ THE SOFTWARE.
 #include <plf/ast/Node.hpp>
 
 using namespace plf;
+
+
+NodePtr Node::accept(Visitor& v)
+{
+	return accept<Node>(v);
+};

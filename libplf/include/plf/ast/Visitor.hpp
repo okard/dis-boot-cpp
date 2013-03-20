@@ -42,6 +42,7 @@ class Visitor
 public:	
 	virtual NodePtr visit(std::shared_ptr<Node>& n)=0;
 	
+	//virtual 
 	
 };
 
