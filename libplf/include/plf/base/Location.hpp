@@ -22,52 +22,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_SOURCEMANAGER_HPP__
-#define __PLF_SOURCEMANAGER_HPP__
+#ifndef __PLF_LOCATION_HPP__
+#define __PLF_LOCATION_HPP__
 
 #include <plf/base/Source.hpp>
 
-#include <memory>
-#include <vector>
-
 namespace plf {
-	
-typedef std::shared_ptr<Source> SourcePtr;
 
 /**
-* Managing sources
+* Represents a struct
 */
-class SourceManager
+struct Location
 {
-private:
-	SourceManager();
-	SourceManager(const SourceManager& sm);
-	~SourceManager();
+	SourceId sourceId;
 	
-	
-	//index == SourceId
-	std::vector<const char*> fileNames_;
-	std::vector<SourcePtr> sources_;
-	
-public:
-
-	//void register(SourcePtr src, SourceId id);
-
-	SourcePtr open(const char* filename);
-	
-	SourcePtr get(SourceId id);
-	
-	const char* getFileName(SourceId id);
-	
-	//getModifiedDate(SourceId id);
-	
-	
-	static SourceManager& getInstance();
-
-};	
-
+	unsigned int line;
+	unsigned int column;
+	unsigned int offset;
+};
 	
 } //end namespace plf
 
-
-#endif
+#endif 
