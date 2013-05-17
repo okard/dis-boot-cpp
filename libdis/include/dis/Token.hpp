@@ -38,6 +38,7 @@ THE SOFTWARE.
 		TOKEN(Assign) 							\
 		TOKEN(Set) 								\
 		/* KEYWORDS DECLARATION */ 				\
+		TOKEN(KwPackage)						\
 		TOKEN(KwDef) 							\
 		TOKEN(KwVar) 							\
 		TOKEN(KwLet) 							\
@@ -60,7 +61,7 @@ enum class TokenId
 struct Token
 {
 	TokenId id;
-	//buffer
+	//value buffer 
 };
 
 const char* toString(TokenId id);

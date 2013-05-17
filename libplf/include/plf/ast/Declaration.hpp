@@ -29,15 +29,61 @@ THE SOFTWARE.
 
 namespace plf {
 	
+/**
+* Flags for declarations
+*/
+enum class DeclFlags : unsigned char
+{
+	Public 		= 1<<0,
+	Private  	= 1<<1,
+	Protected   = 1<<2,
+	Final		= 1<<3,
+	Abstract	= 1<<4,
+	Static 		= 1<<5,
+	Const 		= 1<<6
+};
+	
+/**
+* Basic class for declarations
+*/
 class Declaration : public Node
 {
+
+private:
+
+public:
+	DeclFlags Flags;
+	
+	//isTypeDecl
+	//isInstanceDecl
+
+};
+
+class PackageDecl : public Declaration
+{
+public:
+	DeclList Decls;
 	
 };
 
 
 //package
+//import
+
+class TypeDecl : public Declaration
+{
+};
+
 //class
 //function
+//struct
+//enum
+//alias
+
+
+class InstanceDecl : public Declaration
+{
+};
 
 //var
 //val

@@ -25,30 +25,17 @@ THE SOFTWARE.
 
 using namespace plf;
 
-SourcePtr SourceManager::open(const char* filename)
+
+void SourceManager::registerSrc(SourcePtr& src)
 {
-	//check if opened
-	
-	SourcePtr src(new Source());
-	
-	sources_.push_back(src);
-	fileNames_.push_back(filename);
-	
-	return src;
 }
-	
+
 SourcePtr SourceManager::get(SourceId id)
 {
 	return sources_[id];
 }
-
-const char* SourceManager::getFileName(SourceId id)
-{
-	return fileNames_[id];
-}
 	
 	
-
 SourceManager& SourceManager::getInstance()
 {
 	static SourceManager mng;

@@ -23,10 +23,12 @@ THE SOFTWARE.
 */
 #include <plf/ast/Node.hpp>
 
+#include <plf/ast/Visitor.hpp>
+
 using namespace plf;
 
 
-NodePtr Node::accept(Visitor& v)
+NodePtr Node::accept(Visitor& v, ParamPtr& arg)
 {
-	return accept<Node>(v);
+	return accept_<Visitor, Node>(v, arg);
 };

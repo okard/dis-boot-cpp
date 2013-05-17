@@ -22,45 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_SOURCEMANAGER_HPP__
-#define __PLF_SOURCEMANAGER_HPP__
+#ifndef __PLF_ATTRIBUTE_HPP__
+#define __PLF_ATTRIBUTE_HPP__
 
-#include <plf/base/Source.hpp>
-
-#include <memory>
-#include <vector>
+#include <plf/ast/Node.hpp>
 
 namespace plf {
-	
-typedef std::shared_ptr<Source> SourcePtr;
 
 /**
-* Managing sources
+* Basic Attribute class 
 */
-class SourceManager
+class Attribute : public Node
 {
-private:
-	SourceManager();
-	SourceManager(const SourceManager& sm);
-	~SourceManager();
-	
-	
-	//index == SourceId
-	std::vector<SourcePtr> sources_;
-	
-public:
-	void registerSrc(SourcePtr& src);
+};
 
-	SourcePtr get(SourceId id);
-	
-	//SourcePtr loadFile(const char*);
-	
-	static SourceManager& getInstance();
+/*
+Builtin: abi (C, stdcall, etc)
+         test		 
+*/
 
-};	
+
 
 	
 } //end namespace plf
-
 
 #endif

@@ -39,7 +39,11 @@ private:
 	SourceId id_;
 
 public:	
+
+	//virtual read();
+	//return buffer? buffer in lexer?
 	
+	//const char* Name()
 };
 	
 	

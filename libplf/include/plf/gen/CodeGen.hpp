@@ -21,5 +21,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+#pragma once
+#ifndef __PLF_CODEGEN_HPP__
+#define __PLF_CODEGEN_HPP__
 
-//DAST -> TargetFile
+namespace plf {
+
+
+class CodeGenerator
+{
+public:
+	//DAST -> TargetFile
+	
+	//ObjectFile gen(NodePtr n, Parameter);
+};
+
+} //end namespace plf
+
+#endif //__PLF_CODEGEN_HPP__

@@ -34,6 +34,10 @@ namespace plf {
 */
 class Type : public Node
 {
+private:
+
+public:
+	
 };
 
 /**
@@ -41,11 +45,17 @@ class Type : public Node
 */
 class PrimaryType : public Type
 {
+	
 };
 
 
 extern PrimaryType typeInt32;
 extern PrimaryType typeUInt32;
+
+
+//path type
+//constraint type
+
 
 
 //PrimaryType typeInt32(4, "Int32");

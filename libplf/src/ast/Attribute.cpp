@@ -21,46 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#pragma once
-#ifndef __PLF_SOURCEMANAGER_HPP__
-#define __PLF_SOURCEMANAGER_HPP__
+#include <plf/ast/Attribute.hpp>
 
-#include <plf/base/Source.hpp>
-
-#include <memory>
-#include <vector>
-
-namespace plf {
-	
-typedef std::shared_ptr<Source> SourcePtr;
-
-/**
-* Managing sources
-*/
-class SourceManager
-{
-private:
-	SourceManager();
-	SourceManager(const SourceManager& sm);
-	~SourceManager();
-	
-	
-	//index == SourceId
-	std::vector<SourcePtr> sources_;
-	
-public:
-	void registerSrc(SourcePtr& src);
-
-	SourcePtr get(SourceId id);
-	
-	//SourcePtr loadFile(const char*);
-	
-	static SourceManager& getInstance();
-
-};	
-
-	
-} //end namespace plf
-
-
-#endif
+using namespace plf;

@@ -25,6 +25,8 @@ THE SOFTWARE.
 #ifndef __DIS_LEXER_HPP__
 #define __DIS_LEXER_HPP__
 
+#include "Token.hpp"
+
 namespace dis {
 
 /**
@@ -35,7 +37,9 @@ class Lexer
 private:
 
 public:
-
+	
+	//Token& next();
+	//Token& peek(int num);
 	
 };
 

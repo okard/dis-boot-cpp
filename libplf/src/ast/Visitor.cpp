@@ -24,3 +24,9 @@ THE SOFTWARE.
 #include <plf/ast/Visitor.hpp>
 
 using namespace plf;
+
+
+NodePtr Visitor::visit(NodePtr& n, ParamPtr& arg)
+{
+	return n;
+}

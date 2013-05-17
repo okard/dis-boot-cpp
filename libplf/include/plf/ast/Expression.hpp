@@ -34,6 +34,38 @@ class Expression : public Node
 };
 
 
+enum class UnaryOperator
+{
+	Neg
+};
+
+class UnaryExpr : public Expression
+{
+
+public:
+	UnaryOperator Op;
+	NodePtr Expr;
+	
+	
+};
+
+enum class BinaryOperator
+{
+	Plus,
+	Minus,
+	Mul,
+	Div,
+	Mod,
+	Equal,
+	NotEqual,
+	Assign,
+};
+
+
+
+//pathexpression
+
+
 } //end namespace plf
 
 #endif //__PLF_EXPRESSION_HPP__
