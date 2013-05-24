@@ -21,52 +21,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <plf/ast/Visitor.hpp>
-
-#include <plf/ast/Declaration.hpp>
-#include <plf/ast/Statement.hpp>
-#include <plf/ast/Expression.hpp>
+#include <plf/base/Buffer.hpp>
 
 using namespace plf;
 
 
-/*
-NodePtr Visitor::visit(PackageDecl& n, ParamPtr& arg)
+Buffer::Buffer(size_t size)
+	: size_(size), buffer_(new byte[size])
 {
-	for (int i=0; i < n.Decl.size(); i++) 
-	{
-		n.Decl[i] = std::static_pointer_cast<Declaration>(n.Decl[i].accept(*this, arg)); 
-	}
-	
-	// DeclPtr d = std::make_shared<Declaration>(new Declaration());
-	// return std::static_pointer_cast<Node>(d);
-	 
-	return n;
 }
-*/
 
-
-NodePtr Visitor::visit(Node& n, ParamPtr& arg)
+Buffer::~Buffer()
 {
-	//NodePtr = std::make_shared<Node>(new Node());
-	//return n.shared_from_this();
-	return n;
+	delete[] buffer_;
 }
 
 
-NodePtr Visitor::visit(Declaration& n, ParamPtr& arg)
+BufferView::BufferView(Buffer& buf)
+	: buffer_(buf), pos_(0), limit_(buf.size()-1)
 {
-	return n;
 }
 
-NodePtr Visitor::visit(Statement& n, ParamPtr& arg)
+BufferView::~BufferView()
 {
-	return n;
 }
-
-NodePtr Visitor::visit(Expression& n, ParamPtr& arg)
-{
-	return n;
-}
-
-

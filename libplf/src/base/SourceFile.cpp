@@ -21,52 +21,43 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <plf/ast/Visitor.hpp>
+#include <plf/base/SourceFile.hpp>
 
-#include <plf/ast/Declaration.hpp>
-#include <plf/ast/Statement.hpp>
-#include <plf/ast/Expression.hpp>
+#include <plf/base/Buffer.hpp>
 
 using namespace plf;
 
 
-/*
-NodePtr Visitor::visit(PackageDecl& n, ParamPtr& arg)
+void SourceFile::open(const char* filename)
 {
-	for (int i=0; i < n.Decl.size(); i++) 
+	size_ = 0;
+	filestream_.open(filename, std::ifstream::in);
+	
+	if(filestream_) 
 	{
-		n.Decl[i] = std::static_pointer_cast<Declaration>(n.Decl[i].accept(*this, arg)); 
+		// get length of file:
+		filestream_.seekg (0, filestream_.end);
+		size_ = filestream_.tellg();
+		filestream_.seekg (0, filestream_.beg);
+	}
+}
+
+size_t SourceFile::read(BufferView& buf, size_t size)
+{
+	
+	if( (buf.buffer().size() - buf.pos()) < size)
+		size = buf.buffer().size() - buf.pos();
+	//check for size
+	//try to read
+	//set limit
+	
+	if(filestream_)
+	{
+		filestream_.read(buf.ptr(), size);
+		auto bytesRead = filestream_.gcount();
+		buf.setLimit(bytesRead+buf.pos());
+		return bytesRead;
 	}
 	
-	// DeclPtr d = std::make_shared<Declaration>(new Declaration());
-	// return std::static_pointer_cast<Node>(d);
-	 
-	return n;
+	return 0;
 }
-*/
-
-
-NodePtr Visitor::visit(Node& n, ParamPtr& arg)
-{
-	//NodePtr = std::make_shared<Node>(new Node());
-	//return n.shared_from_this();
-	return n;
-}
-
-
-NodePtr Visitor::visit(Declaration& n, ParamPtr& arg)
-{
-	return n;
-}
-
-NodePtr Visitor::visit(Statement& n, ParamPtr& arg)
-{
-	return n;
-}
-
-NodePtr Visitor::visit(Expression& n, ParamPtr& arg)
-{
-	return n;
-}
-
-

@@ -58,6 +58,8 @@ public:
 	//isTypeDecl
 	//isInstanceDecl
 
+
+	//operator DeclPtr () { return std::static_pointer_cast<Declaration>(shared_from_this()); }
 };
 
 class TypeDecl : public Declaration

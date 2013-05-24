@@ -25,6 +25,8 @@ THE SOFTWARE.
 #ifndef __PLF_SOURCEFILE_HPP__
 #define __PLF_SOURCEFILE_HPP__
 
+#include <fstream>
+
 #include "Source.hpp"
 
 namespace plf {
@@ -32,9 +34,16 @@ namespace plf {
 class SourceFile : public Source
 {
 private:
-
+	std::ifstream filestream_;
+	size_t size_;
 public:
+
+	void open(const char* filename);
 	
+	
+	size_t read(BufferView& buf, size_t size);
+	
+	size_t size() const { return size_; }
 };
 	
 } // end namespace plf

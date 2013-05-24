@@ -25,9 +25,21 @@ THE SOFTWARE.
 #ifndef __PLF_SOURCE_HPP__
 #define __PLF_SOURCE_HPP__
 
+#include <cstddef>
+
 namespace plf {
 	
+class BufferView;
+	
 typedef unsigned int SourceId;
+
+enum class Encoding 
+{
+	ASCII,
+	UTF8,
+	UTF16,
+	UTF32
+};
 
 /**
 * Source representation
@@ -37,16 +49,26 @@ class Source
 {
 private:
 	SourceId id_;
+	Encoding encoding_;
 
 public:	
-
-	//virtual read();
-	//return buffer? buffer in lexer?
 	
 	//const char* Name()
 	//const char* identifier();
 	
+	//read to buffer
+	virtual size_t read(BufferView&, size_t) = 0;
+	
+	/**
+	* Get id for source manager
+	*/
 	inline SourceId getId() const { return id_; }
+	
+	/**
+	* get source size
+	*/
+	virtual size_t size() const = 0;
+	
 	
 	friend class SourceManager;
 };

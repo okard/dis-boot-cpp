@@ -33,6 +33,7 @@ class CodeGenerator
 public:
 	//DAST -> TargetFile
 	
+	//ObjectFile gen(PackageDecl n, Param p);
 	//ObjectFile gen(NodePtr n, Parameter);
 };
 

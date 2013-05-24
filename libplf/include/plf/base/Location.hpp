@@ -36,10 +36,19 @@ struct Location
 {
 	/// Source Id
 	SourceId sourceId;
-	unsigned int line;
-	unsigned int column;
-	unsigned int offset;
+	unsigned int line;	 //user information
+	unsigned int column; //user information
+	unsigned int offset; //internal information
 };
+
+//better?
+struct SLocation
+{
+	SourceId sourceId;
+	size_t beginOffset;
+	size_t endOffset;
+};
+
 	
 } //end namespace plf
 

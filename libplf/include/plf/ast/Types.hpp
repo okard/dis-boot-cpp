@@ -45,7 +45,8 @@ public:
 */
 class PrimaryType : public Type
 {
-	
+	//size
+	//name
 };
 
 
@@ -54,12 +55,14 @@ extern PrimaryType typeInt32;
 extern PrimaryType typeUInt32;
 
 
+//cpp: PrimaryType typeInt32(4, "Int32");
+
+
 //path type
 //constraint type
 
 
 
-//PrimaryType typeInt32(4, "Int32");
 
 
 } //end namespace plf
