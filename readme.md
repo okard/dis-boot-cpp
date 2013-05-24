@@ -11,7 +11,7 @@ License: MIT
 	- SourceManager
 	- AST
 	- Semantic Analysis
-	- Code Gen (C/JS)
+	- Code Gen (C/JS/LLVM)
 	
 * libdis - dis programming language library
 	- Token
@@ -29,6 +29,7 @@ License: MIT
 * C++11 Compiler
 * CMake
 * make or ninja
+* CUL - C++ Utility Library (as subrepository)
 
 
 ## Build on Linux/Posix
@@ -37,5 +38,9 @@ License: MIT
 
 ## Build on Windows
 
-TODO
+	TODO
 
+# TODOs
+
+* Cleanup Buffers
+* Implement a RingBuffer for Tokens

@@ -24,3 +24,23 @@ THE SOFTWARE.
 #include <dis/Lexer.hpp>
 
 using namespace dis;
+
+
+Lexer::Lexer()
+	: bufv_(buf_)
+{
+}
+
+Lexer::~Lexer()
+{
+}
+
+void Lexer::open(plf::SourcePtr srcptr)
+{
+	//read in the complete file
+	auto size = srcptr->size();
+	buf_.alloc(size);
+	srcptr->read(bufv_, size);
+	
+	//TODO reset internal status
+}

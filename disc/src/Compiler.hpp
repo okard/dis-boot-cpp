@@ -1,5 +1,5 @@
 /*
-Programming Language Framework (PLF)
+Dis Compiler
 
 Copyright (c) 2013 okard
 
@@ -21,39 +21,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#pragma once
-#ifndef __PLF_VISITOR_HPP__
-#define __PLF_VISITOR_HPP__
 
-#include <memory>
+#include <dis/Lexer.hpp>
+#include <dis/Parser.hpp>
+//#include <dis/CodeGen.hpp>
 
-#include <plf/ast/Node.hpp>
-
-namespace plf {
-	
-class PackageDecl;
-	
-/**
-* Ast Visitor Class
-*/
-class Visitor
+class Compiler
 {
+private:
+	dis::Lexer lexer_;
+	dis::Parser parser_;
 
-public:	
-
-	//basic case
-	virtual NodePtr visit(Node& n, ParamPtr& arg);
-
-	//basic node types
-	virtual NodePtr visit(Declaration& n, ParamPtr& arg);
-	virtual NodePtr visit(Statement& n, ParamPtr& arg);
-	virtual NodePtr visit(Expression& n, ParamPtr& arg);
-	 
-	//specialized
-	virtual NodePtr visit(PackageDecl& n, ParamPtr& arg);
+	//source files to compile
+	// std::map<filename, SrcPtr> 
+public:
+	Compiler();
+	~Compiler();
+	
+	//parse args
+	int run(int argc, char *argv[]);
+	
 };
-
-
-} //end namespace plf
-
-#endif // __PLF_VISITOR_HPP__

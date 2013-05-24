@@ -24,3 +24,15 @@ THE SOFTWARE.
 #include <dis/Parser.hpp>
 
 using namespace dis;
+
+
+Parser::Parser(Lexer& lex)
+	: lexer_(lex)
+{
+	
+}
+
+Parser::~Parser()
+{
+}
+

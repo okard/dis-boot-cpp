@@ -31,8 +31,6 @@ THE SOFTWARE.
 #include <vector>
 
 namespace plf {
-	
-typedef std::shared_ptr<Source> SourcePtr;
 
 /**
 * Managing sources

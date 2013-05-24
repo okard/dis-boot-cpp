@@ -25,7 +25,10 @@ THE SOFTWARE.
 #ifndef __DIS_PARSER_HPP__
 #define __DIS_PARSER_HPP__
 
+#include <plf/ast/Node.hpp>
+
 #include "Lexer.hpp"
+
 
 namespace dis {
 
@@ -35,15 +38,21 @@ namespace dis {
 class Parser
 {
 private:
-	Lexer lexer_;
+	Lexer& lexer_;
 	
 public:
 
-	void parseDeclaration();
+	Parser(Lexer& lex);
+	~Parser();
+
+
+	plf::NodePtr parse();
+
+	plf::DeclPtr parseDeclaration();
 	
-	void parseStatement();
+	plf::StmtPtr parseStatement();
 	
-	void parseExpression();
+	plf::ExprPtr parseExpression();
 	
 	
 };

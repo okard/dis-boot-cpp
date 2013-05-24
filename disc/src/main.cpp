@@ -22,13 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+#include "Compiler.hpp"
+
 /*
 * Compiler Entry Point
 */
 int main(int argc, char *argv[])
 {
-	//Argument Parsing
-	
-	//Compiliation Units
-	
+	Compiler compiler;
+	return compiler.run(argc, argv);
 }

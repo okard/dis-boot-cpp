@@ -25,6 +25,10 @@ THE SOFTWARE.
 
 using namespace plf;
 
+Buffer::Buffer()
+	: size_(0), buffer_(nullptr)
+{
+}
 
 Buffer::Buffer(size_t size)
 	: size_(size), buffer_(new byte[size])
@@ -33,9 +37,18 @@ Buffer::Buffer(size_t size)
 
 Buffer::~Buffer()
 {
-	delete[] buffer_;
+	if(buffer_)
+		delete[] buffer_;
 }
 
+void Buffer::alloc(size_t size)
+{
+	if(buffer_)
+		delete[] buffer_;
+	
+	buffer_ = new byte[size];
+	size_ = size;
+}
 
 BufferView::BufferView(Buffer& buf)
 	: buffer_(buf), pos_(0), limit_(buf.size()-1)

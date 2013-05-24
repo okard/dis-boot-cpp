@@ -25,20 +25,12 @@ THE SOFTWARE.
 #ifndef __PLF_NODE_HPP__
 #define __PLF_NODE_HPP__
 
-#include <memory>
-#include <vector>
-
-#include <culcore/AnyPtr.hpp>
+#include <plf/base/External.hpp>
 
 namespace plf {
 	
 // Visitor Parameter Pointer
-typedef cul::AnyPtr ParamPtr;
-
-template<class T> 
-using SharedPtr = std::shared_ptr<T>;
-template<class T> 
-using List = std::vector<T>;
+typedef AnyPtr ParamPtr;
 
 //forward declaration
 class Visitor;

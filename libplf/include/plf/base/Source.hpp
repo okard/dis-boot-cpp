@@ -26,10 +26,14 @@ THE SOFTWARE.
 #define __PLF_SOURCE_HPP__
 
 #include <cstddef>
+#include <memory>
 
 namespace plf {
 	
 class BufferView;
+
+class Source;
+typedef std::shared_ptr<Source> SourcePtr;
 	
 typedef unsigned int SourceId;
 

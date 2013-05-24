@@ -45,8 +45,11 @@ private:
 	
 public:
 
+	Buffer();
 	Buffer(size_t size);
 	virtual ~Buffer();
+	
+	void alloc(size_t size);
 	
 	inline byte* operator[] (size_t offset) { return &buffer_[offset]; }
 	

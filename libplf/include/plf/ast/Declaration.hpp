@@ -74,7 +74,7 @@ class PackageDecl final : public TypeDecl
 public:
 	DeclList Decls;
 	
-	//NodePtr accept(Visitor& v, ParamPtr& arg) { return accept_<Visitor, Declaration>(v, arg); }
+	NodePtr accept(Visitor& v, ParamPtr& arg) { return v.visit(*this, arg); }
 };
 
 

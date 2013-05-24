@@ -27,9 +27,21 @@ THE SOFTWARE.
 
 //import all external types (cul::) here at a single file? 
 
+#include <culcore/AnyPtr.hpp>
+#include <memory>
+#include <vector>
+
 namespace plf {
 	
-//cul::AnyPtr
+//AnyPtr
+typedef cul::AnyPtr AnyPtr;
+
+//Memory/List
+template<class T> 
+using SharedPtr = std::shared_ptr<T>;
+template<class T> 
+using List = std::vector<T>;
+
 	
 } // end namespace plf
 

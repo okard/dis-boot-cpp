@@ -25,6 +25,10 @@ THE SOFTWARE.
 #ifndef __DIS_LEXER_HPP__
 #define __DIS_LEXER_HPP__
 
+#include <plf/base/External.hpp>
+#include <plf/base/Buffer.hpp>
+#include <plf/base/Source.hpp>
+
 #include "Token.hpp"
 
 namespace dis {
@@ -35,13 +39,26 @@ namespace dis {
 class Lexer
 {
 private:
+	plf::Buffer buf_;
+	plf::BufferView bufv_;
+	plf::SourcePtr src_;
+	
+	//ring buffer?
+	plf::List<Token> toklist_;
+	
+	//bool doc_comment_enabled;
 
 public:
+	Lexer();
+	~Lexer();
 	
-	//Token& next();
-	//Token& peek(int num);
+	void open(plf::SourcePtr srcptr);
+	
+	Token& next();
+	Token& peek(int num);
 	
 private:
+	void lexId();
 	void lexString();
 	void lexNumber();
 	void lexComment();
