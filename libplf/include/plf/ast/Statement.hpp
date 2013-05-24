@@ -33,6 +33,58 @@ class Statement : public Node
 {
 };
 
+//ScopeStmt all statements with seperate scope
+//BlockStmt : ScopeStatement
+
+/**
+* Return Statement
+*/
+class ReturnStmt : public Statement
+{
+public:
+	ExprPtr Expr;
+};
+
+/**
+* Statement for 'for' loop
+*/
+class ForStmt : public Statement
+{
+public:
+	StmtPtr Init;
+	ExprPtr Cond;
+	StmtPtr After;
+};
+
+/**
+* Statement for 'while' loop
+*/
+class WhileStmt : public Statement
+{
+public:
+	ExprPtr Cond;
+};
+
+/**
+* Declaration Statement
+*/
+class DeclStmt : public Statement
+{
+public:
+	DeclPtr Decl;
+};
+
+/**
+* Expression Statement
+*/
+class ExprStmt : public Statement
+{
+public:
+	ExprPtr Expr;
+};
+
+
+
 } //end namespace plf
 
 #endif //__PLF_STATEMENT_HPP__

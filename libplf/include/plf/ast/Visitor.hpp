@@ -31,6 +31,8 @@ THE SOFTWARE.
 
 namespace plf {
 	
+class PackageDecl;
+	
 /**
 * Ast Visitor Class
 */
@@ -38,8 +40,16 @@ class Visitor
 {
 
 public:	
-	virtual NodePtr visit(NodePtr& n, ParamPtr& arg);
-	
+
+	//use reference? visit(Node& n, ParamPtr& arg);
+
+	virtual NodePtr visit(Node& n, ParamPtr& arg);
+
+	virtual NodePtr visit(Declaration& n, ParamPtr& arg);
+	virtual NodePtr visit(Statement& n, ParamPtr& arg);
+	virtual NodePtr visit(Expression& n, ParamPtr& arg);
+	 
+	virtual NodePtr visit(PackageDecl& n, ParamPtr& arg);
 };
 
 

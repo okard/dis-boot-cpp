@@ -26,6 +26,7 @@ THE SOFTWARE.
 #define __PLF_DECLARATION_HPP__
 
 #include <plf/ast/Node.hpp>
+#include <plf/ast/Visitor.hpp>
 
 namespace plf {
 	
@@ -59,22 +60,29 @@ public:
 
 };
 
-class PackageDecl : public Declaration
-{
-public:
-	DeclList Decls;
-	
-};
-
-
-//package
-//import
-
 class TypeDecl : public Declaration
 {
 };
 
-//class
+/**
+* A package
+*/
+class PackageDecl final : public TypeDecl
+{
+public:
+	DeclList Decls;
+	
+	//NodePtr accept(Visitor& v, ParamPtr& arg) { return accept_<Visitor, Declaration>(v, arg); }
+};
+
+
+//import decl?
+
+class ClassDecl : public Declaration
+{
+};
+//trait
+
 //function
 //struct
 //enum

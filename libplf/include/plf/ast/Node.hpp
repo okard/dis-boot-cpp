@@ -34,16 +34,29 @@ namespace plf {
 	
 // Visitor Parameter Pointer
 typedef cul::AnyPtr ParamPtr;
-	
+
+template<class T> 
+using SharedPtr = std::shared_ptr<T>;
+template<class T> 
+using List = std::vector<T>;
+
 //forward declaration
 class Visitor;
+
 class Node;
-typedef std::shared_ptr<Node> NodePtr;
-typedef std::vector<NodePtr> NodeList;
+typedef SharedPtr<Node> NodePtr;
+typedef List<NodePtr> NodeList;
 
 class Declaration;
-typedef std::shared_ptr<Declaration> DeclPtr;
-typedef std::vector<DeclPtr> DeclList;
+typedef SharedPtr<Declaration> DeclPtr;
+typedef List<DeclPtr> DeclList;
+
+class Statement;
+typedef SharedPtr<Statement> StmtPtr;
+typedef List<StmtPtr> StmtList;
+
+class Expression;
+typedef SharedPtr<Expression> ExprPtr;
 
 /**
 * Type of Ast Nodes
@@ -64,13 +77,19 @@ enum class NodeKind : unsigned short
 	StructDecl,
 	
 	//Type
-	
+	PrimaryType,
+	PtrType,
+	RefType,
+	UserType, 		//user declared type
+	//RT Types
+	ArrayType,
+	MapType,
 	
 	//Statement
 	ReturnStmt,
 	ForStmt,
 	WhileStmt,
-	DoWhileStmt, //while stmt?
+	ExprStmt,
 	
 	//Expression
 	UnaryExpr,
@@ -78,8 +97,6 @@ enum class NodeKind : unsigned short
 	CallExpr,
 	
 	CTCallExpr, //compile time call expression $$name()
-	
-	
 };	
 
 /**
@@ -91,6 +108,10 @@ private:
 	NodeKind kind_; //const
 	
 public:
+
+	Node();
+	Node(const NodeKind nk);
+	virtual ~Node();
 	
 	/**
 	* Return Node Type
@@ -105,15 +126,10 @@ public:
 	virtual NodePtr accept(Visitor& v, ParamPtr& arg);
 	
 	/**
-	* helper template
+	* using for visitor return?
 	*/
-	template<class V, class T>
-	inline NodePtr accept_(V& v, ParamPtr& arg)
-	{
-		//if(T::Kind == this->Kind())
-		auto o = std::static_pointer_cast<T>(shared_from_this());
-		return v.visit(o, arg); 
-	}
+	operator NodePtr () { return shared_from_this(); }
+	
 };
 	
 	

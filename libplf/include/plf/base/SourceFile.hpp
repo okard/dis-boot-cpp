@@ -1,5 +1,5 @@
 /*
-Dis Programming Language Frontend Library
+Programming Language Framework (PLF)
 
 Copyright (c) 2013 okard
 
@@ -22,33 +22,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __DIS_PARSER_HPP__
-#define __DIS_PARSER_HPP__
+#ifndef __PLF_SOURCEFILE_HPP__
+#define __PLF_SOURCEFILE_HPP__
 
-#include "Lexer.hpp"
+#include "Source.hpp"
 
-namespace dis {
-
-/**
-* Dis Lang Parser
-*/
-class Parser
+namespace plf {
+	
+class SourceFile : public Source
 {
 private:
-	Lexer lexer_;
-	
-public:
 
-	void parseDeclaration();
-	
-	void parseStatement();
-	
-	void parseExpression();
-	
+public:
 	
 };
+	
+} // end namespace plf
 
-
-} //end namespace dis
-
-#endif // __DIS_PARSER_HPP__
+#endif // __PLF_SOURCEFILE_HPP__

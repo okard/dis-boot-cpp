@@ -27,8 +27,21 @@ THE SOFTWARE.
 
 using namespace plf;
 
+Node::Node()
+{
+}
+
+Node::Node(const NodeKind nk)
+	: kind_(nk)
+{
+	
+}
+
+Node::~Node()
+{
+}
 
 NodePtr Node::accept(Visitor& v, ParamPtr& arg)
 {
-	return accept_<Visitor, Node>(v, arg);
+	return v.visit(*this, arg);
 };

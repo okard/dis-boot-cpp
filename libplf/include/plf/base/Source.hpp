@@ -44,6 +44,11 @@ public:
 	//return buffer? buffer in lexer?
 	
 	//const char* Name()
+	//const char* identifier();
+	
+	inline SourceId getId() const { return id_; }
+	
+	friend class SourceManager;
 };
 	
 	

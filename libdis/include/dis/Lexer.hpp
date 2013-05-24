@@ -41,6 +41,10 @@ public:
 	//Token& next();
 	//Token& peek(int num);
 	
+private:
+	void lexString();
+	void lexNumber();
+	void lexComment();
 };
 
 

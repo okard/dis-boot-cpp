@@ -34,5 +34,4 @@ const char* dis::toString(TokenId id)
 	{
 		DIS_TOKEN
 	}
-	
 }

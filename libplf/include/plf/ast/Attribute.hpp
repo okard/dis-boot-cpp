@@ -37,8 +37,9 @@ class Attribute : public Node
 };
 
 /*
-Builtin: abi (C, stdcall, etc)
-         test		 
+Builtin: abi (C, stdcall, etc)  calling convention
+         test		 			unit testing
+         
 */
 
 

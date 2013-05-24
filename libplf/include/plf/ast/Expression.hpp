@@ -31,12 +31,19 @@ namespace plf {
 	
 class Expression : public Node
 {
+public:
+	//return type
 };
 
 
 enum class UnaryOperator
 {
-	Neg
+	Neg, 
+	Not, 
+	PostIncr, 
+	PreIncr, 
+	PostDecr, 
+	PreDecr
 };
 
 class UnaryExpr : public Expression
@@ -44,8 +51,7 @@ class UnaryExpr : public Expression
 
 public:
 	UnaryOperator Op;
-	NodePtr Expr;
-	
+	ExprPtr Expr;
 	
 };
 
@@ -59,6 +65,14 @@ enum class BinaryOperator
 	Equal,
 	NotEqual,
 	Assign,
+};
+
+class BinaryExpr : public Expression
+{
+public:
+	BinaryOperator Op;
+	ExprPtr Left;
+	ExprPtr Right;
 };
 
 

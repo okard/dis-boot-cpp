@@ -24,3 +24,6 @@ THE SOFTWARE.
 #include <plf/ast/Types.hpp>
 
 using namespace plf;
+
+
+PrimaryType typeInt32();

@@ -28,6 +28,9 @@ using namespace plf;
 
 void SourceManager::registerSrc(SourcePtr& src)
 {
+	auto id = sources_.size();
+	sources_.push_back(src);
+	src->id_ = id;
 }
 
 SourcePtr SourceManager::get(SourceId id)

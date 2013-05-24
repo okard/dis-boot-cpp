@@ -39,10 +39,14 @@ THE SOFTWARE.
 		TOKEN(Set) 								\
 		/* KEYWORDS DECLARATION */ 				\
 		TOKEN(KwPackage)						\
+		TOKEN(KwClass)							\
 		TOKEN(KwDef) 							\
 		TOKEN(KwVar) 							\
 		TOKEN(KwLet) 							\
-		TOKEN(KwConst)
+		TOKEN(KwConst)							\
+		TOKEN(KwTrue)							\
+		TOKEN(KwFalse)							\
+		TOKEN(KwNull)							
 
 namespace dis {
 	
@@ -62,6 +66,7 @@ struct Token
 {
 	TokenId id;
 	//value buffer 
+	// refcounted buffer for transfering?
 };
 
 const char* toString(TokenId id);

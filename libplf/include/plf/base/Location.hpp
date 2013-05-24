@@ -34,8 +34,8 @@ namespace plf {
 */
 struct Location
 {
+	/// Source Id
 	SourceId sourceId;
-	
 	unsigned int line;
 	unsigned int column;
 	unsigned int offset;

@@ -23,10 +23,34 @@ THE SOFTWARE.
 */
 #include <plf/ast/Visitor.hpp>
 
+#include <plf/ast/Declaration.hpp>
+#include <plf/ast/Statement.hpp>
+#include <plf/ast/Expression.hpp>
+
 using namespace plf;
 
 
-NodePtr Visitor::visit(NodePtr& n, ParamPtr& arg)
+NodePtr Visitor::visit(Node& n, ParamPtr& arg)
+{
+	//NodePtr = std::make_shared<Node>(new Node());
+	//return n.shared_from_this();
+	return n;
+}
+
+
+NodePtr Visitor::visit(Declaration& n, ParamPtr& arg)
 {
 	return n;
 }
+
+NodePtr Visitor::visit(Statement& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(Expression& n, ParamPtr& arg)
+{
+	return n;
+}
+
+
