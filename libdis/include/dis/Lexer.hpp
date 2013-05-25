@@ -25,6 +25,8 @@ THE SOFTWARE.
 #ifndef __DIS_LEXER_HPP__
 #define __DIS_LEXER_HPP__
 
+#include <deque>
+
 #include <plf/base/External.hpp>
 #include <plf/base/Buffer.hpp>
 #include <plf/base/Source.hpp>
@@ -44,7 +46,7 @@ private:
 	plf::SourcePtr src_;
 	
 	//ring buffer?
-	plf::List<Token> toklist_;
+	std::deque<Token> toklist_;
 	
 	//bool doc_comment_enabled;
 
@@ -58,6 +60,7 @@ public:
 	Token& peek(int num);
 	
 private:
+	void pushToken();
 	void lexId();
 	void lexString();
 	void lexNumber();

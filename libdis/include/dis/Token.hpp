@@ -35,11 +35,24 @@ THE SOFTWARE.
 		TOKEN(IntLiteral) 						\
 		TOKEN(FloatLiteral) 					\
 		/* SYMBOL */ 							\
-		TOKEN(Assign) 							\
-		TOKEN(Set) 								\
+		TOKEN(COBracket) 				/* { */ \
+		TOKEN(CCBracket)				/* } */ \
+		TOKEN(ROBracket)				/* ( */ \
+		TOKEN(RCBracket)				/* ) */ \
+		TOKEN(SOBracket)				/* [ */ \
+		TOKEN(SCBracket)				/* ] */ \
+		TOKEN(Assign) 					/* = */	\
+		TOKEN(Dot)						/* . */ \
+		TOKEN(Colon)					/* : */ \
+		TOKEN(Plus)						/* + */ \
+		TOKEN(Minus)					/* - */ \
+		TOKEN(Mul)						/* * */ \
+		TOKEN(Div)						/* / */ \
+		TOKEN(Mod) 						/* % */ \
+		TOKEN(Set)								\
 		/* KEYWORDS DECLARATION */ 				\
 		TOKEN(KwPackage)						\
-		TOKEN(KwClass)							\
+		TOKEN(KwObj)							\
 		TOKEN(KwDef) 							\
 		TOKEN(KwVar) 							\
 		TOKEN(KwLet) 							\

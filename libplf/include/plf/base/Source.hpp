@@ -53,6 +53,8 @@ class Source
 {
 private:
 	SourceId id_;
+	
+protected:
 	Encoding encoding_;
 
 public:	
@@ -67,6 +69,11 @@ public:
 	* Get id for source manager
 	*/
 	inline SourceId getId() const { return id_; }
+	
+	/**
+	* Get encoding of source
+	*/
+	inline Encoding getEncoding() const { return encoding_; }
 	
 	/**
 	* get source size

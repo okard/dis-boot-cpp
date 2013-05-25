@@ -39,10 +39,10 @@ int Compiler::run(int argc, char *argv[])
 {
 	//- parse arguments
 	
-	//1. open file
-	//2. parse file (Lex->Parse->Ast)
+	//1. open files
+	//2. parse files (Lex->Parse->Ast)
 	//3. resolve imports (Ast)
-	//4. semenatic run (Ast -> DAst)
+	//4. semantic run (Ast -> DAst)
 	//5. codegen ( Ast -> ObjectFile)
 	//6. link ( ObjectFile -> Binary)
 	

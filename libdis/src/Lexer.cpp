@@ -25,6 +25,24 @@ THE SOFTWARE.
 
 using namespace dis;
 
+////////////////////////
+// Helper
+
+inline bool isWhitespace(char c)
+{
+	switch(c)
+	{
+		case '\n':
+		case '\r':
+		case '\t':
+		case ' ':
+			return true;
+		default:
+			return false;
+	}
+}
+
+
 
 Lexer::Lexer()
 	: bufv_(buf_)
@@ -43,4 +61,70 @@ void Lexer::open(plf::SourcePtr srcptr)
 	srcptr->read(bufv_, size);
 	
 	//TODO reset internal status
+	
+}
+
+
+Token& Lexer::next()
+{
+	if(toklist_.empty())
+	{
+		pushToken();
+		return toklist_.front();
+	}
+	
+	//pop front the old one
+	toklist_.pop_front();
+	
+	//return front
+	return toklist_.front();
+}
+
+Token& Lexer::peek(int num)
+{
+	//check toklist_ count
+	//push token until num in toklist
+	//return element
+}
+
+
+void  Lexer::pushToken()
+{
+	toklist_.push_back(Token());
+	Token& tok =  toklist_.back();
+	
+	char c;
+	while(isWhitespace(c = bufv_.readChar()));
+	
+	switch(c)
+	{
+		case '{': 
+			tok.id = TokenId::COBracket;
+			break;
+		case '}':
+			break;
+		
+		
+		default: 
+			//error unkown char
+			throw "err";
+	}
+}
+
+
+
+void Lexer::lexId()
+{
+}
+
+void Lexer::lexString()
+{
+}
+
+void Lexer::lexNumber()
+{
+}
+
+void Lexer::lexComment()
+{
 }

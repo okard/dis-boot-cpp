@@ -33,6 +33,7 @@ private:
 	dis::Parser parser_;
 
 	//source files to compile
+	//save sourceid/filename here?
 	// std::map<filename, SrcPtr> 
 public:
 	Compiler();
@@ -41,4 +42,10 @@ public:
 	//parse args
 	int run(int argc, char *argv[]);
 	
+	//void parse();
+	//void semantic();
+	//void compile();
+	//void link();
+	
+	//void resolveImports();
 };
