@@ -28,7 +28,7 @@ THE SOFTWARE.
 #include <deque>
 
 #include <plf/base/External.hpp>
-#include <plf/base/Buffer.hpp>
+#include <plf/base/BufferView.hpp>
 #include <plf/base/Source.hpp>
 
 #include "Token.hpp"

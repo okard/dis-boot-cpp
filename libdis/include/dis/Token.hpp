@@ -49,6 +49,8 @@ THE SOFTWARE.
 		TOKEN(Mul)						/* * */ \
 		TOKEN(Div)						/* / */ \
 		TOKEN(Mod) 						/* % */ \
+		TOKEN(EPoint)					/* ! */ \
+		TOKEN(Equal)				   /* == */ \
 		TOKEN(Set)								\
 		/* KEYWORDS DECLARATION */ 				\
 		TOKEN(KwPackage)						\
@@ -81,6 +83,8 @@ struct Token
 	//value buffer 
 	// refcounted buffer for transfering?
 };
+
+//SharedPtr<string>
 
 const char* toString(TokenId id);
 

@@ -24,6 +24,13 @@ THE SOFTWARE.
 
 #include "Compiler.hpp"
 
+#include <iostream>
+
+#include <plf/base/SourceFile.hpp>
+
+using namespace plf;
+using namespace dis;
+
 Compiler::Compiler()
 	: parser_(lexer_)
 {
@@ -39,6 +46,14 @@ int Compiler::run(int argc, char *argv[])
 {
 	//- parse arguments
 	
+	if(argc >= 2)
+		testLex(argv[1]);
+	
+	//auto src = std::make_shared<SourceFile>();
+	//src->open(argv[1]);
+	//lexer_.open(src);
+	
+	
 	//1. open files
 	//2. parse files (Lex->Parse->Ast)
 	//3. resolve imports (Ast)
@@ -47,4 +62,22 @@ int Compiler::run(int argc, char *argv[])
 	//6. link ( ObjectFile -> Binary)
 	
 	return 0;
+}
+
+
+void Compiler::testLex(const char* filename)
+{
+	auto src = std::make_shared<SourceFile>();
+	src->open(filename);
+	
+	Lexer lexer;
+	lexer.open(src);
+	
+	Token tok;
+	do
+	{
+		tok = lexer.next();
+		std::cout << "Token: " << dis::toString(tok.id) << std::endl;
+	}
+	while(tok.id != TokenId::Eof);
 }

@@ -30,7 +30,6 @@ THE SOFTWARE.
 namespace plf {
 	
 
-//TODO Create a more generic interface for MMAP IO?
 
 /**
 * Buffer
@@ -59,53 +58,7 @@ public:
 	
 };
 
-/**
-* A view onto buffer
-*/
-class BufferView
-{
-private:
-	Buffer& buffer_;
-	size_t pos_;
-	size_t limit_;
-public:
-	
-	/// A Buffer View
-	BufferView(Buffer& buf);
-	/// Destructor
-	virtual ~BufferView();
-	
-	///Deliver char
-	inline unsigned char readChar() { return read<unsigned char>(); }
-	
-	//short for utf16 char
-	//int for utf32 char
-	
-	template<typename T>
-	inline T read() { T* t = reinterpret_cast<T*>(buffer_[pos_]); pos_ += sizeof(T); return *t; }
-	
-	template<typename T>
-	inline T peek(size_t offset) { return *reinterpret_cast<T*>(buffer_[pos_+offset]); }
-	
-	inline unsigned char peekChar(size_t offset) { return peek<unsigned char>(offset); }
-	
-	/// set position
-	inline void set(size_t p) { pos_ = p <= 0 ? 0 : p >= limit_ ? limit_ : p;  }
-	
-	inline void setLimit(size_t l) { /*TODO check*/ limit_ = l; }
-	
-	/// is position at the end of buffer
-	inline bool eob() const { return pos_>= limit_; }
-	
-	/// access to current positon in buffer as ptr
-	inline Buffer::byte* ptr() { return buffer_[pos_]; }
-	/// return buffer
-	inline const Buffer& buffer() const { return buffer_; }
-	/// return buffer
-	inline Buffer& buffer() { return buffer_; }
-	/// return position
-	inline size_t pos() { return pos_; }
-};
+
 	
 } // end namespace plf
 

@@ -1,5 +1,5 @@
 /*
-Dis Compiler
+Programming Language Framework (PLF)
 
 Copyright (c) 2013 okard
 
@@ -21,34 +21,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+#include <plf/base/BufferView.hpp>
 
-#include <dis/Lexer.hpp>
-#include <dis/Parser.hpp>
-//#include <dis/CodeGen.hpp>
+using namespace plf;
 
-class Compiler
+BufferView::BufferView(Buffer& buf)
+	: buffer_(buf), pos_(0), limit_(buf.size()-1)
 {
-private:
-	dis::Lexer lexer_;
-	dis::Parser parser_;
+}
 
-	//source files to compile
-	//save sourceid/filename here?
-	// std::map<filename, SrcPtr> 
-public:
-	Compiler();
-	~Compiler();
-	
-	//parse args
-	int run(int argc, char *argv[]);
-	
-	//void parse();
-	//void semantic();
-	//void compile();
-	//void link();
-	
-	//void resolveImports();
-	
-	
-	void testLex(const char* filename);
-};
+BufferView::~BufferView()
+{
+}

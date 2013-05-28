@@ -23,7 +23,7 @@ THE SOFTWARE.
 */
 #include <plf/base/SourceFile.hpp>
 
-#include <plf/base/Buffer.hpp>
+#include <plf/base/BufferView.hpp>
 
 using namespace plf;
 

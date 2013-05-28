@@ -42,6 +42,12 @@ inline bool isWhitespace(char c)
 	}
 }
 
+inline bool isAlpha(char c) 
+{
+	return (c >= 'a' && c <= 'z')
+		|| (c >= 'A' && c <= 'Z')
+		|| c == '_';
+}
 
 
 Lexer::Lexer()
@@ -96,12 +102,22 @@ void  Lexer::pushToken()
 	char c;
 	while(isWhitespace(c = bufv_.readChar()));
 	
+	if(bufv_.eob())
+	{
+		tok.id = TokenId::Eof;
+		return;
+	}
+	
+	//if is alpha lexId();
+	//startpos = bufv_.pos()-1;
+	
 	switch(c)
 	{
 		case '{': 
 			tok.id = TokenId::COBracket;
 			break;
 		case '}':
+			tok.id = TokenId::CCBracket;
 			break;
 		
 		

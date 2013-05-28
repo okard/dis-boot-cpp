@@ -50,11 +50,4 @@ void Buffer::alloc(size_t size)
 	size_ = size;
 }
 
-BufferView::BufferView(Buffer& buf)
-	: buffer_(buf), pos_(0), limit_(buf.size()-1)
-{
-}
 
-BufferView::~BufferView()
-{
-}
