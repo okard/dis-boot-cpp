@@ -34,6 +34,7 @@ THE SOFTWARE.
 		TOKEN(Ident) 							\
 		TOKEN(IntLiteral) 						\
 		TOKEN(FloatLiteral) 					\
+		TOKEN(StringLiteral)					\
 		/* SYMBOL */ 							\
 		TOKEN(COBracket) 				/* { */ \
 		TOKEN(CCBracket)				/* } */ \
@@ -43,13 +44,16 @@ THE SOFTWARE.
 		TOKEN(SCBracket)				/* ] */ \
 		TOKEN(Assign) 					/* = */	\
 		TOKEN(Dot)						/* . */ \
+		TOKEN(Comma)					/* , */ \
 		TOKEN(Colon)					/* : */ \
+		TOKEN(Semicolon)				/* ; */ \
 		TOKEN(Plus)						/* + */ \
 		TOKEN(Minus)					/* - */ \
 		TOKEN(Mul)						/* * */ \
 		TOKEN(Div)						/* / */ \
 		TOKEN(Mod) 						/* % */ \
 		TOKEN(EPoint)					/* ! */ \
+		TOKEN(Sharp)					/* # */ \
 		TOKEN(Equal)				   /* == */ \
 		TOKEN(Set)								\
 		/* KEYWORDS DECLARATION */ 				\

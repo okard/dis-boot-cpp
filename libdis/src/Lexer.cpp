@@ -23,6 +23,8 @@ THE SOFTWARE.
 */
 #include <dis/Lexer.hpp>
 
+#include <plf/base/FormatException.hpp>
+
 using namespace dis;
 
 ////////////////////////
@@ -49,6 +51,11 @@ inline bool isAlpha(char c)
 		|| c == '_';
 }
 
+inline bool isNumeric(char c)
+{
+	return (c >= '0' && c <= '9');
+}
+
 
 Lexer::Lexer()
 	: bufv_(buf_)
@@ -67,44 +74,65 @@ void Lexer::open(plf::SourcePtr srcptr)
 	srcptr->read(bufv_, size);
 	
 	//TODO reset internal status
-	
+	toklist_.clear();
 }
 
 
 Token& Lexer::next()
 {
+	//pop front the old one
+	if(!toklist_.empty())
+		toklist_.pop_front();
+	
+	//if now empty add a new one
 	if(toklist_.empty())
 	{
-		pushToken();
-		return toklist_.front();
+		toklist_.push_back(Token());
+		Token& tok =  toklist_.back();
+		lexToken(tok);
 	}
 	
-	//pop front the old one
-	toklist_.pop_front();
-	
-	//return front
+	//return actual at front
 	return toklist_.front();
 }
 
 Token& Lexer::peek(int num)
 {
-	//check toklist_ count
+	//check toklist_.size() 
 	//push token until num in toklist
 	//return element
 }
 
 
-void  Lexer::pushToken()
-{
-	toklist_.push_back(Token());
-	Token& tok =  toklist_.back();
-	
+void  Lexer::lexToken(Token& tok)
+{	
 	char c;
-	while(isWhitespace(c = bufv_.readChar()));
+	while(isWhitespace(c = bufv_.read<char>()));
 	
 	if(bufv_.eob())
 	{
 		tok.id = TokenId::Eof;
+		return;
+	}
+	
+	//id and keywords
+	if(isAlpha(c))
+	{
+		lexId(tok);
+		return;
+	}
+	
+	//numbers
+	if(isNumeric(c))
+	{
+		lexNumber(tok);
+		return;
+	}
+	
+	//strings
+	if(c == '"')
+	{
+		lexString(tok);
 		return;
 	}
 	
@@ -113,34 +141,63 @@ void  Lexer::pushToken()
 	
 	switch(c)
 	{
-		case '{': 
-			tok.id = TokenId::COBracket;
-			break;
-		case '}':
-			tok.id = TokenId::CCBracket;
-			break;
-		
+		case '{': tok.id = TokenId::COBracket; break;
+		case '}': tok.id = TokenId::CCBracket; break;
+		case '(': tok.id = TokenId::ROBracket; break;
+		case ')': tok.id = TokenId::RCBracket; break;
+		case '[': tok.id = TokenId::SOBracket; break;
+		case ']': tok.id = TokenId::SCBracket; break;
+		case '=': tok.id = TokenId::Assign; break;	
+		case '.': tok.id = TokenId::Dot; break;
+		case ',': tok.id = TokenId::Comma; break;
+		case ':': tok.id = TokenId::Colon; break;
+		case ';': tok.id = TokenId::Semicolon; break;
+		case '+': tok.id = TokenId::Plus; break;
+		case '-': tok.id = TokenId::Minus; break;
+		case '*': tok.id = TokenId::Mul; break;
+		case '/': tok.id = TokenId::Div; break;
+		case '%': tok.id = TokenId::Mod; break;
+		case '!': tok.id = TokenId::EPoint; break;
+		case '#': tok.id = TokenId::Sharp; break;
 		
 		default: 
 			//error unkown char
-			throw "err";
+			throw plf::FormatException("Unknown Character: %c", c);
 	}
+	
+	
+	//check for comments
+	if(tok.id == TokenId::Div && bufv_.current<char>() == '/')
+	{
+		while(!((c = bufv_.read<char>()) == '\n'))
+			bufv_.read<char>();
+		lexToken(tok);
+	}
+	
+	//check double token
+	
+	//check triple token
+	
 }
 
 
-
-void Lexer::lexId()
+void Lexer::lexId(Token& tok)
 {
+	tok.id = TokenId::Ident;
 }
 
-void Lexer::lexString()
+void Lexer::lexNumber(Token& tok)
 {
+	tok.id = TokenId::IntLiteral;
 }
 
-void Lexer::lexNumber()
+void Lexer::lexString(Token& tok)
 {
+	tok.id = TokenId::StringLiteral;
 }
 
-void Lexer::lexComment()
+void Lexer::lexComment(Token& tok)
 {
+	//look for doc comments
+	//create doc comment tokens or 
 }

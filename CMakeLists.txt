@@ -15,5 +15,7 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11")
 add_subdirectory("libplf")
 # libdis
 add_subdirectory("libdis")
+
 # disc
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 add_subdirectory("disc")

@@ -33,5 +33,7 @@ const char* dis::toString(TokenId id)
 	switch(id)
 	{
 		DIS_TOKEN
+		
+		default: return "<error>";
 	}
 }

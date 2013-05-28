@@ -32,7 +32,7 @@ namespace plf {
 
 
 /**
-* Buffer
+* Simple byte buffer
 */
 class Buffer
 {

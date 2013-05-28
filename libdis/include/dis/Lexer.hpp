@@ -60,11 +60,11 @@ public:
 	Token& peek(int num);
 	
 private:
-	void pushToken();
-	void lexId();
-	void lexString();
-	void lexNumber();
-	void lexComment();
+	void lexToken(Token& tok);
+	void lexId(Token& tok);
+	void lexString(Token& tok);
+	void lexNumber(Token& tok);
+	void lexComment(Token& tok);
 };
 
 

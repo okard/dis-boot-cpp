@@ -21,43 +21,37 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <plf/base/SourceFile.hpp>
+#include <plf/base/FormatException.hpp>
 
-#include <plf/base/BufferView.hpp>
+#include <cstdarg>
+#include <cstdio>
 
 using namespace plf;
 
-
-void SourceFile::open(const char* filename)
+/**
+* Constructor
+*/
+FormatException::FormatException(const char* msg, ...)
 {
-	size_ = 0;
-	filestream_.open(filename, std::ifstream::in);
+	va_list argument_list;
+	va_start(argument_list, msg);
 	
-	if(filestream_) 
+	int len = vsnprintf(msg_, BUFSIZE - 2, msg, argument_list);  
+	if(len < 0 || len > BUFSIZE - 2)  
 	{
-		// get length of file:
-		filestream_.seekg (0, filestream_.end);
-		size_ = filestream_.tellg();
-		filestream_.seekg (0, filestream_.beg);
+		len = BUFSIZE - 2;
 	}
+	msg_[len] = '\0';
+
+	va_end(argument_list);
 }
 
-size_t SourceFile::read(BufferView& buf, size_t size)
+FormatException::~FormatException()
 {
-	
-	if( (buf.buffer().size() - buf.pos()) < size)
-		size = buf.buffer().size() - buf.pos();
-	//check for size
-	//try to read
-	//set limit
-	
-	if(filestream_)
-	{
-		filestream_.read(buf.ptr(), size);
-		auto bytesRead = filestream_.gcount();
-		buf.setEnd(bytesRead+buf.pos());
-		return bytesRead;
-	}
-	
-	return 0;
 }
+
+const char* FormatException::what() const throw()
+{
+	return msg_;
+}
+

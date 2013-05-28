@@ -26,7 +26,7 @@ THE SOFTWARE.
 using namespace plf;
 
 BufferView::BufferView(Buffer& buf)
-	: buffer_(buf), pos_(0), limit_(buf.size()-1)
+	: buffer_(buf), pos_(0), end_(buf.size()-1)
 {
 }
 
