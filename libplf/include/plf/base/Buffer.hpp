@@ -26,10 +26,9 @@ THE SOFTWARE.
 #define __PLF_BUFFER_HPP__
 
 #include <cstddef>
+#include <plf/base/External.hpp>
 
 namespace plf {
-	
-
 
 /**
 * Simple byte buffer
@@ -46,9 +45,12 @@ public:
 
 	Buffer();
 	Buffer(size_t size);
+	Buffer(const byte* ptr);
 	virtual ~Buffer();
 	
 	void alloc(size_t size);
+	
+	void insert(const byte* ptr, size_t size);
 	
 	inline byte* operator[] (size_t offset) { return &buffer_[offset]; }
 	
@@ -56,8 +58,11 @@ public:
 	inline byte* ptr() { return buffer_; }
 	inline const byte* ptr() const { return buffer_; }
 	
+	
+	
 };
 
+typedef SharedPtr<Buffer> BufferPtr;
 
 	
 } // end namespace plf

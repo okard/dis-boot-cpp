@@ -23,6 +23,8 @@ THE SOFTWARE.
 */
 #include <plf/base/Buffer.hpp>
 
+#include <cstring>
+
 using namespace plf;
 
 Buffer::Buffer()
@@ -33,6 +35,12 @@ Buffer::Buffer()
 Buffer::Buffer(size_t size)
 	: size_(size), buffer_(new byte[size])
 {
+}
+
+Buffer::Buffer(const byte* ptr)
+	: size_(strlen(ptr)), buffer_(new byte[strlen(ptr)])
+{
+	insert(ptr, size_);
 }
 
 Buffer::~Buffer()
@@ -48,6 +56,14 @@ void Buffer::alloc(size_t size)
 	
 	buffer_ = new byte[size];
 	size_ = size;
+}
+
+void Buffer::insert(const byte* ptr, size_t size)
+{
+	if(buffer_ && size <= size_)
+	{
+		memcpy(buffer_, ptr, size);
+	}
 }
 
 

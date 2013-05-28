@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include "Buffer.hpp"
 
 //TODO Create a more generic interface for MMAP IO?
+//TODO interface for encoding?
 
 namespace plf {
 

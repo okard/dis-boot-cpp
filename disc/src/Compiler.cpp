@@ -77,7 +77,15 @@ void Compiler::testLex(const char* filename)
 	do
 	{
 		tok = lexer.next();
-		std::cout << "Token: " << dis::toString(tok.id) << std::endl;
+		std::cout << "Token: " << dis::toString(tok.id);
+		switch(tok.id)
+		{
+			case TokenId::Ident: 
+			case TokenId::StringLiteral:
+				std::cout << " Buffer: " << std::string(tok.buffer->ptr(), tok.buffer->size());
+				break;
+		}
+		std::cout << std::endl;
 	}
 	while(tok.id != TokenId::Eof);
 }

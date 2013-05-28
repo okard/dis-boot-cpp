@@ -65,6 +65,8 @@ private:
 	void lexString(Token& tok);
 	void lexNumber(Token& tok);
 	void lexComment(Token& tok);
+	
+	inline void checkForChar(Token& tok, char c, TokenId id);
 };
 
 

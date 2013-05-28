@@ -25,6 +25,8 @@ THE SOFTWARE.
 #ifndef __DIS_TOKEN_HPP__
 #define __DIS_TOKEN_HPP__
 
+#include <plf/base/Buffer.hpp>
+
 //Macros for Token Generationen
 #undef TOKEN
 #define DIS_TOKEN 								\
@@ -42,11 +44,11 @@ THE SOFTWARE.
 		TOKEN(RCBracket)				/* ) */ \
 		TOKEN(SOBracket)				/* [ */ \
 		TOKEN(SCBracket)				/* ] */ \
-		TOKEN(Assign) 					/* = */	\
 		TOKEN(Dot)						/* . */ \
 		TOKEN(Comma)					/* , */ \
 		TOKEN(Colon)					/* : */ \
 		TOKEN(Semicolon)				/* ; */ \
+		TOKEN(Assign) 					/* = */	\
 		TOKEN(Plus)						/* + */ \
 		TOKEN(Minus)					/* - */ \
 		TOKEN(Mul)						/* * */ \
@@ -55,6 +57,7 @@ THE SOFTWARE.
 		TOKEN(EPoint)					/* ! */ \
 		TOKEN(Sharp)					/* # */ \
 		TOKEN(Tilde)					/* ~ */ \
+		TOKEN(DblColon)				   /* :: */ \
 		TOKEN(Equal)				   /* == */ \
 		TOKEN(NEqual)				   /* != */ \
 		TOKEN(PlusAssign)			   /* += */ \
@@ -62,7 +65,6 @@ THE SOFTWARE.
 		TOKEN(MulAssign)			   /* *= */ \
 		TOKEN(DivAssign)			   /* /= */ \
 		TOKEN(ModAssign)			   /* %= */ \
-		TOKEN(Set)								\
 		/* KEYWORDS DECLARATION */ 				\
 		TOKEN(KwPackage)						\
 		TOKEN(KwObj)							\
@@ -70,6 +72,10 @@ THE SOFTWARE.
 		TOKEN(KwVar) 							\
 		TOKEN(KwLet) 							\
 		TOKEN(KwConst)							\
+		TOKEN(KwIf)								\
+		TOKEN(KwElse)							\
+		TOKEN(KwFor)							\
+		TOKEN(KwWhile)							\
 		TOKEN(KwTrue)							\
 		TOKEN(KwFalse)							\
 		TOKEN(KwNull)							
@@ -91,8 +97,7 @@ enum class TokenId
 struct Token
 {
 	TokenId id;
-	//value buffer 
-	// refcounted buffer for transfering?
+	plf::BufferPtr buffer;
 };
 
 //plf::SharedPtr<std::string>

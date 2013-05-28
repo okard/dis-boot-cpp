@@ -23,8 +23,8 @@ THE SOFTWARE.
 */
 #include <dis/Lexer.hpp>
 
-#include <string>
-#include <iostream>
+#include <cstring>
+//#include <unordered_map>
 
 #include <plf/base/FormatException.hpp>
 
@@ -59,6 +59,7 @@ inline bool isNumeric(char c)
 	return (c >= '0' && c <= '9');
 }
 
+inline void checkKeyword(Token& tok);
 
 Lexer::Lexer()
 	: bufv_(buf_)
@@ -141,9 +142,6 @@ void  Lexer::lexToken(Token& tok)
 		return;
 	}
 	
-	//if is alpha lexId();
-	//startpos = bufv_.pos()-1;
-	
 	switch(c)
 	{
 		case '{': tok.id = TokenId::COBracket; bufv_.next<char>(); break;
@@ -152,17 +150,17 @@ void  Lexer::lexToken(Token& tok)
 		case ')': tok.id = TokenId::RCBracket; bufv_.next<char>(); break;
 		case '[': tok.id = TokenId::SOBracket; bufv_.next<char>(); break;
 		case ']': tok.id = TokenId::SCBracket; bufv_.next<char>(); break;
-		case '=': tok.id = TokenId::Assign; bufv_.next<char>(); break;	
 		case '.': tok.id = TokenId::Dot; bufv_.next<char>(); break;
 		case ',': tok.id = TokenId::Comma; bufv_.next<char>(); break;
 		case ':': tok.id = TokenId::Colon; bufv_.next<char>(); break;
 		case ';': tok.id = TokenId::Semicolon; bufv_.next<char>(); break;
+		case '=': tok.id = TokenId::Assign; bufv_.next<char>(); break;
+		case '!': tok.id = TokenId::EPoint; bufv_.next<char>(); break;
 		case '+': tok.id = TokenId::Plus; bufv_.next<char>(); break;
 		case '-': tok.id = TokenId::Minus; bufv_.next<char>(); break;
 		case '*': tok.id = TokenId::Mul; bufv_.next<char>(); break;
 		case '/': tok.id = TokenId::Div; bufv_.next<char>(); break;
 		case '%': tok.id = TokenId::Mod; bufv_.next<char>(); break;
-		case '!': tok.id = TokenId::EPoint; bufv_.next<char>(); break;
 		case '#': tok.id = TokenId::Sharp; bufv_.next<char>(); break;
 		case '~': tok.id = TokenId::Tilde; bufv_.next<char>(); break;
 		
@@ -171,19 +169,29 @@ void  Lexer::lexToken(Token& tok)
 			throw plf::FormatException("Unknown Character: %c", c);
 	}
 	
-	
 	//check for comments
 	if(tok.id == TokenId::Div && bufv_.current<char>() == '/')
 	{
 		while(!bufv_.eob() &&  bufv_.current<char>() != '\n')
 			bufv_.next<char>();
 		lexToken(tok);
+		return;
 	}
 	
 	//check double token
+	switch(tok.id)
+	{
+		case TokenId::DblColon: checkForChar(tok, ':', TokenId::DblColon); break;
+		case TokenId::EPoint: checkForChar(tok, '=', TokenId::NEqual); break;
+		case TokenId::Assign: checkForChar(tok, '=', TokenId::Equal); break;
+		case TokenId::Plus: checkForChar(tok, '=', TokenId::PlusAssign); break;
+		case TokenId::Minus: checkForChar(tok, '=', TokenId::MinusAssign); break;
+		case TokenId::Mul: checkForChar(tok, '=', TokenId::MulAssign); break;
+		case TokenId::Div: checkForChar(tok, '=', TokenId::DivAssign); break;
+		case TokenId::Mod: checkForChar(tok, '=', TokenId::ModAssign); break;
+	}
 	
 	//check triple token
-	
 }
 
 
@@ -195,12 +203,17 @@ void Lexer::lexId(Token& tok)
 	for(i = 0; isAlpha(bufv_.peek<char>(i)); i++); //check for eob
 	
 	//read bufv_.ptr() size i into token
-	std::string str(bufv_.ptr(), i);
-	std::cout << "Lex id: " << str << std::endl;
+	//std::string str(bufv_.ptr(), i);
+	//std::cout << "Lex id: " << str << std::endl;
 	
+	//add the id to token buffer
+	tok.buffer = std::make_shared<plf::Buffer>(i);
+	tok.buffer->insert(bufv_.ptr(), i);
 	
+	checkKeyword(tok);
+	
+	//skip over
 	bufv_.set(i + bufv_.pos());
-	
 }
 
 void Lexer::lexNumber(Token& tok)
@@ -214,12 +227,16 @@ void Lexer::lexString(Token& tok)
 	//assert(bufv_.current<char> == '"');
 	tok.id = TokenId::StringLiteral;
 	
-	bufv_.next<char>();
+	bufv_.next<char>(); //skip "
 	int i;
 	for(i = 0; bufv_.peek<char>(i) != '"'; i++); //check for eob
 	
-	std::string str(bufv_.ptr(), i);
-	std::cout << "Lex string: " << str << std::endl;
+	//std::string str(bufv_.ptr(), i);
+	//std::cout << "Lex string: " << str << std::endl;
+	
+	//into buffer
+	tok.buffer = std::make_shared<plf::Buffer>(i);
+	tok.buffer->insert(bufv_.ptr(), i);
 	
 	bufv_.set(i + bufv_.pos()+1); //skip " 
 }
@@ -228,4 +245,31 @@ void Lexer::lexComment(Token& tok)
 {
 	//look for doc comments
 	//create doc comment tokens or 
+}
+
+
+inline void Lexer::checkForChar(Token& tok, char c, TokenId id)
+{
+	if(bufv_.current<char>() == c)
+	{
+		tok.id = id;
+		bufv_.next<char>();
+	}
+}
+
+inline bool chkKw(const Token& tok, const char* kw)
+{
+	return 0 == memcmp(tok.buffer->ptr(), kw, tok.buffer->size());
+}
+
+inline void checkKeyword(Token& tok)
+{
+	if(chkKw(tok, "def"))
+	{
+		tok.id = TokenId::KwDef;
+	}
+	else if(chkKw(tok, "package"))
+	{
+		tok.id = TokenId::KwPackage;
+	}
 }
