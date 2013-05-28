@@ -44,6 +44,7 @@ public:
 	
 	/// A Buffer View
 	BufferView(Buffer& buf);
+	//BufferView(Buffer& buf, start, end);
 	/// Destructor
 	virtual ~BufferView();
 	
@@ -51,16 +52,13 @@ public:
 	//int for utf32 char
 	
 	template<typename T>
-	inline T read() { T* t = reinterpret_cast<T*>(buffer_[pos_]); pos_ += sizeof(T); return *t; }
+	inline T& peek(size_t offset) { return *reinterpret_cast<T*>(buffer_[pos_+offset]); }
 	
 	template<typename T>
-	inline T peek(size_t offset) { return *reinterpret_cast<T*>(buffer_[pos_+offset]); }
+	inline void next() { pos_ += sizeof(T); }
 	
 	template<typename T>
-	inline T next() { pos_ += sizeof(T); }
-	
-	template<typename T>
-	inline T current() { return *reinterpret_cast<T*>(buffer_[pos_]); }
+	inline T& current() { return *reinterpret_cast<T*>(buffer_[pos_]); }
 	
 	/// set position
 	inline void set(size_t p) { pos_ = p <= 0 ? 0 : p >= end_ ? end_ : p;  }

@@ -23,6 +23,9 @@ THE SOFTWARE.
 */
 #include <dis/Lexer.hpp>
 
+#include <string>
+#include <iostream>
+
 #include <plf/base/FormatException.hpp>
 
 using namespace dis;
@@ -112,8 +115,10 @@ void  Lexer::lexToken(Token& tok)
 		return;
 	}
 	
-	char c;
-	while(isWhitespace(c = bufv_.read<char>()));
+	while(isWhitespace(bufv_.current<char>()))
+		bufv_.next<char>();
+		
+	char c = bufv_.current<char>();
 	
 	//id and keywords
 	if(isAlpha(c))
@@ -141,25 +146,25 @@ void  Lexer::lexToken(Token& tok)
 	
 	switch(c)
 	{
-		case '{': tok.id = TokenId::COBracket; break;
-		case '}': tok.id = TokenId::CCBracket; break;
-		case '(': tok.id = TokenId::ROBracket; break;
-		case ')': tok.id = TokenId::RCBracket; break;
-		case '[': tok.id = TokenId::SOBracket; break;
-		case ']': tok.id = TokenId::SCBracket; break;
-		case '=': tok.id = TokenId::Assign; break;	
-		case '.': tok.id = TokenId::Dot; break;
-		case ',': tok.id = TokenId::Comma; break;
-		case ':': tok.id = TokenId::Colon; break;
-		case ';': tok.id = TokenId::Semicolon; break;
-		case '+': tok.id = TokenId::Plus; break;
-		case '-': tok.id = TokenId::Minus; break;
-		case '*': tok.id = TokenId::Mul; break;
-		case '/': tok.id = TokenId::Div; break;
-		case '%': tok.id = TokenId::Mod; break;
-		case '!': tok.id = TokenId::EPoint; break;
-		case '#': tok.id = TokenId::Sharp; break;
-		case '~': tok.id = TokenId::Tilde; break;
+		case '{': tok.id = TokenId::COBracket; bufv_.next<char>(); break;
+		case '}': tok.id = TokenId::CCBracket; bufv_.next<char>(); break;
+		case '(': tok.id = TokenId::ROBracket; bufv_.next<char>(); break;
+		case ')': tok.id = TokenId::RCBracket; bufv_.next<char>(); break;
+		case '[': tok.id = TokenId::SOBracket; bufv_.next<char>(); break;
+		case ']': tok.id = TokenId::SCBracket; bufv_.next<char>(); break;
+		case '=': tok.id = TokenId::Assign; bufv_.next<char>(); break;	
+		case '.': tok.id = TokenId::Dot; bufv_.next<char>(); break;
+		case ',': tok.id = TokenId::Comma; bufv_.next<char>(); break;
+		case ':': tok.id = TokenId::Colon; bufv_.next<char>(); break;
+		case ';': tok.id = TokenId::Semicolon; bufv_.next<char>(); break;
+		case '+': tok.id = TokenId::Plus; bufv_.next<char>(); break;
+		case '-': tok.id = TokenId::Minus; bufv_.next<char>(); break;
+		case '*': tok.id = TokenId::Mul; bufv_.next<char>(); break;
+		case '/': tok.id = TokenId::Div; bufv_.next<char>(); break;
+		case '%': tok.id = TokenId::Mod; bufv_.next<char>(); break;
+		case '!': tok.id = TokenId::EPoint; bufv_.next<char>(); break;
+		case '#': tok.id = TokenId::Sharp; bufv_.next<char>(); break;
+		case '~': tok.id = TokenId::Tilde; bufv_.next<char>(); break;
 		
 		default: 
 			//error unkown char
@@ -170,7 +175,7 @@ void  Lexer::lexToken(Token& tok)
 	//check for comments
 	if(tok.id == TokenId::Div && bufv_.current<char>() == '/')
 	{
-		while(!bufv_.eob() && !((c = bufv_.read<char>()) == '\n'))
+		while(!bufv_.eob() &&  bufv_.current<char>() != '\n')
 			bufv_.next<char>();
 		lexToken(tok);
 	}
@@ -185,16 +190,38 @@ void  Lexer::lexToken(Token& tok)
 void Lexer::lexId(Token& tok)
 {
 	tok.id = TokenId::Ident;
+	
+	int i;
+	for(i = 0; isAlpha(bufv_.peek<char>(i)); i++); //check for eob
+	
+	//read bufv_.ptr() size i into token
+	std::string str(bufv_.ptr(), i);
+	std::cout << "Lex id: " << str << std::endl;
+	
+	
+	bufv_.set(i + bufv_.pos());
+	
 }
 
 void Lexer::lexNumber(Token& tok)
 {
 	tok.id = TokenId::IntLiteral;
+	bufv_.next<char>(); 
 }
 
 void Lexer::lexString(Token& tok)
 {
+	//assert(bufv_.current<char> == '"');
 	tok.id = TokenId::StringLiteral;
+	
+	bufv_.next<char>();
+	int i;
+	for(i = 0; bufv_.peek<char>(i) != '"'; i++); //check for eob
+	
+	std::string str(bufv_.ptr(), i);
+	std::cout << "Lex string: " << str << std::endl;
+	
+	bufv_.set(i + bufv_.pos()+1); //skip " 
 }
 
 void Lexer::lexComment(Token& tok)
