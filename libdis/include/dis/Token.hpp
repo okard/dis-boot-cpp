@@ -54,7 +54,14 @@ THE SOFTWARE.
 		TOKEN(Mod) 						/* % */ \
 		TOKEN(EPoint)					/* ! */ \
 		TOKEN(Sharp)					/* # */ \
+		TOKEN(Tilde)					/* ~ */ \
 		TOKEN(Equal)				   /* == */ \
+		TOKEN(NEqual)				   /* != */ \
+		TOKEN(PlusAssign)			   /* += */ \
+		TOKEN(MinusAssign)			   /* -= */ \
+		TOKEN(MulAssign)			   /* *= */ \
+		TOKEN(DivAssign)			   /* /= */ \
+		TOKEN(ModAssign)			   /* %= */ \
 		TOKEN(Set)								\
 		/* KEYWORDS DECLARATION */ 				\
 		TOKEN(KwPackage)						\
@@ -88,7 +95,7 @@ struct Token
 	// refcounted buffer for transfering?
 };
 
-//SharedPtr<string>
+//plf::SharedPtr<std::string>
 
 const char* toString(TokenId id);
 

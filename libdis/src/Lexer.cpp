@@ -106,14 +106,14 @@ Token& Lexer::peek(int num)
 
 void  Lexer::lexToken(Token& tok)
 {	
-	char c;
-	while(isWhitespace(c = bufv_.read<char>()));
-	
 	if(bufv_.eob())
 	{
 		tok.id = TokenId::Eof;
 		return;
 	}
+	
+	char c;
+	while(isWhitespace(c = bufv_.read<char>()));
 	
 	//id and keywords
 	if(isAlpha(c))
@@ -159,6 +159,7 @@ void  Lexer::lexToken(Token& tok)
 		case '%': tok.id = TokenId::Mod; break;
 		case '!': tok.id = TokenId::EPoint; break;
 		case '#': tok.id = TokenId::Sharp; break;
+		case '~': tok.id = TokenId::Tilde; break;
 		
 		default: 
 			//error unkown char
@@ -169,8 +170,8 @@ void  Lexer::lexToken(Token& tok)
 	//check for comments
 	if(tok.id == TokenId::Div && bufv_.current<char>() == '/')
 	{
-		while(!((c = bufv_.read<char>()) == '\n'))
-			bufv_.read<char>();
+		while(!bufv_.eob() && !((c = bufv_.read<char>()) == '\n'))
+			bufv_.next<char>();
 		lexToken(tok);
 	}
 	
