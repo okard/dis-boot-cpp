@@ -51,4 +51,5 @@ public:
 	
 	
 	void testLex(const char* filename);
+	void testParser(const char* filename);
 };

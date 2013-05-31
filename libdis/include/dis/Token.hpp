@@ -36,6 +36,8 @@ THE SOFTWARE.
 		TOKEN(Ident) 							\
 		TOKEN(IntLiteral) 						\
 		TOKEN(FloatLiteral) 					\
+		TOKEN(HexLiteral) 						\
+		TOKEN(BinaryLiteral) 					\
 		TOKEN(StringLiteral)					\
 		/* SYMBOL */ 							\
 		TOKEN(COBracket) 				/* { */ \
@@ -49,15 +51,18 @@ THE SOFTWARE.
 		TOKEN(Colon)					/* : */ \
 		TOKEN(Semicolon)				/* ; */ \
 		TOKEN(Assign) 					/* = */	\
+		TOKEN(EPoint)					/* ! */ \
+		TOKEN(Sharp)					/* # */ \
+		TOKEN(Tilde)					/* ~ */ \
+		TOKEN(At)						/* @ */ \
 		TOKEN(Plus)						/* + */ \
 		TOKEN(Minus)					/* - */ \
 		TOKEN(Mul)						/* * */ \
 		TOKEN(Div)						/* / */ \
 		TOKEN(Mod) 						/* % */ \
-		TOKEN(EPoint)					/* ! */ \
-		TOKEN(Sharp)					/* # */ \
-		TOKEN(Tilde)					/* ~ */ \
 		TOKEN(DblColon)				   /* :: */ \
+		TOKEN(DotDot)				   /* .. */ \
+		TOKEN(Shebang)				   /* #! */ \
 		TOKEN(Equal)				   /* == */ \
 		TOKEN(NEqual)				   /* != */ \
 		TOKEN(PlusAssign)			   /* += */ \
@@ -65,9 +70,13 @@ THE SOFTWARE.
 		TOKEN(MulAssign)			   /* *= */ \
 		TOKEN(DivAssign)			   /* /= */ \
 		TOKEN(ModAssign)			   /* %= */ \
+		TOKEN(TildeAssign)			   /* ~= */ \
+		TOKEN(TripleDot)			  /* ... */ \
 		/* KEYWORDS DECLARATION */ 				\
 		TOKEN(KwPackage)						\
 		TOKEN(KwObj)							\
+		TOKEN(KwTrait)							\
+		TOKEN(KwType)							\
 		TOKEN(KwDef) 							\
 		TOKEN(KwVar) 							\
 		TOKEN(KwLet) 							\

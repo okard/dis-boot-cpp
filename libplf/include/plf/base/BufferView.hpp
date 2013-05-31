@@ -27,8 +27,9 @@ THE SOFTWARE.
 
 #include "Buffer.hpp"
 
-//TODO Create a more generic interface for MMAP IO?
-//TODO interface for encoding?
+//TODO Create a more generic interface for MMAP IO? 
+//TODO Create a IBuffer object for that?
+//TODO interface for encoding? UnicodeBufferView? converts current encoding and buffer to the right unicode type
 
 namespace plf {
 

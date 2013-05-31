@@ -89,6 +89,9 @@ enum class NodeKind : unsigned short
 	CallExpr,
 	
 	CTCallExpr, //compile time call expression $$name()
+	
+	
+	Error		//custom type for handling errors
 };	
 
 /**
@@ -108,9 +111,7 @@ public:
 	/**
 	* Return Node Type
 	*/
-	inline NodeKind Kind() const { return kind_; }
-	
-	//virtual print(Stream)
+	inline NodeKind kind() const { return kind_; }
 	
 	/**
 	* The Visitor Function
@@ -120,8 +121,25 @@ public:
 	/**
 	* using for visitor return?
 	*/
-	operator NodePtr () { return shared_from_this(); }
+	inline operator NodePtr () { return shared_from_this(); }
 	
+	/**
+	* Cast helper
+	*/
+	template<class T>
+	SharedPtr<T> to()
+	{
+		return std::static_pointer_cast<T>(shared_from_this());
+	}
+	
+	template<class T, typename... Args>
+	static SharedPtr<T> create(Args... args)
+	{
+		return std::make_shared<T>(args...);
+	}	
+	
+public:
+	NodePtr parent;
 };
 	
 	

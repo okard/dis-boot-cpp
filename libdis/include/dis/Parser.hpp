@@ -39,6 +39,9 @@ class Parser
 {
 private:
 	Lexer& lexer_;
+	Token tok_;
+	
+	//TODO Tokenstack?
 	
 public:
 
@@ -48,13 +51,36 @@ public:
 
 	plf::NodePtr parse();
 
-	plf::DeclPtr parseDeclaration();
+
+private:
+	////////////////////////////////////////////////////////////////////
+	// Declaration
 	
+	plf::NodePtr parseDeclaration();
+	
+	plf::NodePtr parsePackage();
+	plf::NodePtr parseFunction();
+	plf::NodePtr parseVariable();
+
+	
+	////////////////////////////////////////////////////////////////////
+	// Statements
 	plf::StmtPtr parseStatement();
 	
+	//parseForLoop
+	//parseWhileLoop
+	//parseDoWhile
+	
+	////////////////////////////////////////////////////////////////////
+	// Expressions
 	plf::ExprPtr parseExpression();
 	
+	//parse
 	
+	//parseDataType
+	
+	
+	void next();
 };
 
 

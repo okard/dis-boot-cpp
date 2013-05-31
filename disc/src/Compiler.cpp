@@ -89,3 +89,17 @@ void Compiler::testLex(const char* filename)
 	}
 	while(tok.id != TokenId::Eof);
 }
+
+
+void Compiler::testParser(const char* filename)
+{
+	auto src = std::make_shared<SourceFile>();
+	src->open(filename);
+	
+	Lexer lexer;
+	Parser parser(lexer);
+	lexer.open(src);
+	
+	auto n = parser.parse();
+	
+}

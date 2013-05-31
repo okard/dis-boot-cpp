@@ -50,7 +50,7 @@ public:
 	
 	void alloc(size_t size);
 	
-	void insert(const byte* ptr, size_t size);
+	size_t insert(const byte* ptr, size_t size);
 	
 	inline byte* operator[] (size_t offset) { return &buffer_[offset]; }
 	

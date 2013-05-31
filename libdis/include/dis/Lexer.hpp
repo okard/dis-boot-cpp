@@ -48,7 +48,7 @@ private:
 	//ring buffer?
 	std::deque<Token> toklist_;
 	
-	//bool doc_comment_enabled;
+	bool doc_comment_enabled; //parse doc comments
 
 public:
 	Lexer();

@@ -72,7 +72,11 @@ class TypeDecl : public Declaration
 class PackageDecl final : public TypeDecl
 {
 public:
+	static const NodeKind Kind = NodeKind::PackageDecl;
+
 	DeclList Decls;
+	
+	//symbol table mangled names
 	
 	NodePtr accept(Visitor& v, ParamPtr& arg) { return v.visit(*this, arg); }
 };
@@ -80,14 +84,25 @@ public:
 
 //import decl?
 
-class ClassDecl : public Declaration
+/** 
+* Class Declaration
+*/
+class ClassDecl final : public Declaration
 {
+public:
+	DeclList Decls;
+	//InstanceList
 };
+
 //trait
 
 //function
+
 //struct
+
 //enum
+
+//type
 //alias
 
 

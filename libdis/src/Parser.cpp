@@ -23,7 +23,27 @@ THE SOFTWARE.
 */
 #include <dis/Parser.hpp>
 
+#include <plf/ast/Declaration.hpp>
+#include <plf/ast/Statement.hpp>
+#include <plf/ast/Expression.hpp>
+
 using namespace dis;
+using namespace plf;
+
+/**
+* Error Result from parsing function
+*/
+class ErrorNode : public Node
+{
+public:
+	ErrorNode() : Node(NodeKind::Error)
+	{}
+	
+	//Location
+	//Message
+	//Token?
+};
+
 
 
 Parser::Parser(Lexer& lex)
@@ -36,3 +56,87 @@ Parser::~Parser()
 {
 }
 
+NodePtr Parser::parse()
+{
+	next();
+	
+	switch(tok_.id)
+	{
+		case TokenId::KwPackage:
+		case TokenId::KwDef:
+			return parseDeclaration();
+			break;
+	}
+}
+
+NodePtr Parser::parseDeclaration()
+{
+	//flags (public,private,protected) pub priv prot
+	
+	switch(tok_.id)
+	{	
+		case TokenId::KwPackage: 
+			break;
+		case TokenId::KwDef: 
+			break;
+		case TokenId::KwTrait: 
+			break;
+		case TokenId::KwType: 
+			break;
+		case TokenId::KwObj: 
+			break;
+		case TokenId::KwVar: 
+			break;
+		case TokenId::KwLet: 
+			break;
+	
+		default:
+			return std::make_shared<ErrorNode>();
+	}
+	
+}
+
+plf::NodePtr Parser::parsePackage()
+{
+	//assert(tok.id == TokenId::KwPackage);
+	
+	//auto pkg = std::make_shared<PackageDecl>();
+	auto pkg = Node::create<PackageDecl>();
+	
+	//PackageDecl
+	
+	NodePtr decl;
+	while((decl = parseDeclaration())->kind() != NodeKind::Error)
+	{
+		decl->parent = pkg;
+		pkg->Decls.push_back(decl->to<Declaration>());
+	}
+	
+	return pkg;
+}
+
+plf::NodePtr Parser::parseFunction()
+{
+	
+}
+
+plf::NodePtr Parser::parseVariable()
+{
+	
+}
+
+
+StmtPtr Parser::parseStatement()
+{
+	
+}
+
+ExprPtr Parser::parseExpression()
+{
+	
+}
+
+void Parser::next()
+{
+	tok_ = lexer_.next();
+}

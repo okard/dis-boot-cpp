@@ -33,6 +33,7 @@ using namespace dis;
 ////////////////////////
 // Helper
 
+/// Is a whitespace character
 inline bool isWhitespace(char c)
 {
 	switch(c)
@@ -47,6 +48,7 @@ inline bool isWhitespace(char c)
 	}
 }
 
+///is c a alpha character
 inline bool isAlpha(char c) 
 {
 	return (c >= 'a' && c <= 'z')
@@ -54,9 +56,24 @@ inline bool isAlpha(char c)
 		|| c == '_';
 }
 
+//is c a numeric character
 inline bool isNumeric(char c)
 {
 	return (c >= '0' && c <= '9');
+}
+
+///is c a binary character
+inline bool isBin(char c)
+{
+	return(c == '0' || c == '1');
+}
+
+///is c a hex character
+inline bool isHex(char c)
+{
+return (c >= 'a' && c <= 'f')
+		|| (c >= 'A' && c <= 'F')
+		|| (c >= '0' && c <= '9');
 }
 
 inline void checkKeyword(Token& tok);
@@ -155,14 +172,16 @@ void  Lexer::lexToken(Token& tok)
 		case ':': tok.id = TokenId::Colon; bufv_.next<char>(); break;
 		case ';': tok.id = TokenId::Semicolon; bufv_.next<char>(); break;
 		case '=': tok.id = TokenId::Assign; bufv_.next<char>(); break;
+		case '@': tok.id = TokenId::At; bufv_.next<char>(); break;
 		case '!': tok.id = TokenId::EPoint; bufv_.next<char>(); break;
+		case '#': tok.id = TokenId::Sharp; bufv_.next<char>(); break;
+		case '~': tok.id = TokenId::Tilde; bufv_.next<char>(); break;
 		case '+': tok.id = TokenId::Plus; bufv_.next<char>(); break;
 		case '-': tok.id = TokenId::Minus; bufv_.next<char>(); break;
 		case '*': tok.id = TokenId::Mul; bufv_.next<char>(); break;
 		case '/': tok.id = TokenId::Div; bufv_.next<char>(); break;
 		case '%': tok.id = TokenId::Mod; bufv_.next<char>(); break;
-		case '#': tok.id = TokenId::Sharp; bufv_.next<char>(); break;
-		case '~': tok.id = TokenId::Tilde; bufv_.next<char>(); break;
+
 		
 		default: 
 			//error unkown char
@@ -178,10 +197,16 @@ void  Lexer::lexToken(Token& tok)
 		return;
 	}
 	
+	//TODO /* */ comments
+	
+	//TODO /** */ and /// doc comments
+	
 	//check double token
 	switch(tok.id)
 	{
 		case TokenId::DblColon: checkForChar(tok, ':', TokenId::DblColon); break;
+		case TokenId::Dot: checkForChar(tok, '.', TokenId::DotDot); break;
+		case TokenId::Sharp: checkForChar(tok, '!', TokenId::Shebang); break;
 		case TokenId::EPoint: checkForChar(tok, '=', TokenId::NEqual); break;
 		case TokenId::Assign: checkForChar(tok, '=', TokenId::Equal); break;
 		case TokenId::Plus: checkForChar(tok, '=', TokenId::PlusAssign); break;
@@ -189,9 +214,14 @@ void  Lexer::lexToken(Token& tok)
 		case TokenId::Mul: checkForChar(tok, '=', TokenId::MulAssign); break;
 		case TokenId::Div: checkForChar(tok, '=', TokenId::DivAssign); break;
 		case TokenId::Mod: checkForChar(tok, '=', TokenId::ModAssign); break;
+		case TokenId::Tilde: checkForChar(tok, '=', TokenId::TildeAssign); break;
 	}
 	
 	//check triple token
+	switch(tok.id)
+	{
+		case TokenId::DotDot: checkForChar(tok, '.', TokenId::TripleDot); break;
+	}
 }
 
 
@@ -200,7 +230,7 @@ void Lexer::lexId(Token& tok)
 	tok.id = TokenId::Ident;
 	
 	int i;
-	for(i = 0; isAlpha(bufv_.peek<char>(i)); i++); //check for eob
+	for(i = 0; isAlpha(bufv_.peek<char>(i)); i++); //TODO check for eob
 	
 	//read bufv_.ptr() size i into token
 	//std::string str(bufv_.ptr(), i);
@@ -219,6 +249,43 @@ void Lexer::lexId(Token& tok)
 void Lexer::lexNumber(Token& tok)
 {
 	tok.id = TokenId::IntLiteral;
+	
+	//binary
+	if(bufv_.current<char>() == '0' 
+	&& bufv_.peek<char>(1) == 'b')
+	{
+		tok.id = TokenId::BinaryLiteral;
+		bufv_.next<char>(); //now b
+		bufv_.next<char>(); //now first digit
+		
+		int i;
+		for(i = 0; isBin(bufv_.current<char>()); i++); //TODO check for eob
+		tok.buffer = std::make_shared<plf::Buffer>(i);
+		tok.buffer->insert(bufv_.ptr(), i);
+		return;
+	}
+	
+	//hex
+	if(bufv_.current<char>() == '0' 
+	&& bufv_.peek<char>(1) == 'x')
+	{
+		tok.id = TokenId::HexLiteral;
+		bufv_.next<char>(); //now x
+		bufv_.next<char>(); //now first digit
+		
+		int i;
+		for(i = 0; isHex(bufv_.current<char>()); i++); //TODO check for eob
+		tok.buffer = std::make_shared<plf::Buffer>(i);
+		tok.buffer->insert(bufv_.ptr(), i);
+		return;
+	}
+	
+	//normal number
+	//dot == double
+	//only one dot allowed
+	//if dot and ends with .f or .{num}f
+	
+	
 	bufv_.next<char>(); 
 }
 
@@ -229,7 +296,7 @@ void Lexer::lexString(Token& tok)
 	
 	bufv_.next<char>(); //skip "
 	int i;
-	for(i = 0; bufv_.peek<char>(i) != '"'; i++); //check for eob
+	for(i = 0; bufv_.peek<char>(i) != '"'; i++); //TODO check for eob
 	
 	//std::string str(bufv_.ptr(), i);
 	//std::cout << "Lex string: " << str << std::endl;
@@ -264,12 +331,19 @@ inline bool chkKw(const Token& tok, const char* kw)
 
 inline void checkKeyword(Token& tok)
 {
-	if(chkKw(tok, "def"))
-	{
-		tok.id = TokenId::KwDef;
-	}
-	else if(chkKw(tok, "package"))
-	{
-		tok.id = TokenId::KwPackage;
-	}
+	if(chkKw(tok, "package")) { tok.id = TokenId::KwPackage; }
+	else if(chkKw(tok, "def")) { tok.id = TokenId::KwDef; }
+	else if(chkKw(tok, "obj")) { tok.id = TokenId::KwObj; }
+	else if(chkKw(tok, "trait")) { tok.id = TokenId::KwTrait; }
+	else if(chkKw(tok, "type")) { tok.id = TokenId::KwType; }
+	else if(chkKw(tok, "var")) { tok.id = TokenId::KwVar; }
+	else if(chkKw(tok, "let")) { tok.id = TokenId::KwLet; }
+	else if(chkKw(tok, "const")) { tok.id = TokenId::KwConst; }
+	else if(chkKw(tok, "if")) { tok.id = TokenId::KwIf; }
+	else if(chkKw(tok, "else")) { tok.id = TokenId::KwElse; }
+	else if(chkKw(tok, "for")) { tok.id = TokenId::KwFor; }
+	else if(chkKw(tok, "while")) { tok.id = TokenId::KwWhile; }
+	else if(chkKw(tok, "true")) { tok.id = TokenId::KwTrue; }
+	else if(chkKw(tok, "false")) { tok.id = TokenId::KwFalse; }
+	else if(chkKw(tok, "null")) { tok.id = TokenId::KwNull; }
 }

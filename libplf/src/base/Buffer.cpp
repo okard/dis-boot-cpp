@@ -58,12 +58,15 @@ void Buffer::alloc(size_t size)
 	size_ = size;
 }
 
-void Buffer::insert(const byte* ptr, size_t size)
+size_t Buffer::insert(const byte* ptr, size_t size)
 {
-	if(buffer_ && size <= size_)
-	{
-		memcpy(buffer_, ptr, size);
-	}
+	//TODO wrap?
+	if(!buffer_)
+		return 0;
+	
+	size = size > size_ ? size_ : size;
+	memcpy(buffer_, ptr, size);
+	return size;
 }
 
 
