@@ -65,6 +65,10 @@ enum class BinaryOperator
 	Equal,
 	NotEqual,
 	Assign,
+	Gt, 	//GreaterThan
+	Lt, 	//LessThan
+	Gte, 	//GreaterThan or Equals 
+	Lte 	// LessThan or Equals
 };
 
 class BinaryExpr : public Expression

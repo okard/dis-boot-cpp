@@ -60,9 +60,14 @@ THE SOFTWARE.
 		TOKEN(Mul)						/* * */ \
 		TOKEN(Div)						/* / */ \
 		TOKEN(Mod) 						/* % */ \
+		TOKEN(Less)					    /* < */ \
+		TOKEN(Greater)                  /* > */ \
+		TOKEN(And)						/* & */ \
+		TOKEN(Or)						/* | */ \
 		TOKEN(DblColon)				   /* :: */ \
 		TOKEN(DotDot)				   /* .. */ \
 		TOKEN(Shebang)				   /* #! */ \
+		TOKEN(TildeAssign)			   /* ~= */ \
 		TOKEN(Equal)				   /* == */ \
 		TOKEN(NEqual)				   /* != */ \
 		TOKEN(PlusAssign)			   /* += */ \
@@ -70,7 +75,11 @@ THE SOFTWARE.
 		TOKEN(MulAssign)			   /* *= */ \
 		TOKEN(DivAssign)			   /* /= */ \
 		TOKEN(ModAssign)			   /* %= */ \
-		TOKEN(TildeAssign)			   /* ~= */ \
+		TOKEN(GTE)					   /* >= */ \
+		TOKEN(LTE)					   /* <= */ \
+		TOKEN(LAnd)					   /* && */ \
+		TOKEN(LOr)					   /* || */ \
+		TOKEN(Lambda)				   /* -> */ \
 		TOKEN(TripleDot)			  /* ... */ \
 		/* KEYWORDS DECLARATION */ 				\
 		TOKEN(KwPackage)						\

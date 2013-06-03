@@ -37,6 +37,7 @@ class Visitor;
 
 class Node;
 typedef SharedPtr<Node> NodePtr;
+typedef WeakPtr<Node> WNodePtr;
 typedef List<NodePtr> NodeList;
 
 class Declaration;
@@ -139,7 +140,7 @@ public:
 	}	
 	
 public:
-	NodePtr parent;
+	WNodePtr parent;
 };
 	
 	

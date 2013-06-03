@@ -36,12 +36,22 @@ using namespace plf;
 class ErrorNode : public Node
 {
 public:
-	ErrorNode() : Node(NodeKind::Error)
+	ErrorNode() 
+		: Node(NodeKind::Error)
 	{}
 	
+	ErrorNode(bool eof) 
+		: Node(NodeKind::Error), eof(eof)
+	{}
+	
+	bool eof = false;
+	//EOF
 	//Location
 	//Message
 	//Token?
+	//type? Decl/Stmt/Expr/Type
+	
+	//print function?
 };
 
 
@@ -58,17 +68,23 @@ Parser::~Parser()
 
 NodePtr Parser::parse()
 {
-	next();
+	next(); //initial token
 	
 	switch(tok_.id)
 	{
+		//decl
 		case TokenId::KwPackage:
 		case TokenId::KwDef:
 			return parseDeclaration();
 			break;
+		//stmt
+		//expr
 	}
 }
 
+/*
+* parse all declarations
+*/
 NodePtr Parser::parseDeclaration()
 {
 	//flags (public,private,protected) pub priv prot
@@ -78,7 +94,7 @@ NodePtr Parser::parseDeclaration()
 		case TokenId::KwPackage: 
 			break;
 		case TokenId::KwDef: 
-			break;
+			return parseFunction();
 		case TokenId::KwTrait: 
 			break;
 		case TokenId::KwType: 
@@ -86,16 +102,21 @@ NodePtr Parser::parseDeclaration()
 		case TokenId::KwObj: 
 			break;
 		case TokenId::KwVar: 
-			break;
+			return parseVariable();
 		case TokenId::KwLet: 
 			break;
 	
+		case TokenId::Eof:
+			return Node::create<ErrorNode>(true);
 		default:
-			return std::make_shared<ErrorNode>();
+			return Node::create<ErrorNode>();
 	}
 	
 }
 
+/*
+* package a.b.c;
+*/
 plf::NodePtr Parser::parsePackage()
 {
 	//assert(tok.id == TokenId::KwPackage);
@@ -115,11 +136,17 @@ plf::NodePtr Parser::parsePackage()
 	return pkg;
 }
 
+/*
+* def name() : rettype body
+*/
 plf::NodePtr Parser::parseFunction()
 {
 	
 }
 
+/*
+* var name : type = init;
+*/
 plf::NodePtr Parser::parseVariable()
 {
 	
@@ -128,13 +155,40 @@ plf::NodePtr Parser::parseVariable()
 
 StmtPtr Parser::parseStatement()
 {
-	
+	switch(tok_.id)
+	{
+		case TokenId::KwIf:
+			break;
+		case TokenId::KwFor:
+			break;
+		case TokenId::KwWhile:
+			break;
+			
+		//decl statments
+		//expr statements
+	}
 }
+
 
 ExprPtr Parser::parseExpression()
 {
 	
 }
+
+/**
+* : id
+* : id[]
+* : @datatype
+* : &datatype
+* : ~datatype
+* : [] 
+*/
+plf::NodePtr Parser::parseDataType()
+{
+	
+}
+
+
 
 void Parser::next()
 {

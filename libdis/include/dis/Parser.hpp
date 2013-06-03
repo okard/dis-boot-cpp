@@ -61,7 +61,10 @@ private:
 	plf::NodePtr parsePackage();
 	plf::NodePtr parseFunction();
 	plf::NodePtr parseVariable();
-
+	
+	//class
+	//trait
+	//
 	
 	////////////////////////////////////////////////////////////////////
 	// Statements
@@ -69,17 +72,24 @@ private:
 	
 	//parseForLoop
 	//parseWhileLoop
-	//parseDoWhile
+	//parseDoWhileLoop
+	//parseIfStatement
+	//parseSwitchStatement
 	
 	////////////////////////////////////////////////////////////////////
 	// Expressions
 	plf::ExprPtr parseExpression();
 	
 	//parse
+	//parseIfExpression()
+	//parseSwitchExpression()
 	
-	//parseDataType
+	////////////////////////////////////////////////////////////////////
+	// DataType
+	plf::NodePtr parseDataType();
 	
-	
+	////////////////////////////////////////////////////////////////////
+	// Utils
 	void next();
 };
 

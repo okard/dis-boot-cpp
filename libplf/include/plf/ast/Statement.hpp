@@ -33,7 +33,7 @@ class Statement : public Node
 {
 };
 
-//ScopeStmt all statements with seperate scope
+//ScopeStmt all statements with seperate scope (for/while/dowhile/if/switch)
 //BlockStmt : ScopeStatement
 
 /**

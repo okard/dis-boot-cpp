@@ -173,6 +173,8 @@ void  Lexer::lexToken(Token& tok)
 		case ';': tok.id = TokenId::Semicolon; bufv_.next<char>(); break;
 		case '=': tok.id = TokenId::Assign; bufv_.next<char>(); break;
 		case '@': tok.id = TokenId::At; bufv_.next<char>(); break;
+		case '&': tok.id = TokenId::And; bufv_.next<char>(); break;
+		case '|': tok.id = TokenId::Or; bufv_.next<char>(); break;
 		case '!': tok.id = TokenId::EPoint; bufv_.next<char>(); break;
 		case '#': tok.id = TokenId::Sharp; bufv_.next<char>(); break;
 		case '~': tok.id = TokenId::Tilde; bufv_.next<char>(); break;
@@ -181,6 +183,9 @@ void  Lexer::lexToken(Token& tok)
 		case '*': tok.id = TokenId::Mul; bufv_.next<char>(); break;
 		case '/': tok.id = TokenId::Div; bufv_.next<char>(); break;
 		case '%': tok.id = TokenId::Mod; bufv_.next<char>(); break;
+		case '<': tok.id = TokenId::Less; bufv_.next<char>(); break;
+		case '>': tok.id = TokenId::Greater; bufv_.next<char>(); break;
+		
 
 		
 		default: 
@@ -210,11 +215,17 @@ void  Lexer::lexToken(Token& tok)
 		case TokenId::EPoint: checkForChar(tok, '=', TokenId::NEqual); break;
 		case TokenId::Assign: checkForChar(tok, '=', TokenId::Equal); break;
 		case TokenId::Plus: checkForChar(tok, '=', TokenId::PlusAssign); break;
-		case TokenId::Minus: checkForChar(tok, '=', TokenId::MinusAssign); break;
+		case TokenId::Minus: checkForChar(tok, '=', TokenId::MinusAssign); 
+							 checkForChar(tok, '>', TokenId::Lambda);
+							 break;
 		case TokenId::Mul: checkForChar(tok, '=', TokenId::MulAssign); break;
 		case TokenId::Div: checkForChar(tok, '=', TokenId::DivAssign); break;
 		case TokenId::Mod: checkForChar(tok, '=', TokenId::ModAssign); break;
 		case TokenId::Tilde: checkForChar(tok, '=', TokenId::TildeAssign); break;
+		case TokenId::Less: checkForChar(tok, '=', TokenId::LTE); break;
+		case TokenId::Greater: checkForChar(tok, '=', TokenId::GTE); break;
+		case TokenId::And: checkForChar(tok, '&', TokenId::LAnd); break;
+		case TokenId::Or: checkForChar(tok, '|', TokenId::LOr); break;
 	}
 	
 	//check triple token
@@ -262,6 +273,8 @@ void Lexer::lexNumber(Token& tok)
 		for(i = 0; isBin(bufv_.current<char>()); i++); //TODO check for eob
 		tok.buffer = std::make_shared<plf::Buffer>(i);
 		tok.buffer->insert(bufv_.ptr(), i);
+		//skip over
+		bufv_.set(i + bufv_.pos());
 		return;
 	}
 	
@@ -277,6 +290,8 @@ void Lexer::lexNumber(Token& tok)
 		for(i = 0; isHex(bufv_.current<char>()); i++); //TODO check for eob
 		tok.buffer = std::make_shared<plf::Buffer>(i);
 		tok.buffer->insert(bufv_.ptr(), i);
+		//skip over
+		bufv_.set(i + bufv_.pos());
 		return;
 	}
 	
