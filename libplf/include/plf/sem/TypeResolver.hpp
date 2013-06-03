@@ -21,45 +21,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <plf/base/SourceFile.hpp>
+#pragma once
+#ifndef __PLF_TYPERESOLVER_HPP__
+#define __PLF_TYPERESOLVER_HPP__
 
-#include <plf/base/BufferView.hpp>
+#include <plf/ast/Visitor.hpp>
 
-using namespace plf;
+namespace plf {
 
-
-void SourceFile::open(const char* filename)
+/**
+* Semantic Pass to resolve types
+*/
+class TypeResolver : public Visitor
 {
-	size_ = 0;
-	filestream_.open(filename, std::ifstream::in);
+};	
 	
-	if(filestream_) 
-	{
-		// get length of file:
-		filestream_.seekg (0, filestream_.end);
-		size_ = filestream_.tellg();
-		filestream_.seekg (0, filestream_.beg);
-	}
 }
-
-size_t SourceFile::read(BufferView& buf, size_t size)
-{
-	//TODO get position of BufferView
-	
-	if( (buf.buffer().size() - buf.pos()) < size)
-		size = buf.buffer().size() - buf.pos();
-	
-	//check for size
-	//try to read
-	//set end
-	
-	if(filestream_)
-	{
-		filestream_.read(buf.ptr(), size);
-		auto bytesRead = filestream_.gcount();
-		buf.setEnd(bytesRead+buf.pos());
-		return bytesRead;
-	}
-	
-	return 0;
-}
+#endif 

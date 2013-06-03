@@ -23,6 +23,8 @@ THE SOFTWARE.
 */
 #include <dis/Parser.hpp>
 
+#include <cassert>
+
 #include <plf/ast/Declaration.hpp>
 #include <plf/ast/Statement.hpp>
 #include <plf/ast/Expression.hpp>
@@ -89,10 +91,15 @@ NodePtr Parser::parseDeclaration()
 {
 	//flags (public,private,protected) pub priv prot
 	
+	//DeclFlags flags
+	//parseDeclFlags(flags); //parseDeclFlags(DeclFlags&);
+	
+	//assign flags before
+	
 	switch(tok_.id)
 	{	
 		case TokenId::KwPackage: 
-			break;
+			return parsePackage();
 		case TokenId::KwDef: 
 			return parseFunction();
 		case TokenId::KwTrait: 
@@ -119,7 +126,7 @@ NodePtr Parser::parseDeclaration()
 */
 plf::NodePtr Parser::parsePackage()
 {
-	//assert(tok.id == TokenId::KwPackage);
+	assert(tok_.id == TokenId::KwPackage);
 	
 	//auto pkg = std::make_shared<PackageDecl>();
 	auto pkg = Node::create<PackageDecl>();
@@ -130,10 +137,16 @@ plf::NodePtr Parser::parsePackage()
 	while((decl = parseDeclaration())->kind() != NodeKind::Error)
 	{
 		decl->parent = pkg;
-		pkg->Decls.push_back(decl->to<Declaration>());
+		pkg->decls.push_back(decl->to<Declaration>());
 	}
 	
 	return pkg;
+}
+
+
+plf::NodePtr Parser::parseImport()
+{
+	assert(tok_.id == TokenId::KwImport);
 }
 
 /*
@@ -164,9 +177,12 @@ StmtPtr Parser::parseStatement()
 		case TokenId::KwWhile:
 			break;
 			
+		//case TokenId::COBracket: parseBlockStmt(); 
 		//decl statments
 		//expr statements
 	}
+	
+	//if ; parseStatment if no error return block stmt?
 }
 
 

@@ -36,13 +36,23 @@ class Attribute : public Node
 {
 };
 
-/*
-Builtin: abi (C, stdcall, etc)  calling convention
-         test		 			unit testing
-         
+/**
+* define ABI for functions etc
+* C, stdcall, fastcall
 */
+class AbiAttribute : public Node
+{
+	
+};
 
+/**
+* Test ABI
+*/
+class TestAttribute : public Node
+{
+};
 
+//CustomAttribute
 
 	
 } //end namespace plf

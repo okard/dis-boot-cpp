@@ -53,7 +53,7 @@ class Declaration : public Node
 private:
 
 public:
-	DeclFlags Flags;
+	DeclFlags flags;
 	
 	//isTypeDecl
 	//isInstanceDecl
@@ -62,6 +62,9 @@ public:
 	//operator DeclPtr () { return std::static_pointer_cast<Declaration>(shared_from_this()); }
 };
 
+/**
+* All declaration which defines new types
+*/
 class TypeDecl : public Declaration
 {
 };
@@ -74,13 +77,12 @@ class PackageDecl final : public TypeDecl
 public:
 	static const NodeKind Kind = NodeKind::PackageDecl;
 
-	DeclList Decls;
+	DeclList decls;
 	
 	//symbol table mangled names
 	
-	NodePtr accept(Visitor& v, ParamPtr& arg) { return v.visit(*this, arg); }
+	NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 };
-
 
 //import decl?
 
@@ -90,8 +92,13 @@ public:
 class ClassDecl final : public Declaration
 {
 public:
-	DeclList Decls;
+	static const NodeKind Kind = NodeKind::ClassDecl;
+
+	DeclList decls;
 	//InstanceList
+	
+	
+	NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 };
 
 //trait
@@ -103,14 +110,30 @@ public:
 //enum
 
 //type
+
 //alias
 
-
+/**
+* All declarations which creates an instance of a type
+*/
 class InstanceDecl : public Declaration
 {
 };
 
-//var
+/**
+* 
+*/
+class VariableDecl : public InstanceDecl
+{
+public:
+	static const NodeKind Kind = NodeKind::VariableDecl;
+	
+	//id BufferPtr
+	TypePtr type;
+	ExprPtr init;
+};
+
+
 //val
 //const
 

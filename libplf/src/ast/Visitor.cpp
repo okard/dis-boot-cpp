@@ -35,11 +35,11 @@ NodePtr Visitor::visit(PackageDecl& n, ParamPtr& arg)
 {
 	for (int i=0; i < n.Decl.size(); i++) 
 	{
-		n.Decl[i] = std::static_pointer_cast<Declaration>(n.Decl[i].accept(*this, arg)); 
+		n.Decl[i] = n.Decl[i].accept(*this, arg)->to<Declaration>; 
 	}
 	
-	// DeclPtr d = std::make_shared<Declaration>(new Declaration());
-	// return std::static_pointer_cast<Node>(d);
+	// DeclPtr d = Node::create<Declaration>(new Declaration());
+	// return Node::create<Node>(d);
 	 
 	return n;
 }

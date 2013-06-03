@@ -29,6 +29,8 @@ THE SOFTWARE.
 
 namespace plf {
 
+//TODO necessary to inherit from Node?
+
 /**
 * Represents a Datatype
 */
@@ -41,14 +43,28 @@ public:
 };
 
 /**
+* Unkown Type
+*/
+class UnkownType : public Type
+{
+public:
+	UnkownType& getInstance();
+};
+
+/**
 * Primary Number Types
 */
 class PrimaryType : public Type
 {
-	//size
-	//name
+public:
+	const size_t size;
+	const char* name;
+	const bool signedT;
+	
+	//floating point?
+	
+	PrimaryType(size_t size, const char* name, bool signedT);
 };
-
 
 
 extern PrimaryType typeInt32;
@@ -57,6 +73,11 @@ extern PrimaryType typeUInt32;
 
 //cpp: PrimaryType typeInt32(4, "Int32");
 
+class DeclType : public Type
+{
+public:
+	DeclPtr decl;
+};
 
 //path type
 //constraint type

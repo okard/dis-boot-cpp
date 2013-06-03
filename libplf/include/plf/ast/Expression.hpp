@@ -26,13 +26,16 @@ THE SOFTWARE.
 #define __PLF_EXPRESSION_HPP__
 
 #include <plf/ast/Node.hpp>
+#include <plf/ast/Type.hpp>
 
 namespace plf {
 	
 class Expression : public Node
 {
 public:
-	//return type
+	TypePtr returnType;
+	
+	//constant expression
 };
 
 
@@ -46,12 +49,15 @@ enum class UnaryOperator
 	PreDecr
 };
 
+/**
+* Unary Expression
+*/
 class UnaryExpr : public Expression
 {
 
 public:
-	UnaryOperator Op;
-	ExprPtr Expr;
+	UnaryOperator op;
+	ExprPtr expr;
 	
 };
 
@@ -71,12 +77,15 @@ enum class BinaryOperator
 	Lte 	// LessThan or Equals
 };
 
+/**
+* Binary Expression
+*/
 class BinaryExpr : public Expression
 {
 public:
-	BinaryOperator Op;
-	ExprPtr Left;
-	ExprPtr Right;
+	BinaryOperator op;
+	ExprPtr left;
+	ExprPtr right;
 };
 
 

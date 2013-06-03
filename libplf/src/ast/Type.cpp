@@ -21,45 +21,34 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <plf/base/SourceFile.hpp>
-
-#include <plf/base/BufferView.hpp>
+#include <plf/ast/Type.hpp>
 
 using namespace plf;
 
 
-void SourceFile::open(const char* filename)
+
+
+
+PrimaryType::PrimaryType(size_t size, const char* name, bool signedT)
+	: size(size), name(name), signedT(signedT)
 {
-	size_ = 0;
-	filestream_.open(filename, std::ifstream::in);
-	
-	if(filestream_) 
-	{
-		// get length of file:
-		filestream_.seekg (0, filestream_.end);
-		size_ = filestream_.tellg();
-		filestream_.seekg (0, filestream_.beg);
-	}
 }
 
-size_t SourceFile::read(BufferView& buf, size_t size)
+
+PrimaryType typeInt8(1, "int8", true);
+PrimaryType typeUInt8(1, "uint8", false);
+PrimaryType typeInt16(2, "int16", true);
+PrimaryType typeUInt16(2, "uint16", false);
+PrimaryType typeInt32(4, "int32", true);
+PrimaryType typeUInt32(4, "uint32", false);
+PrimaryType typeInt64(8, "int64", true);
+PrimaryType typeUInt64(8, "uint64", false);
+
+
+
+UnkownType& UnkownType::getInstance()
 {
-	//TODO get position of BufferView
-	
-	if( (buf.buffer().size() - buf.pos()) < size)
-		size = buf.buffer().size() - buf.pos();
-	
-	//check for size
-	//try to read
-	//set end
-	
-	if(filestream_)
-	{
-		filestream_.read(buf.ptr(), size);
-		auto bytesRead = filestream_.gcount();
-		buf.setEnd(bytesRead+buf.pos());
-		return bytesRead;
-	}
-	
-	return 0;
+	static UnkownType instance;
+	return instance;
 }
+

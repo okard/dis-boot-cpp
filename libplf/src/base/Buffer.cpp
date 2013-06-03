@@ -43,6 +43,18 @@ Buffer::Buffer(const byte* ptr)
 	insert(ptr, size_);
 }
 
+Buffer::Buffer(const byte* ptr, size_t size)
+	: size_(size), buffer_(new byte[size])
+{
+	insert(ptr, size);
+}
+
+Buffer::Buffer(const Buffer& buf)
+	: size_(buf.size_), buffer_(new byte[buf.size_])
+{
+	insert(buf.buffer_, size_);
+}
+
 Buffer::~Buffer()
 {
 	if(buffer_)
@@ -51,6 +63,11 @@ Buffer::~Buffer()
 
 void Buffer::alloc(size_t size)
 {
+	//resize?
+	if(size_ >= size)
+		return;
+	
+	//only one allocation?
 	if(buffer_)
 		delete[] buffer_;
 	
@@ -68,5 +85,29 @@ size_t Buffer::insert(const byte* ptr, size_t size)
 	memcpy(buffer_, ptr, size);
 	return size;
 }
+
+Buffer& Buffer::operator=(const Buffer& buf)
+{
+	if(this != &buf)
+	{
+		alloc(buf.size_);
+		insert(buf.buffer_, buf.size_);
+	}
+	return *this;
+}
+
+bool Buffer::operator==(Buffer const& buf)
+{
+	if(this == &buf)
+		return true;
+	
+	return memcmp(buffer_, buf.buffer_, size_);
+}
+	
+bool Buffer::operator==(const char* str)
+{
+	return memcmp(buffer_, str, size_);
+}
+
 
 

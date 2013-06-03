@@ -51,11 +51,15 @@ typedef List<StmtPtr> StmtList;
 class Expression;
 typedef SharedPtr<Expression> ExprPtr;
 
+class Type;
+typedef SharedPtr<Type> TypePtr;
+
 /**
 * Type of Ast Nodes
 */
 enum class NodeKind : unsigned short
 {
+	Unknown,
 	//Declarations
 	PackageDecl,
 	ImportDecl,
@@ -124,6 +128,13 @@ public:
 	*/
 	inline operator NodePtr () { return shared_from_this(); }
 	
+	
+	//TODO MemoryPool for Node Allocation?
+	// void* operator new(size_t);
+    // void operator delete(void*);
+    
+    //NodePtr clone();
+	
 	/**
 	* Cast helper
 	*/
@@ -138,6 +149,7 @@ public:
 	{
 		return std::make_shared<T>(args...);
 	}	
+	
 	
 public:
 	WNodePtr parent;

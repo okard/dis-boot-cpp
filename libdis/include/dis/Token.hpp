@@ -83,6 +83,7 @@ THE SOFTWARE.
 		TOKEN(TripleDot)			  /* ... */ \
 		/* KEYWORDS DECLARATION */ 				\
 		TOKEN(KwPackage)						\
+		TOKEN(KwImport)							\
 		TOKEN(KwObj)							\
 		TOKEN(KwTrait)							\
 		TOKEN(KwType)							\

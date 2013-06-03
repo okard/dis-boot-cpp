@@ -46,11 +46,16 @@ public:
 	Buffer();
 	Buffer(size_t size);
 	Buffer(const byte* ptr);
+	Buffer(const byte* ptr, size_t size);
+	Buffer(const Buffer& buf);
 	virtual ~Buffer();
 	
 	void alloc(size_t size);
+
+	Buffer& operator=(const Buffer& buf);
 	
-	size_t insert(const byte* ptr, size_t size);
+	bool operator==(const Buffer& buf);
+	bool operator==(const char* str);
 	
 	inline byte* operator[] (size_t offset) { return &buffer_[offset]; }
 	
@@ -58,7 +63,9 @@ public:
 	inline byte* ptr() { return buffer_; }
 	inline const byte* ptr() const { return buffer_; }
 	
-	
+private:
+
+	size_t insert(const byte* ptr, size_t size);
 	
 };
 

@@ -42,27 +42,31 @@ class Statement : public Node
 class ReturnStmt : public Statement
 {
 public:
-	ExprPtr Expr;
+	ExprPtr expr;
 };
 
 /**
 * Statement for 'for' loop
+* for(init; cond; after)
 */
 class ForStmt : public Statement
 {
 public:
-	StmtPtr Init;
-	ExprPtr Cond;
-	StmtPtr After;
+	StmtPtr init;
+	ExprPtr cond;
+	StmtPtr after;
+	//stmt
 };
 
 /**
 * Statement for 'while' loop
+* while(cond) stmt
 */
 class WhileStmt : public Statement
 {
 public:
-	ExprPtr Cond;
+	ExprPtr cond;
+	//stmt
 };
 
 /**
@@ -71,7 +75,7 @@ public:
 class DeclStmt : public Statement
 {
 public:
-	DeclPtr Decl;
+	DeclPtr decl;
 };
 
 /**
@@ -80,7 +84,7 @@ public:
 class ExprStmt : public Statement
 {
 public:
-	ExprPtr Expr;
+	ExprPtr expr;
 };
 
 

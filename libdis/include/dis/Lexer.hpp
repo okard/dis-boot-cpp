@@ -50,6 +50,9 @@ private:
 	
 	bool doc_comment_enabled; //parse doc comments
 
+	size_t column_;
+	size_t line_;
+
 public:
 	Lexer();
 	~Lexer();
@@ -65,6 +68,10 @@ private:
 	void lexString(Token& tok);
 	void lexNumber(Token& tok);
 	void lexComment(Token& tok);
+	
+	inline void nextChar();
+	inline char& current();
+	inline char& peekChar(size_t n);
 	
 	inline void checkForChar(Token& tok, char c, TokenId id);
 };
