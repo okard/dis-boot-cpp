@@ -25,7 +25,10 @@ THE SOFTWARE.
 #ifndef __PLF_DECLARATION_HPP__
 #define __PLF_DECLARATION_HPP__
 
+#include <plf/base/Buffer.hpp>
+
 #include <plf/ast/Node.hpp>
+#include <plf/ast/Attribute.hpp>
 #include <plf/ast/Visitor.hpp>
 
 namespace plf {
@@ -38,10 +41,13 @@ enum class DeclFlags : unsigned char
 	Public 		= 1<<0,
 	Private  	= 1<<1,
 	Protected   = 1<<2,
+	
 	Final		= 1<<3,
 	Abstract	= 1<<4,
 	Static 		= 1<<5,
-	Const 		= 1<<6
+	Const 		= 1<<6,
+	
+	External    = 1<<7
 };
 	
 /**
@@ -49,17 +55,50 @@ enum class DeclFlags : unsigned char
 */
 class Declaration : public Node
 {
-
-private:
-
 public:
+	Declaration(const NodeKind kind) : Node(kind) {}
 	DeclFlags flags;
 	
-	//isTypeDecl
-	//isInstanceDecl
+	/// Is a type declaration or function
+	virtual bool isType() const { return false; }
+	/// is a instance declaration
+	virtual bool isInstance() const { return false; }
 
+	//quick cast required?
+	operator DeclPtr () { return to<Declaration>(); }
+};
 
-	//operator DeclPtr () { return std::static_pointer_cast<Declaration>(shared_from_this()); }
+/**
+* A package
+*/
+class PackageDecl final : public Declaration
+{
+public:
+	static const NodeKind Kind = NodeKind::PackageDecl;
+	PackageDecl() : Declaration(NodeKind::PackageDecl) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
+	//symbol table mangled names
+	
+	AttrList attribs;
+	DeclList decls;	
+	List<BufferPtr> path;
+};
+
+/**
+* Import Decl
+* import a = a.b.c;
+* import a.b.c;
+*/
+class ImportDecl final : public Declaration
+{
+public:
+	static const NodeKind Kind = NodeKind::ImportDecl;
+	ImportDecl() : Declaration(NodeKind::ImportDecl) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
+	BufferPtr ident;
+	List<BufferPtr> importPath;
 };
 
 /**
@@ -67,45 +106,53 @@ public:
 */
 class TypeDecl : public Declaration
 {
-};
-
-/**
-* A package
-*/
-class PackageDecl final : public TypeDecl
-{
 public:
-	static const NodeKind Kind = NodeKind::PackageDecl;
+	TypeDecl(const NodeKind kind) : Declaration(kind) {}
+	
+	//overloads?
+	//forwardref
 
-	DeclList decls;
-	
-	//symbol table mangled names
-	
-	NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	//attributes
+	virtual inline bool isType() const final { return true; }
+	virtual inline bool isInstance() const final { return false; }
 };
-
-//import decl?
 
 /** 
 * Class Declaration
 */
-class ClassDecl final : public Declaration
+class ClassDecl final : public TypeDecl
 {
 public:
 	static const NodeKind Kind = NodeKind::ClassDecl;
+	ClassDecl() : TypeDecl(NodeKind::ClassDecl) {}
+	NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
 
 	DeclList decls;
 	//InstanceList
-	
-	
-	NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 };
 
 //trait
+class TraitDecl final : public TypeDecl
+{
+public:
+	static const NodeKind Kind = NodeKind::TraitDecl;
+	TraitDecl() : TypeDecl(NodeKind::TraitDecl) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
+};
 
-//function
+/**
+* Struct Declaration
+*/
+class StructDecl : public TypeDecl
+{
+public:
+	static const NodeKind Kind = NodeKind::StructDecl;
+	StructDecl() : TypeDecl(NodeKind::StructDecl) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
-//struct
+};
 
 //enum
 
@@ -114,29 +161,82 @@ public:
 //alias
 
 /**
+* Function Declaration
+*/
+class FunctionDecl final : public Declaration
+{
+public:
+	static const NodeKind Kind = NodeKind::FunctionDecl;
+	FunctionDecl() : Declaration(NodeKind::FunctionDecl) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+
+	//params
+	StmtPtr body;
+	TypePtr returnType;
+	bool classFunc = false;
+	
+	//tpl
+	//nested
+	//function
+};
+
+/**
 * All declarations which creates an instance of a type
 */
 class InstanceDecl : public Declaration
 {
+public:
+	InstanceDecl(const NodeKind kind) : Declaration(kind) {}
+	
+	virtual inline bool isType() const final { return false; }
+	virtual inline bool isInstance() const final { return true; }
 };
 
 /**
 * 
 */
-class VariableDecl : public InstanceDecl
+class VariableDecl final : public InstanceDecl
 {
 public:
 	static const NodeKind Kind = NodeKind::VariableDecl;
+	VariableDecl(const NodeKind kind) : InstanceDecl(kind) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
-	//id BufferPtr
+	BufferPtr ident;
 	TypePtr type;
 	ExprPtr init;
 };
 
+/**
+* Value Decl
+*/
+class ValueDecl final : public InstanceDecl
+{
+public:
+	static const NodeKind Kind = NodeKind::ValueDecl;
+	ValueDecl(const NodeKind kind) : InstanceDecl(kind) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
-//val
-//const
+	BufferPtr ident;
+	TypePtr type;
+	ExprPtr init;
+	
+};
 
+/**
+* 
+*/
+class ConstDecl final : public InstanceDecl
+{
+public:
+	static const NodeKind Kind = NodeKind::ConstDecl;
+	ConstDecl(const NodeKind kind) : ConstDecl(kind) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
+	BufferPtr ident;
+	TypePtr type;
+	ExprPtr init;
+};
 
 
 } //end namespace plf

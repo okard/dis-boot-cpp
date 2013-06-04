@@ -24,7 +24,9 @@ THE SOFTWARE.
 
 #include <dis/Lexer.hpp>
 #include <dis/Parser.hpp>
-//#include <dis/CodeGen.hpp>
+#include <plf/gen/CodeGen.hpp>
+#include <plf/gen/Linker.hpp>
+#include <plf/gen/Target.hpp>
 
 class Compiler
 {
@@ -34,7 +36,10 @@ private:
 
 	//source files to compile
 	//save sourceid/filename here?
-	// std::map<filename, SrcPtr> 
+	// std::map<filename, SourceId> //filename to Source id
+	// std::map<SourceId, Filename> //source id to filename
+	// std::map<SourceId, NodePtr> //source id to ast
+	
 public:
 	Compiler();
 	~Compiler();
@@ -47,7 +52,9 @@ public:
 	//void compile();
 	//void link();
 	
-	//void resolveImports();
+	//TODO requires directory/path handling
+	//void resolveImports(); 
+	//void checkPaths();
 	
 	
 	void testLex(const char* filename);

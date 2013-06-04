@@ -21,27 +21,50 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <plf/ast/Node.hpp>
+#pragma once
+#ifndef __PLF_TARGET_HPP__
+#define __PLF_TARGET_HPP__
 
-#include <plf/ast/Visitor.hpp>
-
-using namespace plf;
-
-/*Node::Node()
-{
-}*/
-
-Node::Node(const NodeKind nk)
-	: kind_(nk)
-{
+namespace plf {
 	
-}
-
-Node::~Node()
+///Architecture
+enum class Arch
 {
-}
-
-NodePtr Node::accept(Visitor& v, ParamPtr& arg)
-{
-	return v.visit(*this, arg);
+	x32,
+	x64,
+	arm
 };
+
+///Platform
+enum class Platform
+{
+	Windows,
+	Linux,
+	Posix
+};
+
+enum class OutputType
+{
+	Executable,
+	StaticLibrary,
+	SharedLibrary,
+	Object
+};
+
+/**
+* Compilation Target
+*/
+struct Target
+{
+public:
+	Arch arch;
+	Platform platform;
+	OutputType otype;
+	bool debug;
+	//additional required information
+};
+	
+	
+} //end namespace plf
+
+#endif

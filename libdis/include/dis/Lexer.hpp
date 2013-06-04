@@ -62,6 +62,8 @@ public:
 	Token& next();
 	Token& peek(int num);
 	
+	//TODO Lexer hooks for inline asm
+	
 private:
 	void lexToken(Token& tok);
 	void lexId(Token& tok);

@@ -38,7 +38,7 @@ NodePtr Visitor::visit(PackageDecl& n, ParamPtr& arg)
 		n.Decl[i] = n.Decl[i].accept(*this, arg)->to<Declaration>; 
 	}
 	
-	// DeclPtr d = Node::create<Declaration>(new Declaration());
+	// DeclPtr d = Node::create<Declaration>();
 	// return Node::create<Node>(d);
 	 
 	return n;
@@ -52,7 +52,6 @@ NodePtr Visitor::visit(Node& n, ParamPtr& arg)
 	//return n.shared_from_this();
 	return n;
 }
-
 
 NodePtr Visitor::visit(Declaration& n, ParamPtr& arg)
 {

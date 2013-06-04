@@ -21,6 +21,36 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+#pragma once
+#ifndef __PLF_LINKER_HPP__
+#define __PLF_LINKER_HPP__
 
-// Combine CodeGen Files to final file
+#include <plf/gen/Target.hpp>
 
+namespace plf {
+
+/**
+* OutFile
+*/
+struct OutFile
+{
+	//filename
+	//stream?
+};
+	
+/**
+* Combine CodeGen Files (ObjectFiles) to final file
+*/
+class Linker
+{
+public:
+	///add a objectfile to current linker
+	virtual void add(const ObjectFile& o) = 0;
+	///outputs the final file
+	virtual void link(const Target& t, OutFile& f) = 0;
+};
+
+
+} //end namespace plf
+
+#endif

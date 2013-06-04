@@ -27,10 +27,8 @@ using namespace plf;
 
 
 
-
-
 PrimaryType::PrimaryType(size_t size, const char* name, bool signedT)
-	: size(size), name(name), signedT(signedT)
+	: Type(NodeKind::PrimaryType), size(size), name(name), signedT(signedT)
 {
 }
 

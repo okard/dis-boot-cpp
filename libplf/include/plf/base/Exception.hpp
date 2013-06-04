@@ -1,3 +1,4 @@
+
 /*
 Programming Language Framework (PLF)
 
@@ -21,27 +22,37 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <plf/ast/Node.hpp>
+#pragma once
+#ifndef __PLF_FORMATEXCEPTION_HPP__
+#define __PLF_FORMATEXCEPTION_HPP__
 
-#include <plf/ast/Visitor.hpp>
+#include <exception>
 
-using namespace plf;
-
-/*Node::Node()
-{
-}*/
-
-Node::Node(const NodeKind nk)
-	: kind_(nk)
-{
+namespace plf {
 	
-}
-
-Node::~Node()
+/**
+* Engine Exception
+*/
+class Exception : public std::exception
 {
-}
-
-NodePtr Node::accept(Visitor& v, ParamPtr& arg)
-{
-	return v.visit(*this, arg);
+private:
+    const char* msg_;
+    
+public:
+    /**
+    * Constructor
+    */
+    Exception(const char* msg)
+		: msg_(msg)
+	{
+	}
+    
+    /**
+    * Description
+    */
+    virtual const char* what() const throw() { return msg_; }
 };
+
+} // end namespace plf
+
+#endif

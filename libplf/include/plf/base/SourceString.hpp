@@ -21,27 +21,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <plf/ast/Node.hpp>
+#pragma once
+#ifndef __PLF_SOURCESTRING_HPP__
+#define __PLF_SOURCESTRING_HPP__
 
-#include <plf/ast/Visitor.hpp>
+#include "Source.hpp"
 
-using namespace plf;
-
-/*Node::Node()
-{
-}*/
-
-Node::Node(const NodeKind nk)
-	: kind_(nk)
-{
+namespace plf {
 	
-}
-
-Node::~Node()
+/**
+* Source in Memory
+*/
+class SourceString : public Source
 {
-}
-
-NodePtr Node::accept(Visitor& v, ParamPtr& arg)
-{
-	return v.visit(*this, arg);
+private:
+	//buffer
+public:	
 };
+	
+} //end namespace plf
+
+#endif

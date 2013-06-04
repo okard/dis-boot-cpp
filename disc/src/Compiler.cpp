@@ -31,6 +31,12 @@ THE SOFTWARE.
 using namespace plf;
 using namespace dis;
 
+/*
+ { "-parse", 1, std::function<void(argc, argv)> } 
+ rest
+*/
+
+
 Compiler::Compiler()
 	: parser_(lexer_)
 {
@@ -77,7 +83,7 @@ void Compiler::testLex(const char* filename)
 	do
 	{
 		tok = lexer.next();
-		std::cout << "Token: " << dis::toString(tok.id);
+		std::cout << "Token(" << tok.loc.line << ", " << tok.loc.column << "): " << dis::toString(tok.id);
 		switch(tok.id)
 		{
 			case TokenId::Ident: 
@@ -102,4 +108,5 @@ void Compiler::testParser(const char* filename)
 	
 	auto n = parser.parse();
 	
+	//prettyPrinter()
 }

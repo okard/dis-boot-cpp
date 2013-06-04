@@ -26,6 +26,7 @@ THE SOFTWARE.
 #define __PLF_EXPRESSION_HPP__
 
 #include <plf/ast/Node.hpp>
+#include <plf/ast/Visitor.hpp>
 #include <plf/ast/Type.hpp>
 
 namespace plf {
@@ -33,12 +34,14 @@ namespace plf {
 class Expression : public Node
 {
 public:
+	Expression(const NodeKind kind) : Node(kind) {}
+
 	TypePtr returnType;
 	
 	//constant expression
 };
 
-
+///Operators for Unary Expressions
 enum class UnaryOperator
 {
 	Neg, 
@@ -47,6 +50,8 @@ enum class UnaryOperator
 	PreIncr, 
 	PostDecr, 
 	PreDecr
+	
+	// ~, &, @ for memory types?
 };
 
 /**
@@ -54,13 +59,16 @@ enum class UnaryOperator
 */
 class UnaryExpr : public Expression
 {
-
 public:
+	static const NodeKind Kind = NodeKind::UnaryExpr;
+	UnaryExpr() : Expression(NodeKind::UnaryExpr) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
 	UnaryOperator op;
 	ExprPtr expr;
-	
 };
 
+///Operators for Binary Expressions
 enum class BinaryOperator
 {
 	Plus,
@@ -83,14 +91,29 @@ enum class BinaryOperator
 class BinaryExpr : public Expression
 {
 public:
+	static const NodeKind Kind = NodeKind::BinaryExpr;
+	BinaryExpr() : Expression(NodeKind::BinaryExpr) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
 	BinaryOperator op;
 	ExprPtr left;
 	ExprPtr right;
 };
 
-
-//call expression (FuncDecl, InstancePtr)
-
+/**
+* A call expression
+*/
+class CallExpr final : public Expression
+{
+public:
+	static const NodeKind Kind = NodeKind::CallExpr;
+	CallExpr() : Expression(NodeKind::CallExpr) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
+	DeclPtr func;		//funcdecl
+	ExprPtr klass; 		//instance expr
+	ExprList params;	//instance expr
+};
 
 //pathexpression
 

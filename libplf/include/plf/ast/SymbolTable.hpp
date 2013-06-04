@@ -21,27 +21,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <plf/ast/Node.hpp>
+#pragma once
+#ifndef __PLF_SYMBOLTABLE_HPP__
+#define __PLF_SYMBOLTABLE_HPP__
 
-#include <plf/ast/Visitor.hpp>
-
-using namespace plf;
-
-/*Node::Node()
+namespace plf {
+	
+/**
+* A single (native) symbol
+*/
+class Symbol
 {
-}*/
+	//name(mangled?)
+	//decl
+	//extern elsewhere declared resolved by linking
+	//static not exported symbols package internal only
+};
 
-Node::Node(const NodeKind nk)
-	: kind_(nk)
+/**
+* Complete (native) SymbolTable
+*/
+class SymbolTable
 {
+	//symbol list
+	
+};
+	
 	
 }
 
-Node::~Node()
-{
-}
-
-NodePtr Node::accept(Visitor& v, ParamPtr& arg)
-{
-	return v.visit(*this, arg);
-};
+#endif

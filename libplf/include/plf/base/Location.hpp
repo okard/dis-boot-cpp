@@ -38,7 +38,6 @@ struct Location
 	SourceId sourceId;
 	unsigned int line;	 //user information
 	unsigned int column; //user information
-	unsigned int offset; //internal information
 };
 
 //better?

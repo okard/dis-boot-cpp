@@ -25,6 +25,8 @@ THE SOFTWARE.
 
 #include <cstring>
 
+#include <plf/base/Exception.hpp>
+
 using namespace plf;
 
 Buffer::Buffer()

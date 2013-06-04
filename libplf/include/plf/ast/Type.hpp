@@ -36,9 +36,8 @@ namespace plf {
 */
 class Type : public Node
 {
-private:
-
 public:
+	Type(const NodeKind kind) : Node(kind) {}
 	
 };
 
@@ -47,6 +46,8 @@ public:
 */
 class UnkownType : public Type
 {
+private:
+	UnkownType() : Type(NodeKind::UnkownType) {}
 public:
 	UnkownType& getInstance();
 };
@@ -66,7 +67,6 @@ public:
 	PrimaryType(size_t size, const char* name, bool signedT);
 };
 
-
 extern PrimaryType typeInt32;
 extern PrimaryType typeUInt32;
 
@@ -76,14 +76,19 @@ extern PrimaryType typeUInt32;
 class DeclType : public Type
 {
 public:
+	DeclType() : Type(NodeKind::DeclType) {}
+
 	DeclPtr decl;
+	//symbol& sym?
+	
+	//bool ref/ptr
 };
 
+//ParsedType -> resolving -> 
+
+//array types
 //path type
 //constraint type
-
-
-
 
 
 } //end namespace plf

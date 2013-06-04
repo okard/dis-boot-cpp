@@ -26,6 +26,7 @@ THE SOFTWARE.
 #define __DIS_TOKEN_HPP__
 
 #include <plf/base/Buffer.hpp>
+#include <plf/base/Location.hpp>
 
 //Macros for Token Generationen
 #undef TOKEN
@@ -117,6 +118,7 @@ struct Token
 {
 	TokenId id;
 	plf::BufferPtr buffer;
+	plf::Location loc;
 };
 
 //plf::SharedPtr<std::string>

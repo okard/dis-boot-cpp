@@ -31,8 +31,11 @@ namespace plf {
 
 /**
 * Basic Attribute class 
+* @attr(param)
+* [attr(param)]
+* #[attr(param)]
 */
-class Attribute : public Node
+class Attribute : public Node //required to inherit from node?
 {
 };
 
@@ -42,7 +45,6 @@ class Attribute : public Node
 */
 class AbiAttribute : public Node
 {
-	
 };
 
 /**
@@ -51,6 +53,8 @@ class AbiAttribute : public Node
 class TestAttribute : public Node
 {
 };
+
+//attach attribute to functions
 
 //CustomAttribute
 

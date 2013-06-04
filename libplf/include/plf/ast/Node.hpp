@@ -50,6 +50,11 @@ typedef List<StmtPtr> StmtList;
 
 class Expression;
 typedef SharedPtr<Expression> ExprPtr;
+typedef List<ExprPtr> ExprList;
+
+class Attribute;
+typedef SharedPtr<Attribute> AttrPtr;
+typedef List<AttrPtr> AttrList;
 
 class Type;
 typedef SharedPtr<Type> TypePtr;
@@ -63,18 +68,22 @@ enum class NodeKind : unsigned short
 	//Declarations
 	PackageDecl,
 	ImportDecl,
-	
+	//Types
 	FunctionDecl,
 	ClassDecl,
-	VariableDecl,
-	ValueDecl,
-	ConstantDecl,
+	TraitDecl,
+	StructDecl,
 	AliasDecl,
 	EnumDecl,
-	StructDecl,
-	
+	//Instances
+	VariableDecl,
+	ValueDecl,
+	ConstDecl,
+
 	//Type
 	PrimaryType,
+	UnkownType,
+	DeclType,
 	PtrType,
 	RefType,
 	UserType, 		//user declared type
@@ -87,6 +96,7 @@ enum class NodeKind : unsigned short
 	ForStmt,
 	WhileStmt,
 	ExprStmt,
+	DeclStmt,
 	
 	//Expression
 	UnaryExpr,
@@ -105,11 +115,11 @@ enum class NodeKind : unsigned short
 class Node : public std::enable_shared_from_this<Node>
 {
 private:
-	NodeKind kind_; //const
+	const NodeKind kind_; //const
 	
 public:
 
-	Node();
+	//Node();
 	Node(const NodeKind nk);
 	virtual ~Node();
 	
@@ -133,6 +143,7 @@ public:
 	// void* operator new(size_t);
     // void operator delete(void*);
     
+    //for template copies
     //NodePtr clone();
 	
 	/**
@@ -144,6 +155,9 @@ public:
 		return std::static_pointer_cast<T>(shared_from_this());
 	}
 	
+	/**
+	* Create helper
+	*/
 	template<class T, typename... Args>
 	static SharedPtr<T> create(Args... args)
 	{

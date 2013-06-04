@@ -21,27 +21,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <plf/ast/Node.hpp>
+#pragma once
+#ifndef __PLF_MANGLE_HPP__
+#define __PLF_MANGLE_HPP__
 
-#include <plf/ast/Visitor.hpp>
-
-using namespace plf;
-
-/*Node::Node()
+namespace plf {
+	
+/**
+* Mangle Functions
+*/
+class Mangle
 {
-}*/
-
-Node::Node(const NodeKind nk)
-	: kind_(nk)
-{
+public:
+	//variable/value/const
+	//function
+	
+	//datatypes etc for internal handling
+};
 	
 }
 
-Node::~Node()
-{
-}
-
-NodePtr Node::accept(Visitor& v, ParamPtr& arg)
-{
-	return v.visit(*this, arg);
-};
+#endif

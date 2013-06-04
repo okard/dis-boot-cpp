@@ -24,6 +24,7 @@ THE SOFTWARE.
 #include <dis/Lexer.hpp>
 
 #include <cstring>
+#include <cassert>
 //#include <unordered_map>
 
 #include <plf/base/FormatException.hpp>
@@ -97,8 +98,8 @@ void Lexer::open(plf::SourcePtr srcptr)
 	//TODO reset internal status
 	toklist_.clear();
 	
-	column_ = 0;
-	line_ = 0;
+	column_ = 1;
+	line_ = 1;
 }
 
 
@@ -140,6 +141,8 @@ void  Lexer::lexToken(Token& tok)
 		nextChar();
 		
 	char c = current();
+	tok.loc.column = column_;
+	tok.loc.line = line_;
 	
 	//id and keywords
 	if(isAlpha(c))
@@ -257,6 +260,7 @@ void Lexer::lexId(Token& tok)
 	
 	//skip over
 	bufv_.set(i + bufv_.pos());
+	column_ += i;
 }
 
 void Lexer::lexNumber(Token& tok)
@@ -306,12 +310,14 @@ void Lexer::lexNumber(Token& tok)
 
 void Lexer::lexString(Token& tok)
 {
-	//assert(bufv_.current<char> == '"');
+	assert(current() == '"');
 	tok.id = TokenId::StringLiteral;
 	
 	nextChar(); //skip "
 	int i;
 	for(i = 0; peekChar(i) != '"'; i++); //TODO check for eob
+	
+	//TODO check for \n etc, allowed are alpha and so on
 	
 	//std::string str(bufv_.ptr(), i);
 	//std::cout << "Lex string: " << str << std::endl;
@@ -332,7 +338,7 @@ inline void Lexer::nextChar()
 {
 	if(current() == '\n')
 	{
-		column_ = 0;
+		column_ = 1;
 		line_++;
 	}
 		

@@ -21,3 +21,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+#pragma once
+#ifndef __PLF_INTEPRETER_HPP__
+#define __PLF_INTEPRETER_HPP__
+
+#include <plf/ast/Visitor.hpp>
+
+namespace plf {
+
+/**
+* CTFE Interpreter
+*/
+class Interpreter : public Visitor
+{
+	//struct Context& ctx as AnyPtr
+	
+	//use libffi for native calls? 
+	//symbol resolving in own process?
+};	
+	
+}
+#endif 

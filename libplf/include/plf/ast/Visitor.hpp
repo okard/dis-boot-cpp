@@ -49,8 +49,11 @@ public:
 	virtual NodePtr visit(Statement& n, ParamPtr& arg);
 	virtual NodePtr visit(Expression& n, ParamPtr& arg);
 	 
-	//specialized
+	//Declarations
 	virtual NodePtr visit(PackageDecl& n, ParamPtr& arg);
+	//Statements
+	
+	//Expressions
 };
 
 

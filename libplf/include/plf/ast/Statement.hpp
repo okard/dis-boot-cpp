@@ -26,11 +26,14 @@ THE SOFTWARE.
 #define __PLF_STATEMENT_HPP__
 
 #include <plf/ast/Node.hpp>
+#include <plf/ast/Visitor.hpp>
 
 namespace plf {
 
 class Statement : public Node
 {
+public:
+	Statement(const NodeKind kind) : Node(kind) {}
 };
 
 //ScopeStmt all statements with seperate scope (for/while/dowhile/if/switch)
@@ -42,6 +45,10 @@ class Statement : public Node
 class ReturnStmt : public Statement
 {
 public:
+	static const NodeKind Kind = NodeKind::ReturnStmt;
+	ReturnStmt() : Statement(NodeKind::ReturnStmt) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+
 	ExprPtr expr;
 };
 
@@ -52,10 +59,14 @@ public:
 class ForStmt : public Statement
 {
 public:
+	static const NodeKind Kind = NodeKind::ForStmt;
+	ForStmt() : Statement(NodeKind::ForStmt) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
 	StmtPtr init;
 	ExprPtr cond;
 	StmtPtr after;
-	//stmt
+	StmtPtr body;
 };
 
 /**
@@ -65,7 +76,13 @@ public:
 class WhileStmt : public Statement
 {
 public:
+	static const NodeKind Kind = NodeKind::WhileStmt;
+	WhileStmt() : Statement(NodeKind::WhileStmt) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
 	ExprPtr cond;
+	StmtPtr body;
+	bool headCtr; //while(bool){} / do{}while(bool);
 	//stmt
 };
 
@@ -75,6 +92,10 @@ public:
 class DeclStmt : public Statement
 {
 public:
+	static const NodeKind Kind = NodeKind::DeclStmt;
+	DeclStmt() : Statement(NodeKind::DeclStmt) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
 	DeclPtr decl;
 };
 
@@ -84,9 +105,12 @@ public:
 class ExprStmt : public Statement
 {
 public:
+	static const NodeKind Kind = NodeKind::ExprStmt;
+	ExprStmt() : Statement(NodeKind::ExprStmt) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
 	ExprPtr expr;
 };
-
 
 
 } //end namespace plf

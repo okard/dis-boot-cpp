@@ -25,13 +25,31 @@ THE SOFTWARE.
 #ifndef __PLF_CODEGEN_HPP__
 #define __PLF_CODEGEN_HPP__
 
+#include <plf/gen/Target.hpp>
+
 namespace plf {
+	
+class PackageDecl;
+	
+/**
+* Object File
+*/
+struct ObjectFile
+{
+	//filename
+	//stream?
+};
 
-
-class CodeGenerator
+/**
+* Code Generator Interface
+*/
+class CodeGen
 {
 public:
 	//DAST -> TargetFile
+	
+	//use objectfile interface generate in memory obejct files and so on
+	virtual void gen(const PackageDecl&, const Target& t, ObjectFile& file) = 0;
 	
 	//ObjectFile gen(PackageDecl n, Param p);
 	//ObjectFile gen(NodePtr n, Parameter);

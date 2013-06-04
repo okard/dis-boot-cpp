@@ -128,10 +128,15 @@ plf::NodePtr Parser::parsePackage()
 {
 	assert(tok_.id == TokenId::KwPackage);
 	
-	//auto pkg = std::make_shared<PackageDecl>();
 	auto pkg = Node::create<PackageDecl>();
 	
-	//PackageDecl
+	next();
+	if(tok_.id != TokenId::Ident)
+	{
+		throw "error";
+	}
+	//ident .ident .ident
+	
 	
 	NodePtr decl;
 	while((decl = parseDeclaration())->kind() != NodeKind::Error)
@@ -143,7 +148,10 @@ plf::NodePtr Parser::parsePackage()
 	return pkg;
 }
 
-
+/**
+* import a.b.c;
+* import d = a.b.c;
+*/
 plf::NodePtr Parser::parseImport()
 {
 	assert(tok_.id == TokenId::KwImport);
