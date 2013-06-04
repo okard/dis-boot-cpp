@@ -25,6 +25,8 @@ THE SOFTWARE.
 
 #include <cassert>
 
+#include <plf/base/FormatException.hpp>
+
 #include <plf/ast/Declaration.hpp>
 #include <plf/ast/Statement.hpp>
 #include <plf/ast/Expression.hpp>
@@ -98,18 +100,16 @@ NodePtr Parser::parseDeclaration()
 	
 	switch(tok_.id)
 	{	
-		case TokenId::KwPackage: 
-			return parsePackage();
-		case TokenId::KwDef: 
-			return parseFunction();
+		case TokenId::KwPackage:  	return parsePackage();
+		case TokenId::KwImport:  	return parseImport();
+		case TokenId::KwDef: 		return parseFunction();
 		case TokenId::KwTrait: 
 			break;
 		case TokenId::KwType: 
 			break;
 		case TokenId::KwObj: 
 			break;
-		case TokenId::KwVar: 
-			return parseVariable();
+		case TokenId::KwVar: 		return parseVariable();
 		case TokenId::KwLet: 
 			break;
 	
@@ -123,6 +123,7 @@ NodePtr Parser::parseDeclaration()
 
 /*
 * package a.b.c;
+* package ident .ident .ident ;
 */
 plf::NodePtr Parser::parsePackage()
 {
@@ -130,13 +131,19 @@ plf::NodePtr Parser::parsePackage()
 	
 	auto pkg = Node::create<PackageDecl>();
 	
-	next();
-	if(tok_.id != TokenId::Ident)
-	{
-		throw "error";
-	}
-	//ident .ident .ident
+	checkNext(TokenId::Ident);
 	
+	while(tok_.id == TokenId::Ident)
+	{
+		pkg->path.push_back(tok_.buffer);
+		next();
+		
+		if(tok_.id == TokenId::Dot)
+			next();
+	}
+	
+	check(TokenId::Semicolon);
+	next();
 	
 	NodePtr decl;
 	while((decl = parseDeclaration())->kind() != NodeKind::Error)
@@ -145,6 +152,14 @@ plf::NodePtr Parser::parsePackage()
 		pkg->decls.push_back(decl->to<Declaration>());
 	}
 	
+	if( decl
+	&&  decl->kind() == NodeKind::Error
+	&&  !decl->to<ErrorNode>()->eof)
+	{
+		throw FormatException("Error during parsing package");
+	}
+
+
 	return pkg;
 }
 
@@ -155,6 +170,8 @@ plf::NodePtr Parser::parsePackage()
 plf::NodePtr Parser::parseImport()
 {
 	assert(tok_.id == TokenId::KwImport);
+	
+	throw FormatException("Not implemented");
 }
 
 /*
@@ -162,7 +179,9 @@ plf::NodePtr Parser::parseImport()
 */
 plf::NodePtr Parser::parseFunction()
 {
+	assert(tok_.id == TokenId::KwDef);
 	
+	throw FormatException("Not implemented");
 }
 
 /*
@@ -170,7 +189,8 @@ plf::NodePtr Parser::parseFunction()
 */
 plf::NodePtr Parser::parseVariable()
 {
-	
+	assert(tok_.id == TokenId::KwVar);
+	throw FormatException("Not implemented");
 }
 
 
@@ -187,6 +207,9 @@ StmtPtr Parser::parseStatement()
 			
 		//case TokenId::COBracket: parseBlockStmt(); 
 		//decl statments
+			//parseDeclaration() if(error and not eof)
+			//parseExpression
+			
 		//expr statements
 	}
 	
@@ -212,9 +235,25 @@ plf::NodePtr Parser::parseDataType()
 	
 }
 
-
-
+/// Read next token
 void Parser::next()
 {
 	tok_ = lexer_.next();
+}
+
+/// Check current token
+void Parser::check(TokenId id)
+{
+	if(tok_.id != id)
+	{
+		//TODO SyntaxError
+		throw plf::FormatException("Invalid Token expected %s but get %s", toString(id), toString(tok_.id));
+	}
+}
+
+/// Check current token
+void Parser::checkNext(TokenId id)
+{
+	next();
+	check(id);
 }

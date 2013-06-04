@@ -24,6 +24,7 @@ THE SOFTWARE.
 #include <plf/base/SourceFile.hpp>
 
 #include <plf/base/BufferView.hpp>
+#include <plf/base/FormatException.hpp>
 
 using namespace plf;
 
@@ -39,6 +40,10 @@ void SourceFile::open(const char* filename)
 		filestream_.seekg (0, filestream_.end);
 		size_ = filestream_.tellg();
 		filestream_.seekg (0, filestream_.beg);
+	}
+	else
+	{
+		throw FormatException("Can't open %s", filename);
 	}
 }
 

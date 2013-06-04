@@ -95,6 +95,9 @@ private:
 	// Utils
 	void next();
 	//sync();
+	
+	void check(TokenId id);
+	void checkNext(TokenId id);
 };
 
 

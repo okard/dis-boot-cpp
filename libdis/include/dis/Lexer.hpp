@@ -63,6 +63,8 @@ public:
 	Token& peek(int num);
 	
 	//TODO Lexer hooks for inline asm
+	//get SavePoint& 
+	//load SavePoint&
 	
 private:
 	void lexToken(Token& tok);

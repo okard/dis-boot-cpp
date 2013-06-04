@@ -24,7 +24,9 @@ THE SOFTWARE.
 
 #include "Compiler.hpp"
 
+#include <cstring>
 #include <iostream>
+
 
 #include <plf/base/SourceFile.hpp>
 
@@ -51,9 +53,27 @@ Compiler::~Compiler()
 int Compiler::run(int argc, char *argv[])
 {
 	//- parse arguments
-	
-	if(argc >= 2)
-		testLex(argv[1]);
+	for(int i=1; i < argc; i++)
+	{
+		if(strcmp(argv[i], "-lex") == 0 && ((i+1) < argc))
+		{
+			//check if file exists
+			testLex(argv[i+1]);
+			return 0;
+		}
+		
+		if(strcmp(argv[i], "-parse") == 0 && ((i+1) < argc))
+		{
+			//check if file exists
+			testParse(argv[i+1]);
+			return 0;
+		}
+		
+		//-arch / -platform / -backend
+		//-c / -executable / -static / -shared
+		
+	}
+		
 	
 	//auto src = std::make_shared<SourceFile>();
 	//src->open(argv[1]);
@@ -73,6 +93,8 @@ int Compiler::run(int argc, char *argv[])
 
 void Compiler::testLex(const char* filename)
 {
+	//check if file exists
+	
 	auto src = std::make_shared<SourceFile>();
 	src->open(filename);
 	
@@ -97,8 +119,10 @@ void Compiler::testLex(const char* filename)
 }
 
 
-void Compiler::testParser(const char* filename)
+void Compiler::testParse(const char* filename)
 {
+	//check if file exists
+	
 	auto src = std::make_shared<SourceFile>();
 	src->open(filename);
 	

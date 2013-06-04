@@ -247,7 +247,7 @@ void Lexer::lexId(Token& tok)
 	tok.id = TokenId::Ident;
 	
 	int i;
-	for(i = 0; isAlpha(peekChar(i)); i++); //TODO check for eob
+	for(i = 0; isAlpha(peekChar(i)) || isNumeric(peekChar(i)); i++); //TODO check for eob
 	
 	//read bufv_.ptr() size i into token
 	//std::string str(bufv_.ptr(), i);

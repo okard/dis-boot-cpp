@@ -49,8 +49,9 @@ public:
 	
 	//void parse();
 	//void semantic();
-	//void compile();
-	//void link();
+	
+	//void compile(); //requires process call
+	//void link();	  //requires process call
 	
 	//TODO requires directory/path handling
 	//void resolveImports(); 
@@ -58,5 +59,5 @@ public:
 	
 	
 	void testLex(const char* filename);
-	void testParser(const char* filename);
+	void testParse(const char* filename);
 };
