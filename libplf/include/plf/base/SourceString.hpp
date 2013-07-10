@@ -37,6 +37,8 @@ class SourceString : public Source
 private:
 	//buffer
 public:	
+	//SourceString(buffer)
+	//SourceString(const char* );
 };
 	
 } //end namespace plf

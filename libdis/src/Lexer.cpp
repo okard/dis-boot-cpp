@@ -77,6 +77,8 @@ return (c >= 'a' && c <= 'f')
 		|| (c >= '0' && c <= '9');
 }
 
+//readable ascii: 0x21-0x7E
+
 inline void checkKeyword(Token& tok);
 
 Lexer::Lexer()
@@ -220,9 +222,12 @@ void  Lexer::lexToken(Token& tok)
 		case TokenId::Sharp: checkForChar(tok, '!', TokenId::Shebang); break;
 		case TokenId::EPoint: checkForChar(tok, '=', TokenId::NEqual); break;
 		case TokenId::Assign: checkForChar(tok, '=', TokenId::Equal); break;
-		case TokenId::Plus: checkForChar(tok, '=', TokenId::PlusAssign); break;
+		case TokenId::Plus: checkForChar(tok, '=', TokenId::PlusAssign); 
+							checkForChar(tok, '+', TokenId::PlusPlus);
+							break;
 		case TokenId::Minus: checkForChar(tok, '=', TokenId::MinusAssign); 
 							 checkForChar(tok, '>', TokenId::Lambda);
+							 checkForChar(tok, '-', TokenId::MinusMinus);
 							 break;
 		case TokenId::Mul: checkForChar(tok, '=', TokenId::MulAssign); break;
 		case TokenId::Div: checkForChar(tok, '=', TokenId::DivAssign); break;
@@ -299,13 +304,20 @@ void Lexer::lexNumber(Token& tok)
 		return;
 	}
 	
+	
+	int i;
+	for(i = 0; isNumeric(peekChar(i)); i++); 
+	
+	tok.buffer = std::make_shared<plf::Buffer>(bufv_.ptr(), i);
+	
 	//normal number
 	//dot == double
 	//only one dot allowed
 	//if dot and ends with .f or .{num}f
 	
-	
-	nextChar(); 
+	//skip over
+	bufv_.set(i + bufv_.pos());
+	column_ += i; 
 }
 
 void Lexer::lexString(Token& tok)
@@ -325,7 +337,8 @@ void Lexer::lexString(Token& tok)
 	//into buffer
 	tok.buffer = std::make_shared<plf::Buffer>(bufv_.ptr() ,i);
 	
-	bufv_.set(i + bufv_.pos()+1); //skip " 
+	bufv_.set(i + bufv_.pos()+1); //skip "
+	column_ += i;
 }
 
 void Lexer::lexComment(Token& tok)
@@ -355,6 +368,13 @@ inline char& Lexer::peekChar(size_t n)
 {
 	return bufv_.peek<char>(n);
 }
+
+inline void Lexer::skip(int i)
+{
+	bufv_.set(i + bufv_.pos());
+	column_ += i;
+}
+	
 
 inline void Lexer::checkForChar(Token& tok, char c, TokenId id)
 {

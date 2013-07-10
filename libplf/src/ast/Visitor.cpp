@@ -48,8 +48,7 @@ NodePtr Visitor::visit(PackageDecl& n, ParamPtr& arg)
 
 NodePtr Visitor::visit(Node& n, ParamPtr& arg)
 {
-	//NodePtr = std::make_shared<Node>(new Node());
-	//return n.shared_from_this();
+	//NodePtr n = Node::create<Node>();
 	return n;
 }
 
@@ -66,6 +65,17 @@ NodePtr Visitor::visit(Statement& n, ParamPtr& arg)
 NodePtr Visitor::visit(Expression& n, ParamPtr& arg)
 {
 	return n;
+}
+
+NodePtr Visitor::visit(PackageDecl& pd, ParamPtr& arg)
+{
+	//visit declarations
+	for(unsigned int i = 0; i < pd.decls.size(); i++)
+	{
+		pd.decls[i] = pd.decls[i]->accept(*this, arg)->to<Declaration>();
+	}
+	
+	return pd;
 }
 
 

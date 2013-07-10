@@ -76,6 +76,7 @@ private:
 	inline void nextChar();
 	inline char& current();
 	inline char& peekChar(size_t n);
+	inline void skip(int i);
 	
 	inline void checkForChar(Token& tok, char c, TokenId id);
 };

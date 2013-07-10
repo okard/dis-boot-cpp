@@ -82,6 +82,8 @@ NodePtr Parser::parse()
 			return parseDeclaration();
 			break;
 		//stmt
+		
+		//if stmtexpr return expr
 		//expr
 	}
 }
@@ -93,30 +95,47 @@ NodePtr Parser::parseDeclaration()
 {
 	//flags (public,private,protected) pub priv prot
 	
-	//DeclFlags flags
-	//parseDeclFlags(flags); //parseDeclFlags(DeclFlags&);
+	DeclFlags flags;
+	parseDeclFlags(flags); //parseDeclFlags(DeclFlags&);
 	
 	//assign flags before
 	
 	switch(tok_.id)
 	{	
-		case TokenId::KwPackage:  	return parsePackage();
+		case TokenId::KwPackage:  	return parsePackage(); //todo remove here? nested packages?
 		case TokenId::KwImport:  	return parseImport();
 		case TokenId::KwDef: 		return parseFunction();
-		case TokenId::KwTrait: 
-			break;
-		case TokenId::KwType: 
-			break;
-		case TokenId::KwObj: 
-			break;
+		case TokenId::KwTrait: 		return parseTrait();
+		case TokenId::KwType: 		break;
+		case TokenId::KwObj: 		return parseClass();
 		case TokenId::KwVar: 		return parseVariable();
-		case TokenId::KwLet: 
-			break;
+		case TokenId::KwLet:  		break;
 	
 		case TokenId::Eof:
 			return Node::create<ErrorNode>(true);
 		default:
 			return Node::create<ErrorNode>();
+	}
+	
+}
+
+/*
+* Parse declarations flags
+*/
+void Parser::parseDeclFlags(DeclFlags& flags)
+{
+	//pub
+	//priv
+	//prot
+	
+	//static
+	//final
+	//abstract
+	//const
+	
+	switch(tok_.id)
+	{
+		//case TokenId::Kw
 	}
 	
 }
@@ -131,8 +150,8 @@ plf::NodePtr Parser::parsePackage()
 	
 	auto pkg = Node::create<PackageDecl>();
 	
+	//parse path
 	checkNext(TokenId::Ident);
-	
 	while(tok_.id == TokenId::Ident)
 	{
 		pkg->path.push_back(tok_.buffer);
@@ -145,6 +164,7 @@ plf::NodePtr Parser::parsePackage()
 	check(TokenId::Semicolon);
 	next();
 	
+	//read all declaration in package
 	NodePtr decl;
 	while((decl = parseDeclaration())->kind() != NodeKind::Error)
 	{
@@ -152,13 +172,13 @@ plf::NodePtr Parser::parsePackage()
 		pkg->decls.push_back(decl->to<Declaration>());
 	}
 	
+	//error declarations not allowed
 	if( decl
 	&&  decl->kind() == NodeKind::Error
 	&&  !decl->to<ErrorNode>()->eof)
 	{
 		throw FormatException("Error during parsing package");
 	}
-
 
 	return pkg;
 }
@@ -170,30 +190,73 @@ plf::NodePtr Parser::parsePackage()
 plf::NodePtr Parser::parseImport()
 {
 	assert(tok_.id == TokenId::KwImport);
-	
 	throw FormatException("Not implemented");
+	
 }
 
 /*
-* def name() : rettype body
+* def name [(params)] [: rettype] body
 */
 plf::NodePtr Parser::parseFunction()
 {
 	assert(tok_.id == TokenId::KwDef);
 	
+	auto func = Node::create<FunctionDecl>();
+	
+	//function name
+	checkNext(TokenId::Ident);
+	func->ident = tok_.buffer;
+	
+	//if peek('(')
+	//parse params
+	
+	//if ':' parse type
+	
+	//if = parse expr
+	//if { parse block
+	//if ; end
+	
+	
+	
 	throw FormatException("Not implemented");
+	
 }
 
 /*
-* var name : type = init;
+* var name [: type] [= init];
 */
 plf::NodePtr Parser::parseVariable()
 {
 	assert(tok_.id == TokenId::KwVar);
 	throw FormatException("Not implemented");
+	
 }
 
+/**
+* Parse a class
+*/
+plf::NodePtr Parser::parseClass()
+{
+	assert(tok_.id == TokenId::KwObj);
+	throw FormatException("Not implemented");
+	
+	//tpl
+}
 
+/**
+* Parse a trait
+*/
+plf::NodePtr Parser::parseTrait()
+{
+	assert(tok_.id == TokenId::KwTrait);
+	throw FormatException("Not implemented");
+	
+	//tpl
+}
+
+/**
+* Parse statements
+*/
 StmtPtr Parser::parseStatement()
 {
 	switch(tok_.id)
@@ -204,26 +267,37 @@ StmtPtr Parser::parseStatement()
 			break;
 		case TokenId::KwWhile:
 			break;
-			
+		case TokenId::COBracket:
+			break;
+		
 		//case TokenId::COBracket: parseBlockStmt(); 
-		//decl statments
-			//parseDeclaration() if(error and not eof)
-			//parseExpression
-			
-		//expr statements
 	}
+	
+	//decl statments
+	//parseDeclaration() if(error and not eof)
+	//parseExpression
+	//expr statements
+	
 	
 	//if ; parseStatment if no error return block stmt?
 }
 
-
+/**
+* Parse Expressions
+*/
 ExprPtr Parser::parseExpression()
 {
+	//unary
+	//binary
+	
+	//IfExpr
+	//SwitchExpr
 	
 }
 
 /**
 * : id
+* : id.datatype
 * : id[]
 * : @datatype
 * : &datatype

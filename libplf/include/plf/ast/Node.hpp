@@ -40,6 +40,9 @@ typedef SharedPtr<Node> NodePtr;
 typedef WeakPtr<Node> WNodePtr;
 typedef List<NodePtr> NodeList;
 
+template<class T>
+using PtrList = List<SharedPtr<T>>;
+
 class Declaration;
 typedef SharedPtr<Declaration> DeclPtr;
 typedef List<DeclPtr> DeclList;
@@ -84,10 +87,10 @@ enum class NodeKind : unsigned short
 	PrimaryType,
 	UnkownType,
 	DeclType,
+	UnsolvedType,
 	PtrType,
 	RefType,
-	UserType, 		//user declared type
-	//RT Types
+	//RT Types:
 	ArrayType,
 	MapType,
 	
@@ -168,6 +171,7 @@ public:
 public:
 	WNodePtr parent;
 };
+	
 	
 	
 } //end namespace plf

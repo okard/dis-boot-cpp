@@ -44,4 +44,4 @@ Node::~Node()
 NodePtr Node::accept(Visitor& v, ParamPtr& arg)
 {
 	return v.visit(*this, arg);
-};
+}

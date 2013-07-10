@@ -50,6 +50,8 @@ public:
 	Buffer(const Buffer& buf);
 	virtual ~Buffer();
 	
+	//TODO set to 0
+	//TODO Resize
 	void alloc(size_t size);
 
 	Buffer& operator=(const Buffer& buf);
@@ -57,7 +59,10 @@ public:
 	bool operator==(const Buffer& buf);
 	bool operator==(const char* str);
 	
+	//confusing? rename to ptr(offeset)?
 	inline byte* operator[] (size_t offset) { return &buffer_[offset]; }
+	
+	//cast to const char* with last byte have to be \0?
 	
 	inline size_t size() const { return size_; }
 	inline byte* ptr() { return buffer_; }

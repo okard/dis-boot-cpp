@@ -51,9 +51,30 @@ public:
 	 
 	//Declarations
 	virtual NodePtr visit(PackageDecl& n, ParamPtr& arg);
+	//ImportDecl
+	//ClassDecl
+	//TraitDecl
+	//StructDecl
+	//EnumDecl
+	//AliasDecl
+	//FunctionDecl
+	//VariableDecl
+	//ValueDecl
+	//ConstDecl
+	
 	//Statements
+	//ReturnStmt
+	//ForStmt
+	//WhileStmt
+	//DeclStmt
+	//ExprStmt
 	
 	//Expressions
+	//UnaryExpr
+		//SubUnaryExpressions
+	//BinaryExpr
+		//SubBinaryExpressions
+	//CallExpr
 };
 
 

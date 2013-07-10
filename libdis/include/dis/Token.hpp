@@ -80,6 +80,8 @@ THE SOFTWARE.
 		TOKEN(LTE)					   /* <= */ \
 		TOKEN(LAnd)					   /* && */ \
 		TOKEN(LOr)					   /* || */ \
+		TOKEN(PlusPlus)				   /* ++ */ \
+		TOKEN(MinusMinus)			   /* -- */ \
 		TOKEN(Lambda)				   /* -> */ \
 		TOKEN(TripleDot)			  /* ... */ \
 		/* KEYWORDS DECLARATION */ 				\

@@ -25,6 +25,7 @@ THE SOFTWARE.
 #ifndef __PLF_TYPES_HPP__
 #define __PLF_TYPES_HPP__
 
+#include <plf/base/Buffer.hpp>
 #include <plf/ast/Node.hpp>
 
 namespace plf {
@@ -49,7 +50,7 @@ class UnkownType : public Type
 private:
 	UnkownType() : Type(NodeKind::UnkownType) {}
 public:
-	UnkownType& getInstance();
+	UnkownType& getInstance(); //get sharedptr
 };
 
 /**
@@ -84,7 +85,18 @@ public:
 	//bool ref/ptr
 };
 
-//ParsedType -> resolving -> 
+/**
+* Parsed Type to has solved
+* results in DeclType
+*/
+class UnsolvedType : public Type
+{
+public:
+	UnsolvedType() : Type(NodeKind::UnsolvedType) {}
+	
+	List<BufferPtr> idents;
+};
+
 
 //array types
 //path type

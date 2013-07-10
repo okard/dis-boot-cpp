@@ -34,6 +34,10 @@ namespace plf {
 */
 class TypeResolver : public Visitor
 {
+	//call expressions
+	//variable
+	//const
+	//values
 };	
 	
 }

@@ -31,6 +31,8 @@ THE SOFTWARE.
 
 
 namespace dis {
+	
+enum class DeclFlags;
 
 /**
 * Dis Lang Parser
@@ -59,15 +61,18 @@ private:
 	
 	plf::NodePtr parseDeclaration();
 	
+	void parseDeclFlags(DeclFlags& flags);
+	
 	plf::NodePtr parsePackage();
 	plf::NodePtr parseImport();
 	plf::NodePtr parseFunction();
-	//parseFuncParameter
+		//parseFuncParameter
 	plf::NodePtr parseVariable();
+	plf::NodePtr parseClass();
+	plf::NodePtr parseTrait();
 	
-	//class
-	//trait
-	//
+	
+	//parse a Ident : Type
 	
 	////////////////////////////////////////////////////////////////////
 	// Statements
@@ -84,6 +89,7 @@ private:
 	plf::ExprPtr parseExpression();
 	
 	//parse
+	
 	//parseIfExpression()
 	//parseSwitchExpression()
 	

@@ -34,6 +34,8 @@ private:
 	dis::Lexer lexer_;
 	dis::Parser parser_;
 
+	//custom source manager?
+	
 	//source files to compile
 	//save sourceid/filename here?
 	// std::map<filename, SourceId> //filename to Source id

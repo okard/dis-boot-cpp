@@ -69,6 +69,8 @@ public:
 	/// is position at the end of buffer
 	inline bool eob() const { return pos_>= end_; }
 	
+	//bytes left?
+	
 	/// access to current positon in buffer as ptr
 	inline Buffer::byte* ptr() { return buffer_[pos_]; }
 	/// return buffer

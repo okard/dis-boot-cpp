@@ -68,6 +68,8 @@ public:
 	operator DeclPtr () { return to<Declaration>(); }
 };
 
+class FunctionDecl;
+
 /**
 * A package
 */
@@ -83,6 +85,10 @@ public:
 	AttrList attribs;
 	DeclList decls;	
 	List<BufferPtr> path;
+	
+	//all lists are private add "add","remove" functions
+	
+	//complete flat symbol table for AST
 };
 
 /**
@@ -111,6 +117,8 @@ public:
 	
 	//overloads?
 	//forwardref
+	
+	BufferPtr ident;
 
 	//attributes
 	virtual inline bool isType() const final { return true; }
@@ -127,12 +135,23 @@ public:
 	ClassDecl() : TypeDecl(NodeKind::ClassDecl) {}
 	NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
+	//ctors
+	PtrList<FunctionDecl> ctors;
+	SharedPtr<FunctionDecl> dtor;
+	
+	PtrList<ClassDecl> inherits;
+	
+	//tpl parameter
 
+	//nested
+	//template
 	DeclList decls;
-	//InstanceList
+	//InstanceList List<ClassDecl>
 };
 
-//trait
+/**
+* Trait Declaration
+*/
 class TraitDecl final : public TypeDecl
 {
 public:
@@ -154,11 +173,30 @@ public:
 
 };
 
-//enum
+/**
+* Enum Declaration
+*/
+class EnumDecl : public TypeDecl
+{
+public:
+	static const NodeKind Kind = NodeKind::EnumDecl;
+	EnumDecl() : TypeDecl(NodeKind::EnumDecl) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
-//type
+	//how?
+	//name -> expr?
+};
 
-//alias
+/**
+* Alias Declaration
+*/
+class AliasDecl : public TypeDecl
+{
+public:
+	BufferPtr ident;
+	TypePtr type;
+};
+
 
 /**
 * Function Declaration
@@ -170,14 +208,20 @@ public:
 	FunctionDecl() : Declaration(NodeKind::FunctionDecl) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
+	BufferPtr ident;
 	//params
 	StmtPtr body;
-	TypePtr returnType;
-	bool classFunc = false;
+	TypePtr returnType; //leave unset for unkown?
+	bool classFunc = false; //means parent is classdecl
 	
-	//tpl
-	//nested
-	//function
+	
+	bool hasBody() const { return body ? true : false; }
+	//template 
+	//nested 
+	
+	//functions overloads?
+	//List<FunctionDecl> overloads
+	//List<FunctionDecl> instances;
 };
 
 /**
@@ -193,7 +237,7 @@ public:
 };
 
 /**
-* 
+* Variable Declaration
 */
 class VariableDecl final : public InstanceDecl
 {
@@ -208,7 +252,7 @@ public:
 };
 
 /**
-* Value Decl
+* Value Declaration (readonly value)
 */
 class ValueDecl final : public InstanceDecl
 {
@@ -224,7 +268,7 @@ public:
 };
 
 /**
-* 
+* Constant Declaration
 */
 class ConstDecl final : public InstanceDecl
 {
