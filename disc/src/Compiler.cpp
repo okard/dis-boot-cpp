@@ -112,6 +112,9 @@ void Compiler::testLex(const char* filename)
 			case TokenId::StringLiteral:
 				std::cout << " Buffer: " << std::string(tok.buffer->ptr(), tok.buffer->size());
 				break;
+				
+			default:
+				break;
 		}
 		std::cout << std::endl;
 	}

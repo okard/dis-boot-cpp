@@ -29,10 +29,11 @@ THE SOFTWARE.
 
 #include "Lexer.hpp"
 
+namespace plf {
+	enum class DeclFlags : unsigned char;
+}
 
 namespace dis {
-	
-enum class DeclFlags;
 
 /**
 * Dis Lang Parser
@@ -44,6 +45,7 @@ private:
 	
 	Token tok_;
 	//TODO Tokenstack?
+	//DeclFlags
 	
 	//error handler?
 public:
@@ -61,7 +63,7 @@ private:
 	
 	plf::NodePtr parseDeclaration();
 	
-	void parseDeclFlags(DeclFlags& flags);
+	void parseDeclFlags(plf::DeclFlags& flags);
 	
 	plf::NodePtr parsePackage();
 	plf::NodePtr parseImport();
@@ -100,6 +102,8 @@ private:
 	////////////////////////////////////////////////////////////////////
 	// Utils
 	void next();
+	
+	bool peek(int count, TokenId id);
 	//sync();
 	
 	void check(TokenId id);

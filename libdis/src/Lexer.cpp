@@ -408,4 +408,7 @@ inline void checkKeyword(Token& tok)
 	else if(chkKw(tok, "true")) { tok.id = TokenId::KwTrue; }
 	else if(chkKw(tok, "false")) { tok.id = TokenId::KwFalse; }
 	else if(chkKw(tok, "null")) { tok.id = TokenId::KwNull; }
+	else if(chkKw(tok, "pub")) { tok.id = TokenId::KwPub; }
+	else if(chkKw(tok, "priv")) { tok.id = TokenId::KwPriv; }
+	else if(chkKw(tok, "prot")) { tok.id = TokenId::KwProt; }
 }

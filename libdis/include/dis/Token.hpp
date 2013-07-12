@@ -100,7 +100,10 @@ THE SOFTWARE.
 		TOKEN(KwWhile)							\
 		TOKEN(KwTrue)							\
 		TOKEN(KwFalse)							\
-		TOKEN(KwNull)							
+		TOKEN(KwNull)							\
+		TOKEN(KwPub)							\
+		TOKEN(KwPriv)							\
+		TOKEN(KwProt)							
 
 namespace dis {
 	

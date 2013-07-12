@@ -25,8 +25,8 @@ THE SOFTWARE.
 
 #include <cassert>
 
+#include <plf/base/Exception.hpp>
 #include <plf/base/FormatException.hpp>
-
 #include <plf/ast/Declaration.hpp>
 #include <plf/ast/Statement.hpp>
 #include <plf/ast/Expression.hpp>
@@ -85,6 +85,9 @@ NodePtr Parser::parse()
 		
 		//if stmtexpr return expr
 		//expr
+		
+		default:
+			throw Exception("Not yet implemented");
 	}
 }
 
@@ -123,21 +126,31 @@ NodePtr Parser::parseDeclaration()
 * Parse declarations flags
 */
 void Parser::parseDeclFlags(DeclFlags& flags)
-{
-	//pub
-	//priv
-	//prot
-	
-	//static
-	//final
-	//abstract
-	//const
-	
+{	
 	switch(tok_.id)
 	{
-		//case TokenId::Kw
+		case TokenId::KwPub:
+			flags = flags | DeclFlags::Public;
+			next();
+			parseDeclFlags(flags);
+			break;
+		case TokenId::KwPriv:
+			flags = flags | DeclFlags::Private;
+			next();
+			parseDeclFlags(flags);
+			break;
+		case TokenId::KwProt:
+			flags = flags | DeclFlags::Protected;
+			next();
+			parseDeclFlags(flags);
+			break;
+		//static
+		//final
+		//abstract
+		//const
+		default:
+			break;
 	}
-	
 }
 
 /*
@@ -161,6 +174,7 @@ plf::NodePtr Parser::parsePackage()
 			next();
 	}
 	
+	//ends with semicolon
 	check(TokenId::Semicolon);
 	next();
 	
@@ -207,8 +221,14 @@ plf::NodePtr Parser::parseFunction()
 	checkNext(TokenId::Ident);
 	func->ident = tok_.buffer;
 	
-	//if peek('(')
-	//parse params
+	if(peek(1, TokenId::ROBracket))
+	{
+		next();
+		//parse params
+		
+		//skip RCBracket
+	}
+	
 	
 	//if ':' parse type
 	
@@ -218,8 +238,7 @@ plf::NodePtr Parser::parseFunction()
 	
 	
 	
-	throw FormatException("Not implemented");
-	
+	throw plf::FormatException("Not implemented");
 }
 
 /*
@@ -228,7 +247,7 @@ plf::NodePtr Parser::parseFunction()
 plf::NodePtr Parser::parseVariable()
 {
 	assert(tok_.id == TokenId::KwVar);
-	throw FormatException("Not implemented");
+	throw plf::FormatException("Not implemented");
 	
 }
 
@@ -238,7 +257,7 @@ plf::NodePtr Parser::parseVariable()
 plf::NodePtr Parser::parseClass()
 {
 	assert(tok_.id == TokenId::KwObj);
-	throw FormatException("Not implemented");
+	throw plf::FormatException("Not implemented");
 	
 	//tpl
 }
@@ -249,7 +268,7 @@ plf::NodePtr Parser::parseClass()
 plf::NodePtr Parser::parseTrait()
 {
 	assert(tok_.id == TokenId::KwTrait);
-	throw FormatException("Not implemented");
+	throw plf::FormatException("Not implemented");
 	
 	//tpl
 }
@@ -262,15 +281,20 @@ StmtPtr Parser::parseStatement()
 	switch(tok_.id)
 	{
 		case TokenId::KwIf:
+			throw plf::Exception("parsing 'IfStmt' not implemented");
 			break;
 		case TokenId::KwFor:
+			throw plf::Exception("parsing 'ForStmt' not implemented");
 			break;
 		case TokenId::KwWhile:
+			throw plf::Exception("parsing 'WhileStmt' not implemented");
 			break;
 		case TokenId::COBracket:
+			throw plf::Exception("parsing 'BlockStmt' not implemented");
 			break;
 		
-		//case TokenId::COBracket: parseBlockStmt(); 
+		default:
+			throw Exception("Not yet implemented");
 	}
 	
 	//decl statments
@@ -315,6 +339,11 @@ void Parser::next()
 	tok_ = lexer_.next();
 }
 
+bool Parser::peek(int count, TokenId id)
+{
+	return lexer_.peek(count).id == id;
+}
+
 /// Check current token
 void Parser::check(TokenId id)
 {
@@ -325,7 +354,7 @@ void Parser::check(TokenId id)
 	}
 }
 
-/// Check current token
+/// Check next token
 void Parser::checkNext(TokenId id)
 {
 	next();

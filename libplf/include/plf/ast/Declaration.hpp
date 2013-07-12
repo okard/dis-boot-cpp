@@ -32,6 +32,10 @@ THE SOFTWARE.
 #include <plf/ast/Visitor.hpp>
 
 namespace plf {
+
+//Forward Declarations
+class FunctionDecl;
+
 	
 /**
 * Flags for declarations
@@ -49,6 +53,19 @@ enum class DeclFlags : unsigned char
 	
 	External    = 1<<7
 };
+
+DeclFlags operator|(DeclFlags a, DeclFlags b)
+{
+  typedef std::underlying_type<DeclFlags>::type enum_type;
+  return static_cast<DeclFlags>(static_cast<enum_type>(a) | static_cast<enum_type>(b));
+}
+
+DeclFlags operator&(DeclFlags a, DeclFlags b)
+{
+  typedef std::underlying_type<DeclFlags>::type enum_type;
+  return static_cast<DeclFlags>(static_cast<enum_type>(a) & static_cast<enum_type>(b));
+}
+
 	
 /**
 * Basic class for declarations
@@ -68,7 +85,6 @@ public:
 	operator DeclPtr () { return to<Declaration>(); }
 };
 
-class FunctionDecl;
 
 /**
 * A package
@@ -213,7 +229,6 @@ public:
 	StmtPtr body;
 	TypePtr returnType; //leave unset for unkown?
 	bool classFunc = false; //means parent is classdecl
-	
 	
 	bool hasBody() const { return body ? true : false; }
 	//template 
