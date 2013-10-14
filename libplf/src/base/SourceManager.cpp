@@ -23,19 +23,26 @@ THE SOFTWARE.
 */
 #include <plf/base/SourceManager.hpp>
 
+#include <plf/base/SourceFile.hpp>
+
 using namespace plf;
 
-
-void SourceManager::registerSrc(SourcePtr& src)
-{
-	auto id = sources_.size();
-	sources_.push_back(src);
-	src->id_ = id;
-}
 
 SourcePtr SourceManager::get(SourceId id)
 {
 	return sources_[id];
+}
+
+
+SourcePtr SourceManager::loadFile(const char* filename)
+{
+	auto src = std::make_shared<SourceFile>();
+	src->open(filename);
+	auto id = sources_.size();
+	sources_.push_back(src);
+	src->id_ = id;
+	
+	return src;
 }
 	
 	

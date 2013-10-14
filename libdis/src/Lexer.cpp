@@ -72,7 +72,7 @@ inline bool isBin(char c)
 ///is c a hex character
 inline bool isHex(char c)
 {
-return (c >= 'a' && c <= 'f')
+	return (c >= 'a' && c <= 'f')
 		|| (c >= 'A' && c <= 'F')
 		|| (c >= '0' && c <= '9');
 }
@@ -94,7 +94,7 @@ void Lexer::open(plf::SourcePtr srcptr)
 {
 	//read in the complete file
 	auto size = srcptr->size();
-	buf_.alloc(size);
+	buf_ = plf::Buffer(size);
 	srcptr->read(bufv_, size);
 	
 	//TODO reset internal status
@@ -387,12 +387,12 @@ inline void Lexer::checkForChar(Token& tok, char c, TokenId id)
 
 inline bool chkKw(const Token& tok, const char* kw)
 {
-	return 0 == memcmp(tok.buffer->ptr(), kw, tok.buffer->size());
+	return *tok.buffer == kw;
 }
 
 inline void checkKeyword(Token& tok)
 {
-	if(chkKw(tok, "package")) { tok.id = TokenId::KwPackage; }
+	if(chkKw(tok, u8"package")) { tok.id = TokenId::KwPackage; }
 	else if(chkKw(tok, "import")) { tok.id = TokenId::KwImport; }
 	else if(chkKw(tok, "def")) { tok.id = TokenId::KwDef; }
 	else if(chkKw(tok, "obj")) { tok.id = TokenId::KwObj; }

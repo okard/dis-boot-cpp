@@ -52,23 +52,35 @@ public:
 	
 	//TODO set to 0
 	//TODO Resize
-	void alloc(size_t size);
+	//clear();
+	
 
 	Buffer& operator=(const Buffer& buf);
+	Buffer& operator=(const char* str);
 	
 	bool operator==(const Buffer& buf);
 	bool operator==(const char* str);
 	
+	
+	//append
+	
+	
+	//copyto(Buffer& buf, start, end)
+	
 	//confusing? rename to ptr(offeset)?
 	inline byte* operator[] (size_t offset) { return &buffer_[offset]; }
+	//inline byte* ptr() { return buffer_; }
 	
 	//cast to const char* with last byte have to be \0?
 	
 	inline size_t size() const { return size_; }
-	inline byte* ptr() { return buffer_; }
+
 	inline const byte* ptr() const { return buffer_; }
 	
 private:
+	
+
+	void alloc(size_t size);
 
 	size_t insert(const byte* ptr, size_t size);
 	

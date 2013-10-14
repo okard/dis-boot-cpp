@@ -70,6 +70,7 @@ Parser::~Parser()
 {
 }
 
+//starting parse function
 NodePtr Parser::parse()
 {
 	next(); //initial token
@@ -120,6 +121,7 @@ NodePtr Parser::parseDeclaration()
 			return Node::create<ErrorNode>();
 	}
 	
+	return Node::create<ErrorNode>();
 }
 
 /*
@@ -273,6 +275,10 @@ plf::NodePtr Parser::parseTrait()
 	//tpl
 }
 
+////////////////////////////////////////////////////////////////////////
+// Statements
+////////////////////////////////////////////////////////////////////////
+
 /**
 * Parse statements
 */
@@ -306,18 +312,30 @@ StmtPtr Parser::parseStatement()
 	//if ; parseStatment if no error return block stmt?
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// Expression
+////////////////////////////////////////////////////////////////////////
+
 /**
 * Parse Expressions
 */
 ExprPtr Parser::parseExpression()
 {
+	throw Exception("Expression parsing not yet implemented");
+	
 	//unary
 	//binary
 	
 	//IfExpr
 	//SwitchExpr
 	
+	//return Node::create<ErrorExpr>();
 }
+
+////////////////////////////////////////////////////////////////////////
+// DataType
+////////////////////////////////////////////////////////////////////////
 
 /**
 * : id
@@ -331,6 +349,8 @@ ExprPtr Parser::parseExpression()
 plf::NodePtr Parser::parseDataType()
 {
 	
+	
+	return Node::create<ErrorNode>();
 }
 
 /// Read next token
@@ -339,6 +359,7 @@ void Parser::next()
 	tok_ = lexer_.next();
 }
 
+/// do a peek check with a TokenId
 bool Parser::peek(int count, TokenId id)
 {
 	return lexer_.peek(count).id == id;

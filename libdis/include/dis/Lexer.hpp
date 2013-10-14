@@ -48,7 +48,7 @@ private:
 	//ring buffer?
 	std::deque<Token> toklist_;
 	
-	bool doc_comment_enabled; //parse doc comments
+	bool doc_comment_enabled; //lex doc comments
 
 	size_t column_;
 	size_t line_;

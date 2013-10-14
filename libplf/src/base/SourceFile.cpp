@@ -68,3 +68,9 @@ size_t SourceFile::read(BufferView& buf, size_t size)
 	
 	return 0;
 }
+
+
+const char* SourceFile::identifier()
+{
+	
+}

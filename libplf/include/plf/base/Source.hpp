@@ -59,12 +59,13 @@ protected:
 
 public:	
 	
-	//const char* Name()
-	//const char* identifier();
+	//get buffer?
 	
 	//read to buffer
 	virtual size_t read(BufferView&, size_t) = 0;
 	
+	//virtual size_t readComplete(Buffer&) = 0;
+
 	/**
 	* Get id for source manager
 	*/
@@ -74,6 +75,11 @@ public:
 	* Get encoding of source
 	*/
 	inline Encoding getEncoding() const { return encoding_; }
+	
+	/**
+	* get an identifier for the source file
+	*/
+	virtual const char* identifier() { return nullptr; }
 	
 	/**
 	* get source size

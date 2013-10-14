@@ -35,6 +35,8 @@ namespace plf {
 
 /**
 * A view onto buffer
+* BufferReader
+* BufferWriter
 */
 class BufferView
 {
@@ -42,6 +44,8 @@ private:
 	Buffer& buffer_;
 	size_t pos_;
 	size_t end_;
+	//loop
+	
 public:
 	
 	/// A Buffer View
@@ -61,6 +65,8 @@ public:
 	
 	template<typename T>
 	inline T& current() { return *reinterpret_cast<T*>(buffer_[pos_]); }
+	
+	
 	
 	/// set position
 	inline void set(size_t p) { pos_ = p <= 0 ? 0 : p >= end_ ? end_ : p;  }

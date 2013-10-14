@@ -38,23 +38,30 @@ namespace plf {
 class SourceManager
 {
 private:
-	SourceManager();
-	SourceManager(const SourceManager& sm);
-	~SourceManager();
+	SourceManager() = default;
+	SourceManager(const SourceManager& sm) = delete;
+	virtual ~SourceManager() = default;
 	
+	SourceManager& operator=(const SourceManager&) = delete;
 	
+	/// source storage
 	//index == SourceId
 	std::vector<SourcePtr> sources_;
 	
 public:
-	void registerSrc(SourcePtr& src);
 
+	///get SourcePtr for id
 	SourcePtr get(SourceId id);
 	
-	//SourcePtr loadFile(const char*);
+	///load a physical source file
+	SourcePtr loadFile(const char*);
 	
+	
+	//SourcePtr loadBuffer(Buffer& buf);
+	
+	
+	///get singleton instance of source manager
 	static SourceManager& getInstance();
-
 };	
 
 	

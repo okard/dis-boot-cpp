@@ -29,6 +29,7 @@ THE SOFTWARE.
 
 
 #include <plf/base/SourceFile.hpp>
+#include <plf/base/SourceManager.hpp>
 
 using namespace plf;
 using namespace dis;
@@ -95,8 +96,7 @@ void Compiler::testLex(const char* filename)
 {
 	//check if file exists
 	
-	auto src = std::make_shared<SourceFile>();
-	src->open(filename);
+	auto src = SourceManager::getInstance().loadFile(filename);
 	
 	Lexer lexer;
 	lexer.open(src);

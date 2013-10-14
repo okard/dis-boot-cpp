@@ -38,8 +38,14 @@ private:
 	
 	//source files to compile
 	//save sourceid/filename here?
+	
+	
+	//struct module(filename,NodePtr, state)
+	
+	// already opened files
 	// std::map<filename, SourceId> //filename to Source id
-	// std::map<SourceId, Filename> //source id to filename
+	
+	// already parsed/files?
 	// std::map<SourceId, NodePtr> //source id to ast
 	
 public:

@@ -36,13 +36,22 @@ class SourceFile : public Source
 private:
 	std::ifstream filestream_;
 	size_t size_;
+	
+	
+	//Buffer filename_;
+	//string filename
 public:
 
+	///Open file 
 	void open(const char* filename);
 	
-	
+	///read
 	size_t read(BufferView& buf, size_t size);
 	
+	///return file name
+	const char* identifier();
+	
+	///return file size
 	size_t size() const { return size_; }
 };
 	
