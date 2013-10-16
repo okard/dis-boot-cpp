@@ -31,6 +31,7 @@ THE SOFTWARE.
 
 namespace plf {
 	
+	
 class SourceFile : public Source
 {
 private:
@@ -46,7 +47,7 @@ public:
 	void open(const char* filename);
 	
 	///read
-	size_t read(BufferView& buf, size_t size);
+	size_t readComplete(Buffer&);
 	
 	///return file name
 	const char* identifier();

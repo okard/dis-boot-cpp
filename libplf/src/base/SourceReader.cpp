@@ -21,77 +21,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#pragma once
-#ifndef __PLF_SOURCE_HPP__
-#define __PLF_SOURCE_HPP__
+#include <plf/base/SourceReader.hpp>
 
-#include <cstddef>
-#include <memory>
 
-namespace plf {
-	
-//Forward Declaration:	
-class Buffer;
-	
-//Source ID
-typedef unsigned int SourceId;
+using namespace plf;
 
-enum class Encoding 
+
+void SourceReader::load(SourcePtr& ptr)
 {
-	ASCII,
-	UTF8,
-	UTF16,
-	UTF32
-};
+	source_ = ptr;
+	buf_.alloc(source_->size());
+	source_->readComplete(buf_);
+	
+	startPos_ = 0;
+	endPos_ = source_->size();
+	currentPos_ = 0;
+}
 
-/**
-* Source representation
-* can be a file, a memory string ...
-*/
-class Source
+
+void SourceReader::copyto(Buffer& buf, size_t start, size_t end)
 {
-private:
-	SourceId id_;
 	
-protected:
-	Encoding encoding_;
-
-public:	
-	
-	//get buffer?
-	
-	//read to buffer
-	
-	virtual size_t readComplete(Buffer&) = 0;
-
-	/**
-	* Get id for source manager
-	*/
-	inline SourceId getId() const { return id_; }
-	
-	/**
-	* Get encoding of source
-	*/
-	inline Encoding getEncoding() const { return encoding_; }
-	
-	/**
-	* get an identifier for the source file
-	*/
-	virtual const char* identifier() { return nullptr; }
-	
-	/**
-	* get source size
-	*/
-	virtual size_t size() const = 0;
-	
-	
-	friend class SourceManager;
-};
-
-
-typedef std::shared_ptr<Source> SourcePtr;
-	
-	
-} //end namespace
-
-#endif
+}

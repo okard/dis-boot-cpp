@@ -23,7 +23,7 @@ THE SOFTWARE.
 */
 #include <plf/base/SourceFile.hpp>
 
-#include <plf/base/BufferView.hpp>
+#include <plf/base/Buffer.hpp>
 #include <plf/base/FormatException.hpp>
 
 using namespace plf;
@@ -47,12 +47,11 @@ void SourceFile::open(const char* filename)
 	}
 }
 
-size_t SourceFile::read(BufferView& buf, size_t size)
+size_t SourceFile::readComplete(Buffer& buf)
 {
-	//TODO get position of BufferView
-	
-	if( (buf.buffer().size() - buf.pos()) < size)
-		size = buf.buffer().size() - buf.pos();
+	auto size = size_;
+	if( buf.size() < size)
+		size = buf.size();
 	
 	//check for size
 	//try to read
@@ -62,7 +61,7 @@ size_t SourceFile::read(BufferView& buf, size_t size)
 	{
 		filestream_.read(buf.ptr(), size);
 		auto bytesRead = filestream_.gcount();
-		buf.setEnd(bytesRead+buf.pos());
+		//buf.setEnd(bytesRead+buf.pos());
 		return bytesRead;
 	}
 	
@@ -72,5 +71,5 @@ size_t SourceFile::read(BufferView& buf, size_t size)
 
 const char* SourceFile::identifier()
 {
-	
+	return nullptr;
 }

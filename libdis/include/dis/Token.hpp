@@ -122,7 +122,8 @@ enum class TokenId
 struct Token
 {
 	TokenId id;
-	plf::BufferPtr buffer;
+	//to share one extracted string in nodes token uses a BufferPtr instead of Buffer
+	plf::BufferPtr buffer = std::make_shared<plf::Buffer>();
 	plf::Location loc;
 };
 

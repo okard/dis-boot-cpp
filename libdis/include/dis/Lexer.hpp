@@ -30,6 +30,7 @@ THE SOFTWARE.
 #include <plf/base/External.hpp>
 #include <plf/base/BufferView.hpp>
 #include <plf/base/Source.hpp>
+#include <plf/base/SourceReader.hpp>
 
 #include "Token.hpp"
 
@@ -41,9 +42,13 @@ namespace dis {
 class Lexer
 {
 private:
+	/*
 	plf::Buffer buf_;
 	plf::BufferView bufv_;
 	plf::SourcePtr src_;
+	*/
+	
+	plf::SourceReader reader_;
 	
 	//ring buffer?
 	std::deque<Token> toklist_;

@@ -82,7 +82,6 @@ inline bool isHex(char c)
 inline void checkKeyword(Token& tok);
 
 Lexer::Lexer()
-	: bufv_(buf_)
 {
 }
 
@@ -93,9 +92,12 @@ Lexer::~Lexer()
 void Lexer::open(plf::SourcePtr srcptr)
 {
 	//read in the complete file
-	auto size = srcptr->size();
+	/*auto size = srcptr->size();
 	buf_ = plf::Buffer(size);
-	srcptr->read(bufv_, size);
+	srcptr->readComplete(buf_);
+	*/
+	
+	reader_.load(srcptr);
 	
 	//TODO reset internal status
 	toklist_.clear();
@@ -133,7 +135,7 @@ Token& Lexer::peek(int num)
 
 void  Lexer::lexToken(Token& tok)
 {	
-	if(bufv_.eob())
+	if(reader_.eos())
 	{
 		tok.id = TokenId::Eof;
 		return;
@@ -204,7 +206,7 @@ void  Lexer::lexToken(Token& tok)
 	//check for comments
 	if(tok.id == TokenId::Div && current() == '/')
 	{
-		while(!bufv_.eob() && current() != '\n')
+		while(!reader_.eos() && current() != '\n')
 			nextChar();
 		lexToken(tok);
 		return;
@@ -259,12 +261,12 @@ void Lexer::lexId(Token& tok)
 	//std::cout << "Lex id: " << str << std::endl;
 	
 	//add the id to token buffer
-	tok.buffer = std::make_shared<plf::Buffer>(bufv_.ptr(), i);
+	reader_.copyto(*tok.buffer, reader_.pos(), i); 
 	
 	checkKeyword(tok);
 	
 	//skip over
-	bufv_.set(i + bufv_.pos());
+	reader_.skip(i);
 	column_ += i;
 }
 
@@ -282,9 +284,10 @@ void Lexer::lexNumber(Token& tok)
 		
 		int i;
 		for(i = 0; isBin(current()); i++); //TODO check for eob
-		tok.buffer = std::make_shared<plf::Buffer>(bufv_.ptr(), i);
+		
+		reader_.copyto(*tok.buffer, reader_.pos(), i);
 		//skip over
-		bufv_.set(i + bufv_.pos());
+		reader_.skip(i);
 		return;
 	}
 	
@@ -298,9 +301,9 @@ void Lexer::lexNumber(Token& tok)
 		
 		int i;
 		for(i = 0; isHex(current()); i++); //TODO check for eob
-		tok.buffer = std::make_shared<plf::Buffer>(bufv_.ptr(), i);
+		reader_.copyto(*tok.buffer, reader_.pos(), i);
 		//skip over
-		bufv_.set(i + bufv_.pos());
+		reader_.skip(i);
 		return;
 	}
 	
@@ -308,7 +311,9 @@ void Lexer::lexNumber(Token& tok)
 	int i;
 	for(i = 0; isNumeric(peekChar(i)); i++); 
 	
-	tok.buffer = std::make_shared<plf::Buffer>(bufv_.ptr(), i);
+	reader_.copyto(*tok.buffer, reader_.pos(), i);
+		//skip over
+		
 	
 	//normal number
 	//dot == double
@@ -316,7 +321,7 @@ void Lexer::lexNumber(Token& tok)
 	//if dot and ends with .f or .{num}f
 	
 	//skip over
-	bufv_.set(i + bufv_.pos());
+	reader_.skip(i);
 	column_ += i; 
 }
 
@@ -335,9 +340,9 @@ void Lexer::lexString(Token& tok)
 	//std::cout << "Lex string: " << str << std::endl;
 	
 	//into buffer
-	tok.buffer = std::make_shared<plf::Buffer>(bufv_.ptr() ,i);
+	reader_.copyto(*tok.buffer, reader_.pos(), i);
+	reader_.skip(i+1); //skip "
 	
-	bufv_.set(i + bufv_.pos()+1); //skip "
 	column_ += i;
 }
 
@@ -355,23 +360,23 @@ inline void Lexer::nextChar()
 		line_++;
 	}
 		
-	bufv_.next<char>();
+	reader_.next<char>();
 	column_++;
 }
 
 inline char& Lexer::current()
 {
-	return bufv_.current<char>();
+	return reader_.current<char>();
 }
 
 inline char& Lexer::peekChar(size_t n)
 {
-	return bufv_.peek<char>(n);
+	return reader_.peek<char>(n);
 }
 
 inline void Lexer::skip(int i)
 {
-	bufv_.set(i + bufv_.pos());
+	reader_.skip(i);
 	column_ += i;
 }
 	

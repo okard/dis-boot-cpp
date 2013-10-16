@@ -42,25 +42,30 @@ Buffer::Buffer(size_t size)
 Buffer::Buffer(const byte* ptr)
 	: size_(strlen(ptr)), buffer_(new byte[strlen(ptr)])
 {
-	insert(ptr, size_);
+	//TODO check
+	memcpy(buffer_, ptr, size_);
 }
 
 Buffer::Buffer(const byte* ptr, size_t size)
 	: size_(size), buffer_(new byte[size])
 {
-	insert(ptr, size);
+	memcpy(buffer_, ptr, size_);
 }
 
 Buffer::Buffer(const Buffer& buf)
 	: size_(buf.size_), buffer_(new byte[buf.size_])
 {
-	insert(buf.buffer_, size_);
+	memcpy(buffer_, buf.buffer_, size_);
 }
 
 Buffer::~Buffer()
 {
 	if(buffer_)
+	{
 		delete[] buffer_;
+		buffer_ = nullptr;
+		size_ = 0;
+	}
 }
 
 
@@ -70,7 +75,7 @@ Buffer& Buffer::operator=(const Buffer& buf)
 	if(this != &buf)
 	{
 		alloc(buf.size_);
-		insert(buf.buffer_, buf.size_);
+		memcpy(buffer_, buf.buffer_, size_);
 	}
 	return *this;
 }
@@ -79,10 +84,10 @@ Buffer& Buffer::operator=(const char* str)
 {
 	auto size = strlen(str);
 	alloc(size);
-	insert(str, size);
+	memcpy(buffer_, str, size_);
 }
 
-bool Buffer::operator==(Buffer const& buf)
+bool Buffer::operator==(Buffer const& buf) const
 {
 	if(this == &buf)
 		return true;
@@ -90,7 +95,7 @@ bool Buffer::operator==(Buffer const& buf)
 	return memcmp(buffer_, buf.buffer_, size_);
 }
 	
-bool Buffer::operator==(const char* str)
+bool Buffer::operator==(const char* str) const
 {
 	return memcmp(buffer_, str, size_);
 }
@@ -99,13 +104,23 @@ void Buffer::alloc(size_t size)
 {
 	//delete old buffer
 	if(buffer_)
+	{
 		delete[] buffer_;
+		buffer_ = nullptr;
+		size_ = 0;
+	}
+	
+	//no allocation required
+	if(size == 0)
+		return;
 	
 	//set new buffer
 	buffer_ = new byte[size];
 	size_ = size;
+	memset (buffer_,'\0',size);
 }
 
+/*
 size_t Buffer::insert(const byte* ptr, size_t size)
 {
 	//TODO wrap?
@@ -115,7 +130,7 @@ size_t Buffer::insert(const byte* ptr, size_t size)
 	size = size > size_ ? size_ : size;
 	memcpy(buffer_, ptr, size);
 	return size;
-}
+}*/
 
 
 

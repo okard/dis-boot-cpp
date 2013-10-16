@@ -58,13 +58,13 @@ public:
 	//int for utf32 char
 	
 	template<typename T>
-	inline T& peek(size_t offset) { return *reinterpret_cast<T*>(buffer_[pos_+offset]); }
+	inline T& peek(size_t offset) { return *reinterpret_cast<T*>(buffer_.ptr()[pos_+offset]); }
 	
 	template<typename T>
 	inline void next() { pos_ += sizeof(T); }
 	
 	template<typename T>
-	inline T& current() { return *reinterpret_cast<T*>(buffer_[pos_]); }
+	inline T& current() { return *reinterpret_cast<T*>(buffer_.ptr()[pos_]); }
 	
 	
 	
@@ -78,7 +78,7 @@ public:
 	//bytes left?
 	
 	/// access to current positon in buffer as ptr
-	inline Buffer::byte* ptr() { return buffer_[pos_]; }
+	inline Buffer::byte* ptr() { return &buffer_.ptr()[pos_]; }
 	/// return buffer
 	inline const Buffer& buffer() const { return buffer_; }
 	/// return buffer
