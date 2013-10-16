@@ -28,7 +28,6 @@ THE SOFTWARE.
 #include <deque>
 
 #include <plf/base/External.hpp>
-#include <plf/base/BufferView.hpp>
 #include <plf/base/Source.hpp>
 #include <plf/base/SourceReader.hpp>
 
@@ -42,12 +41,7 @@ namespace dis {
 class Lexer
 {
 private:
-	/*
-	plf::Buffer buf_;
-	plf::BufferView bufv_;
-	plf::SourcePtr src_;
-	*/
-	
+	//reader to handle source input
 	plf::SourceReader reader_;
 	
 	//ring buffer?
