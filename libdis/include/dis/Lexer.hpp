@@ -49,8 +49,8 @@ private:
 	
 	bool doc_comment_enabled; //lex doc comments
 
-	size_t column_;
-	size_t line_;
+	size_t column_ = 0;
+	size_t line_ = 0;
 
 public:
 	Lexer();

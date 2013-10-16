@@ -53,11 +53,14 @@ Compiler::~Compiler()
 
 int Compiler::run(int argc, char *argv[])
 {
+	std::cout << "Running dis compiler" << std::endl;
+	
 	//- parse arguments
 	for(int i=1; i < argc; i++)
 	{
 		if(strcmp(argv[i], "-lex") == 0 && ((i+1) < argc))
 		{
+			std::cout << "Lexer Dump:" << std::endl;
 			//check if file exists
 			testLex(argv[i+1]);
 			return 0;
@@ -65,6 +68,7 @@ int Compiler::run(int argc, char *argv[])
 		
 		if(strcmp(argv[i], "-parse") == 0 && ((i+1) < argc))
 		{
+			std::cout << "Parser Dump:" << std::endl;
 			//check if file exists
 			testParse(argv[i+1]);
 			return 0;
@@ -110,7 +114,8 @@ void Compiler::testLex(const char* filename)
 		{
 			case TokenId::Ident: 
 			case TokenId::StringLiteral:
-				std::cout << " Buffer: " << std::string(tok.buffer->ptr(), tok.buffer->size());
+				std::cout << " Buffer: ";
+				std::cout.write(tok.buffer->ptr(), tok.buffer->size());
 				break;
 				
 			default:

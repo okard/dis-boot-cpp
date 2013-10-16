@@ -71,6 +71,9 @@ public:
 	inline const byte* ptr() const { return buffer_; }
 	inline byte* ptr() { return buffer_; }
 	
+	
+	void dump();
+	
 private:
 	
 

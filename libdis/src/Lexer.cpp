@@ -397,7 +397,7 @@ inline bool chkKw(const Token& tok, const char* kw)
 
 inline void checkKeyword(Token& tok)
 {
-	if(chkKw(tok, u8"package")) { tok.id = TokenId::KwPackage; }
+	if(chkKw(tok, "package")) { tok.id = TokenId::KwPackage; }
 	else if(chkKw(tok, "import")) { tok.id = TokenId::KwImport; }
 	else if(chkKw(tok, "def")) { tok.id = TokenId::KwDef; }
 	else if(chkKw(tok, "obj")) { tok.id = TokenId::KwObj; }

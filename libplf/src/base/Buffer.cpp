@@ -92,12 +92,12 @@ bool Buffer::operator==(Buffer const& buf) const
 	if(this == &buf)
 		return true;
 	
-	return memcmp(buffer_, buf.buffer_, size_);
+	return memcmp(buffer_, buf.buffer_, size_)==0;
 }
 	
 bool Buffer::operator==(const char* str) const
 {
-	return memcmp(buffer_, str, size_);
+	return memcmp(buffer_, str, size_)==0;
 }
 
 void Buffer::alloc(size_t size)
@@ -120,17 +120,13 @@ void Buffer::alloc(size_t size)
 	memset (buffer_,'\0',size);
 }
 
-/*
-size_t Buffer::insert(const byte* ptr, size_t size)
+#include<iostream>
+void Buffer::dump()
 {
-	//TODO wrap?
-	if(!buffer_)
-		return 0;
-	
-	size = size > size_ ? size_ : size;
-	memcpy(buffer_, ptr, size);
-	return size;
-}*/
+	std::cout << "Dump Buffer: " << std::endl;
+	std::cout.write(buffer_, size_);
+	std::cout << std::endl;
+}
 
 
 

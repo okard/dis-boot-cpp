@@ -61,26 +61,31 @@ public:
 	template<typename T>
 	inline T& peek(size_t offset) 
 	{ 
-		return *reinterpret_cast<T*>(buf_.ptr()[currentPos_+offset]); 
+		return *reinterpret_cast<T*>(&buf_.ptr()[currentPos_+offset]); 
 	}
 
 	template<typename T>
 	inline void next() 
 	{ 
-		currentPos_ += sizeof(T); 
+		//byte addressed
+		currentPos_ += sizeof(T);
 	}
 	
 	template<typename T>
 	inline T& current() 
 	{ 
-		return *reinterpret_cast<T*>(buf_.ptr()[currentPos_]); 
+		return *reinterpret_cast<T*>(&buf_.ptr()[currentPos_]); 
 	}
 	
 	
 	//return current position
 	inline size_t pos() const { return currentPos_; }
 	//end of source
-	inline bool eos() const { return currentPos_ == endPos_; }
+	inline bool eos() const { return currentPos_ >= endPos_; }
+	
+private:
+	inline size_t leftSpace() const { return endPos_ - currentPos_; }
+
 };
 	
 } //end namespace plf

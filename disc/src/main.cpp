@@ -30,5 +30,6 @@ THE SOFTWARE.
 int main(int argc, char *argv[])
 {
 	Compiler compiler;
-	return compiler.run(argc, argv);
+	int r = compiler.run(argc, argv);
+	return r;
 }

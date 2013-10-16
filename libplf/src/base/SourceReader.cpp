@@ -23,6 +23,7 @@ THE SOFTWARE.
 */
 #include <plf/base/SourceReader.hpp>
 
+#include <cstring>
 
 using namespace plf;
 
@@ -34,12 +35,17 @@ void SourceReader::load(SourcePtr& ptr)
 	source_->readComplete(buf_);
 	
 	startPos_ = 0;
-	endPos_ = source_->size();
+	endPos_ = source_->size()-1;
 	currentPos_ = 0;
+	
+	//buf_.dump();
 }
 
 
-void SourceReader::copyto(Buffer& buf, size_t start, size_t end)
+void SourceReader::copyto(Buffer& buf, size_t start, size_t size)
 {
+	buf.alloc(size);
+	memcpy(buf.ptr(), &buf_.ptr()[start], size);
 	
+	//buf.dump();
 }
