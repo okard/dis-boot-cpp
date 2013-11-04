@@ -48,6 +48,8 @@ public:
 	virtual void add(const ObjectFile& o) = 0;
 	///outputs the final file
 	virtual void link(const Target& t, OutFile& f) = 0;
+	
+	//count of current object files?
 };
 
 

@@ -37,15 +37,15 @@ using namespace plf;
 /**
 * Error Result from parsing function
 */
-class ErrorNode : public Node
+class ErrorDecl : public Declaration
 {
 public:
-	ErrorNode() 
-		: Node(NodeKind::Error)
+	ErrorDecl() 
+		: Declaration(NodeKind::Error)
 	{}
 	
-	ErrorNode(bool eof) 
-		: Node(NodeKind::Error), eof(eof)
+	ErrorDecl(bool eof) 
+		: Declaration(NodeKind::Error), eof(eof)
 	{}
 	
 	bool eof = false;
@@ -58,6 +58,8 @@ public:
 	//print function?
 };
 
+
+//Exception with Token
 
 
 Parser::Parser(Lexer& lex)
@@ -88,14 +90,18 @@ NodePtr Parser::parse()
 		//expr
 		
 		default:
-			throw Exception("Not yet implemented");
+			throw Exception("parse(): Not yet implemented");
 	}
 }
+
+////////////////////////////////////////////////////////////////////////
+// Declaration
+////////////////////////////////////////////////////////////////////////
 
 /*
 * parse all declarations
 */
-NodePtr Parser::parseDeclaration()
+DeclPtr Parser::parseDeclaration()
 {
 	//flags (public,private,protected) pub priv prot
 	
@@ -103,25 +109,44 @@ NodePtr Parser::parseDeclaration()
 	parseDeclFlags(flags); //parseDeclFlags(DeclFlags&);
 	
 	//assign flags before
+	DeclPtr decl;
 	
 	switch(tok_.id)
 	{	
-		case TokenId::KwPackage:  	return parsePackage(); //todo remove here? nested packages?
-		case TokenId::KwImport:  	return parseImport();
-		case TokenId::KwDef: 		return parseFunction();
-		case TokenId::KwTrait: 		return parseTrait();
-		case TokenId::KwType: 		break;
-		case TokenId::KwObj: 		return parseClass();
-		case TokenId::KwVar: 		return parseVariable();
-		case TokenId::KwLet:  		break;
-	
+		case TokenId::KwPackage:  	
+			decl = parsePackageDecl()->to<Declaration>(); 
+			//todo remove here? nested packages?
+			break;
+		case TokenId::KwImport:
+			decl = parseImportDecl();
+			break;
+		case TokenId::KwDef: 
+			decl = parseFunction();
+			break;
+		case TokenId::KwTrait: 
+			decl = parseTrait();
+			break;
+		case TokenId::KwType:
+			throw FormatException("parseDeclaration: parsing type not implemented");
+			break;
+		case TokenId::KwObj:
+			decl = parseClass();
+			break;
+		case TokenId::KwVar: 		
+			decl = parseVariable();
+			break;
+		case TokenId::KwLet:
+		  	throw FormatException("parseDeclaration: parsing type not implemented");
+			break;
 		case TokenId::Eof:
-			return Node::create<ErrorNode>(true);
+			return Node::create<ErrorDecl>(true);
 		default:
-			return Node::create<ErrorNode>();
+			return Node::create<ErrorDecl>();
 	}
 	
-	return Node::create<ErrorNode>();
+	decl->flags = flags;
+	
+	return decl;
 }
 
 /*
@@ -159,7 +184,7 @@ void Parser::parseDeclFlags(DeclFlags& flags)
 * package a.b.c;
 * package ident .ident .ident ;
 */
-plf::NodePtr Parser::parsePackage()
+plf::DeclPtr Parser::parsePackageDecl()
 {
 	assert(tok_.id == TokenId::KwPackage);
 	
@@ -181,6 +206,7 @@ plf::NodePtr Parser::parsePackage()
 	next();
 	
 	//read all declaration in package
+	// no other package declarations?
 	NodePtr decl;
 	while((decl = parseDeclaration())->kind() != NodeKind::Error)
 	{
@@ -191,7 +217,7 @@ plf::NodePtr Parser::parsePackage()
 	//error declarations not allowed
 	if( decl
 	&&  decl->kind() == NodeKind::Error
-	&&  !decl->to<ErrorNode>()->eof)
+	&&  !decl->to<ErrorDecl>()->eof)
 	{
 		throw FormatException("Error during parsing package");
 	}
@@ -203,17 +229,30 @@ plf::NodePtr Parser::parsePackage()
 * import a.b.c;
 * import d = a.b.c;
 */
-plf::NodePtr Parser::parseImport()
+plf::DeclPtr Parser::parseImportDecl()
 {
 	assert(tok_.id == TokenId::KwImport);
-	throw FormatException("Not implemented");
 	
+	next();
+	
+	if(tok_.id != TokenId::Ident)
+		throw FormatException("Expected <Ident> at import declaration: L %d C %d", tok_.loc.line, tok_.loc.column);
+	
+	auto import = Node::create<ImportDecl>();
+	import->ident = tok_.buffer;
+	
+	// can has = or .
+	
+	
+	//end with semicolon
+	checkNext(TokenId::Semicolon);
+	return import;
 }
 
 /*
 * def name [(params)] [: rettype] body
 */
-plf::NodePtr Parser::parseFunction()
+plf::DeclPtr Parser::parseFunction()
 {
 	assert(tok_.id == TokenId::KwDef);
 	
@@ -221,32 +260,61 @@ plf::NodePtr Parser::parseFunction()
 	
 	//function name
 	checkNext(TokenId::Ident);
-	func->ident = tok_.buffer;
+	func->name = tok_.buffer;
+	next();
 	
-	if(peek(1, TokenId::ROBracket))
+	//parameter
+	if(tok_.id == TokenId::ROBracket)
 	{
 		next();
 		//parse params
 		
 		//skip RCBracket
+		throw plf::FormatException("parseFunctionDecl: Parameter Parsing not implemented");
+	}
+	
+	//return type
+	if(tok_.id == TokenId::Colon)
+	{
+		throw plf::FormatException("parseFunctionDecl: Return type parsing not implemented");
+	}
+	
+	// direct expression body: = expr;
+	if(tok_.id == TokenId::Assign)
+	{
+		throw plf::FormatException("parseFunctionDecl: = <expr>; not implemented");
+		
+		next();
+		//Node::create<ExprStmt>();
+		parseExpression();
+		check(TokenId::Semicolon);
+		next();
+		return func;
+	}
+	
+	if(tok_.id == TokenId::COBracket)
+	{
+		func->body = parseStatement();
+		
+		//NodePtr f;
+		//func->body->parent = f;
+		return func;
+	}
+	
+	//declaration only
+	if(tok_.id == TokenId::Semicolon)
+	{
+		return func;
 	}
 	
 	
-	//if ':' parse type
-	
-	//if = parse expr
-	//if { parse block
-	//if ; end
-	
-	
-	
-	throw plf::FormatException("Not implemented");
+	throw plf::FormatException("parseFunctionDecl: invalid funcdecl");
 }
 
 /*
 * var name [: type] [= init];
 */
-plf::NodePtr Parser::parseVariable()
+plf::DeclPtr Parser::parseVariable()
 {
 	assert(tok_.id == TokenId::KwVar);
 	throw plf::FormatException("Not implemented");
@@ -256,7 +324,7 @@ plf::NodePtr Parser::parseVariable()
 /**
 * Parse a class
 */
-plf::NodePtr Parser::parseClass()
+plf::DeclPtr Parser::parseClass()
 {
 	assert(tok_.id == TokenId::KwObj);
 	throw plf::FormatException("Not implemented");
@@ -267,7 +335,7 @@ plf::NodePtr Parser::parseClass()
 /**
 * Parse a trait
 */
-plf::NodePtr Parser::parseTrait()
+plf::DeclPtr Parser::parseTrait()
 {
 	assert(tok_.id == TokenId::KwTrait);
 	throw plf::FormatException("Not implemented");
@@ -296,11 +364,14 @@ StmtPtr Parser::parseStatement()
 			throw plf::Exception("parsing 'WhileStmt' not implemented");
 			break;
 		case TokenId::COBracket:
-			throw plf::Exception("parsing 'BlockStmt' not implemented");
+			return parseBlockStmt();
 			break;
 		
+		//parseDeclStmt
+		//parseExprStmt
+		
 		default:
-			throw Exception("Not yet implemented");
+			throw Exception("parseStatement: Not yet implemented");
 	}
 	
 	//decl statments
@@ -313,6 +384,24 @@ StmtPtr Parser::parseStatement()
 }
 
 
+plf::StmtPtr Parser::parseBlockStmt()
+{
+	assert(tok_.id == TokenId::COBracket);
+	auto blockStmt = Node::create<BlockStmt>();
+	
+	next();
+	while(tok_.id != TokenId::CCBracket)
+	{
+		auto stmt = parseStatement();
+		blockStmt->statements.push_back(stmt);
+	}
+	
+	assert(tok_.id == TokenId::CCBracket);
+	next();
+	
+	return blockStmt;
+}
+
 ////////////////////////////////////////////////////////////////////////
 // Expression
 ////////////////////////////////////////////////////////////////////////
@@ -323,6 +412,11 @@ StmtPtr Parser::parseStatement()
 ExprPtr Parser::parseExpression()
 {
 	throw Exception("Expression parsing not yet implemented");
+	
+	
+	//literals
+	
+	//operator
 	
 	//unary
 	//binary
@@ -339,18 +433,20 @@ ExprPtr Parser::parseExpression()
 
 /**
 * : id
-* : id.datatype
+* : id.<datatype>
 * : id[]
-* : @datatype
-* : &datatype
-* : ~datatype
+* : @<datatype>
+* : &<datatype>
+* : ~<datatype>
 * : [] 
 */
 plf::NodePtr Parser::parseDataType()
 {
+	//simple id
 	
 	
-	return Node::create<ErrorNode>();
+	
+	throw FormatException("parseDataType: not yet implemented");
 }
 
 /// Read next token
@@ -371,7 +467,7 @@ void Parser::check(TokenId id)
 	if(tok_.id != id)
 	{
 		//TODO SyntaxError
-		throw plf::FormatException("Invalid Token expected %s but get %s", toString(id), toString(tok_.id));
+		throw plf::FormatException("(%d, %d) Invalid Token expected %s but get %s", tok_.loc.line, tok_.loc.column, toString(id), toString(tok_.id));
 	}
 }
 

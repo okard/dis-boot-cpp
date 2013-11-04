@@ -45,6 +45,7 @@ class Attribute : public Node //required to inherit from node?
 */
 class AbiAttribute : public Node
 {
+	//default
 };
 
 /**

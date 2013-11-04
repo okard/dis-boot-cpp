@@ -12,6 +12,10 @@ License: MIT
 	- AST
 	- Semantic Analysis
 	- Code Gen (C/JS/LLVM)
+	- System/Platform Abstraction
+	
+* libplf-c - C Code Generation/Compiling
+* libplf-llvm -  LLVM Code Generation/Compiling
 	
 * libdis - dis programming language library
 	- Token

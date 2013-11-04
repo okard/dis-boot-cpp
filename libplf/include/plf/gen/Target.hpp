@@ -40,7 +40,8 @@ enum class Platform
 {
 	Windows,
 	Linux,
-	Posix
+	Posix,
+	MacOSX
 };
 
 enum class OutputType
@@ -63,6 +64,8 @@ public:
 	bool debug;
 	//additional required information
 };
+
+//TODO Complexer Target Interface? aligment/memory types/...
 	
 	
 } //end namespace plf

@@ -138,6 +138,8 @@ void  Lexer::lexToken(Token& tok)
 	if(reader_.eos())
 	{
 		tok.id = TokenId::Eof;
+		tok.loc.column = column_;
+		tok.loc.line = line_;
 		return;
 	}
 	

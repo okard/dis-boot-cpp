@@ -61,18 +61,19 @@ private:
 	////////////////////////////////////////////////////////////////////
 	// Declaration
 	
-	plf::NodePtr parseDeclaration();
+	plf::DeclPtr parseDeclaration();
 	
 	void parseDeclFlags(plf::DeclFlags& flags);
 	
-	plf::NodePtr parsePackage();
-	plf::NodePtr parseImport();
-	plf::NodePtr parseFunction();
+	plf::DeclPtr parsePackageDecl();
+	plf::DeclPtr parseImportDecl();
+	plf::DeclPtr parseFunction();
 		//parseFuncParameter
-	plf::NodePtr parseVariable();
-	plf::NodePtr parseClass();
-	plf::NodePtr parseTrait();
+	plf::DeclPtr parseVariable();
+	plf::DeclPtr parseClass();
+	plf::DeclPtr parseTrait();
 	
+	plf::DeclPtr parseTypeDecl();
 	
 	//parse a Ident : Type
 	
@@ -80,11 +81,17 @@ private:
 	// Statements
 	plf::StmtPtr parseStatement();
 	
+	plf::StmtPtr parseBlockStmt();
+	
+	//parseDeclStmt
+	//parseExprStmt
+	
 	//parseForLoop
 	//parseWhileLoop
 	//parseDoWhileLoop
 	//parseIfStatement
 	//parseSwitchStatement
+	
 	
 	////////////////////////////////////////////////////////////////////
 	// Expressions
@@ -92,8 +99,8 @@ private:
 	
 	//parse
 	
-	//parseIfExpression()
-	//parseSwitchExpression()
+	//parseIfExpr()
+	//parseSwitchExpr()
 	
 	////////////////////////////////////////////////////////////////////
 	// DataType

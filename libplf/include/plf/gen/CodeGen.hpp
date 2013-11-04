@@ -36,7 +36,7 @@ class PackageDecl;
 */
 struct ObjectFile
 {
-	//filename
+	//filename buffer filename_
 	//stream?
 };
 

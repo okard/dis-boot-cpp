@@ -51,26 +51,31 @@ public:
 	//copy a specific part of source to buffer
 	void copyto(Buffer& buf, size_t start, size_t size);
 	
-	
+	//skip an amount of bytes
 	void skip(size_t size)
 	{
 		//TODO check limits
 		currentPos_ += size;
 	}
 	
+	//peek a value at offset relative to current position
 	template<typename T>
 	inline T& peek(size_t offset) 
 	{ 
+		//check position
 		return *reinterpret_cast<T*>(&buf_.ptr()[currentPos_+offset]); 
 	}
 
+	//skip a value
 	template<typename T>
 	inline void next() 
 	{ 
+		//check space
 		//byte addressed
 		currentPos_ += sizeof(T);
 	}
 	
+	//return value at current position
 	template<typename T>
 	inline T& current() 
 	{ 
@@ -80,7 +85,7 @@ public:
 	
 	//return current position
 	inline size_t pos() const { return currentPos_; }
-	//end of source
+	//status end of source
 	inline bool eos() const { return currentPos_ >= endPos_; }
 	
 private:

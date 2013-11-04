@@ -40,6 +40,19 @@ public:
 //BlockStmt : ScopeStatement
 
 /**
+* Block of Statements
+*/
+class BlockStmt : public Statement
+{
+public:
+	static const NodeKind Kind = NodeKind::BlockStmt;
+	BlockStmt() : Statement(NodeKind::BlockStmt) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
+	StmtList statements;
+};
+
+/**
 * Return Statement
 */
 class ReturnStmt : public Statement

@@ -80,7 +80,8 @@ public:
 	virtual bool isType() const { return false; }
 	/// is a instance declaration
 	virtual bool isInstance() const { return false; }
-
+	
+	
 	//quick cast required?
 	operator DeclPtr () { return to<Declaration>(); }
 };
@@ -224,7 +225,7 @@ public:
 	FunctionDecl() : Declaration(NodeKind::FunctionDecl) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
-	BufferPtr ident;
+	BufferPtr name;
 	//params
 	StmtPtr body;
 	TypePtr returnType; //leave unset for unkown?
@@ -246,6 +247,8 @@ class InstanceDecl : public Declaration
 {
 public:
 	InstanceDecl(const NodeKind kind) : Declaration(kind) {}
+	
+	//TODO only 3 types? var/let/const
 	
 	virtual inline bool isType() const final { return false; }
 	virtual inline bool isInstance() const final { return true; }

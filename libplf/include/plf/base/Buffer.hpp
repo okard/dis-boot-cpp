@@ -51,36 +51,28 @@ public:
 	virtual ~Buffer();
 	
 	//TODO set to 0
-	//TODO Resize
 	//clear();
 
+	//allocates the buffer with a new size, old buffer data is freed
 	void alloc(size_t size);
 
+	//assign other buffer/ 0-terminated strings
 	Buffer& operator=(const Buffer& buf);
 	Buffer& operator=(const char* str);
 	
+	//compare
 	bool operator==(const Buffer& buf) const;
 	bool operator==(const char* str) const;
 	
-	
-	
-	//cast to const char* with last byte have to be \0?
-	
+	//size of buffer memory
 	inline size_t size() const { return size_; }
 
+	//access to buffer memory
 	inline const byte* ptr() const { return buffer_; }
 	inline byte* ptr() { return buffer_; }
 	
-	
+	//debug
 	void dump();
-	
-private:
-	
-
-
-
-	//size_t insert(const byte* ptr, size_t size);
-	
 };
 
 typedef SharedPtr<Buffer> BufferPtr;

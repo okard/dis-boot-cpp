@@ -109,7 +109,7 @@ void Compiler::testLex(const char* filename)
 	do
 	{
 		tok = lexer.next();
-		std::cout << "Token(" << tok.loc.line << ", " << tok.loc.column << "): " << dis::toString(tok.id);
+		std::cout << "Token(L" << tok.loc.line << ", C" << tok.loc.column << "): " << dis::toString(tok.id);
 		switch(tok.id)
 		{
 			case TokenId::Ident: 

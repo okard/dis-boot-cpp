@@ -95,6 +95,7 @@ enum class NodeKind : unsigned short
 	MapType,
 	
 	//Statement
+	BlockStmt,
 	ReturnStmt,
 	ForStmt,
 	WhileStmt,
