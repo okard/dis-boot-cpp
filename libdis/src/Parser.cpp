@@ -114,7 +114,7 @@ DeclPtr Parser::parseDeclaration()
 	switch(tok_.id)
 	{	
 		case TokenId::KwPackage:  	
-			decl = parsePackageDecl()->to<Declaration>(); 
+			decl = parsePackageDecl(); 
 			//todo remove here? nested packages?
 			break;
 		case TokenId::KwImport:
@@ -136,7 +136,7 @@ DeclPtr Parser::parseDeclaration()
 			decl = parseVariable();
 			break;
 		case TokenId::KwLet:
-		  	throw FormatException("parseDeclaration: parsing type not implemented");
+		  	throw FormatException("parseDeclaration: parsing let not implemented");
 			break;
 		case TokenId::Eof:
 			return Node::create<ErrorDecl>(true);
@@ -276,6 +276,7 @@ plf::DeclPtr Parser::parseFunction()
 	//return type
 	if(tok_.id == TokenId::Colon)
 	{
+		//parseDataType
 		throw plf::FormatException("parseFunctionDecl: Return type parsing not implemented");
 	}
 	
@@ -284,20 +285,25 @@ plf::DeclPtr Parser::parseFunction()
 	{
 		throw plf::FormatException("parseFunctionDecl: = <expr>; not implemented");
 		
+		//parse expression
 		next();
-		//Node::create<ExprStmt>();
-		parseExpression();
+		auto expr = parseExpression();
 		check(TokenId::Semicolon);
 		next();
+		
+		//setup return
+		auto exprStmt = Node::create<ExprStmt>();
+		exprStmt->expr = expr;
+		exprStmt->expr->parent = exprStmt;
+		func->body = exprStmt;
+		func->body->parent = func;
 		return func;
 	}
 	
 	if(tok_.id == TokenId::COBracket)
 	{
 		func->body = parseStatement();
-		
-		//NodePtr f;
-		//func->body->parent = f;
+		func->body->parent = func;
 		return func;
 	}
 	
@@ -317,8 +323,7 @@ plf::DeclPtr Parser::parseFunction()
 plf::DeclPtr Parser::parseVariable()
 {
 	assert(tok_.id == TokenId::KwVar);
-	throw plf::FormatException("Not implemented");
-	
+	throw plf::FormatException("parseVariable: not yet implemented");
 }
 
 /**
@@ -327,7 +332,7 @@ plf::DeclPtr Parser::parseVariable()
 plf::DeclPtr Parser::parseClass()
 {
 	assert(tok_.id == TokenId::KwObj);
-	throw plf::FormatException("Not implemented");
+	throw plf::FormatException("parseClass: Not yet implemented");
 	
 	//tpl
 }
@@ -366,20 +371,28 @@ StmtPtr Parser::parseStatement()
 		case TokenId::COBracket:
 			return parseBlockStmt();
 			break;
-		
-		//parseDeclStmt
-		//parseExprStmt
-		
 		default:
-			throw Exception("parseStatement: Not yet implemented");
+			break;
 	}
 	
-	//decl statments
-	//parseDeclaration() if(error and not eof)
-	//parseExpression
-	//expr statements
+	//try declaration parsing:
+	auto decl = parseDeclaration();
+	if(decl && decl->kind() != NodeKind::Error)
+	{
+		auto declStmt = Node::create<DeclStmt>();
+		
+		//check kinds for allowed DeclStmt
+		
+		declStmt->decl = decl;
+		return declStmt;
+	}
 	
-	
+	//try expression parsing
+	//parseExprStmt
+		
+		
+	//if nothing matched error:
+	throw Exception("parseStatement: Not yet fully implemented");
 	//if ; parseStatment if no error return block stmt?
 }
 
@@ -416,16 +429,24 @@ ExprPtr Parser::parseExpression()
 	
 	//literals
 	
-	//operator
-	
-	//unary
-	//binary
-	
+	//keyword expressions
 	//IfExpr
 	//SwitchExpr
 	
+	//call expressions
+	
+	//connected expressions:
+	
+	//operator
+	//unary
+	//binary
+	//tenary
+
+
 	//return Node::create<ErrorExpr>();
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////
 // DataType
@@ -444,10 +465,13 @@ plf::NodePtr Parser::parseDataType()
 {
 	//simple id
 	
-	
-	
 	throw FormatException("parseDataType: not yet implemented");
 }
+
+
+////////////////////////////////////////////////////////////////////////
+// Utility Functions
+////////////////////////////////////////////////////////////////////////
 
 /// Read next token
 void Parser::next()

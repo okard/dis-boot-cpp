@@ -73,6 +73,8 @@ private:
 	plf::DeclPtr parseClass();
 	plf::DeclPtr parseTrait();
 	
+	
+	//enum, struct, union
 	plf::DeclPtr parseTypeDecl();
 	
 	//parse a Ident : Type
@@ -83,14 +85,11 @@ private:
 	
 	plf::StmtPtr parseBlockStmt();
 	
-	//parseDeclStmt
-	//parseExprStmt
-	
-	//parseForLoop
-	//parseWhileLoop
-	//parseDoWhileLoop
-	//parseIfStatement
-	//parseSwitchStatement
+	//parseForStmt
+	//parseWhileStmt
+	//parseDoWhileStmt
+	//parseIfStmt
+	//parseSwitchStmt
 	
 	
 	////////////////////////////////////////////////////////////////////

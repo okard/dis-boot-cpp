@@ -111,6 +111,7 @@ enum class NodeKind : unsigned short
 	
 	
 	Error		//custom type for handling errors
+	//ErrorDecl, ErrorStmt, ErrorExpr, 
 };	
 
 /**

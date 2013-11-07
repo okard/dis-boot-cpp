@@ -36,7 +36,7 @@ class Symbol
 	//decl
 	//extern elsewhere declared resolved by linking
 	//static not exported symbols package internal only
-	//used
+	//use_counter //is referenced or not used
 };
 
 /**
