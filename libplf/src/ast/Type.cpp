@@ -44,9 +44,9 @@ PrimaryType typeUInt64(8, "uint64", false);
 
 
 
-UnkownType& UnkownType::getInstance()
+TypePtr UnkownType::getInstance()
 {
-	static UnkownType instance;
+	static TypePtr instance(new UnkownType());
 	return instance;
 }
 

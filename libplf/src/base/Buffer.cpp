@@ -85,19 +85,26 @@ Buffer& Buffer::operator=(const char* str)
 	auto size = strlen(str);
 	alloc(size);
 	memcpy(buffer_, str, size_);
+	
+	return *this;
 }
 
 bool Buffer::operator==(Buffer const& buf) const
 {
 	if(this == &buf)
 		return true;
-	
-	return memcmp(buffer_, buf.buffer_, size_)==0;
+		
+	//compare with the bigger one?
+	auto size = buf.size() < size_ ? size_ : buf.size();
+	return memcmp(buffer_, buf.buffer_, size)==0;
 }
 	
 bool Buffer::operator==(const char* str) const
 {
-	return memcmp(buffer_, str, size_)==0;
+	//compare with the bigger one?
+	auto size = strlen(str);
+	size = size < size_ ? size_ : size;
+	return memcmp(buffer_, str, size)==0;
 }
 
 void Buffer::alloc(size_t size)

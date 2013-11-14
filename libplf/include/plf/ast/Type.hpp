@@ -50,7 +50,7 @@ class UnkownType : public Type
 private:
 	UnkownType() : Type(NodeKind::UnkownType) {}
 public:
-	UnkownType& getInstance(); //get sharedptr
+	static TypePtr getInstance(); //get sharedptr
 };
 
 /**

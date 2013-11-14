@@ -214,6 +214,21 @@ public:
 	TypePtr type;
 };
 
+/**
+* Function parameter
+*/
+struct FunctionParameter
+{
+	bool readonly;
+	BufferPtr ident;
+	TypePtr type;
+	
+	
+	FunctionParameter(bool ro, const BufferPtr& id, const TypePtr& type)
+		: readonly(ro), ident(id), type(type)
+	{
+	}
+};
 
 /**
 * Function Declaration
@@ -226,7 +241,7 @@ public:
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
 	BufferPtr name;
-	//params
+	List<FunctionParameter> params;
 	StmtPtr body;
 	TypePtr returnType; //leave unset for unkown?
 	bool classFunc = false; //means parent is classdecl

@@ -31,6 +31,7 @@ THE SOFTWARE.
 
 namespace plf {
 	enum class DeclFlags : unsigned char;
+	class FunctionDecl;
 }
 
 namespace dis {
@@ -68,7 +69,8 @@ private:
 	plf::DeclPtr parsePackageDecl();
 	plf::DeclPtr parseImportDecl();
 	plf::DeclPtr parseFunction();
-		//parseFuncParameter
+	void parseFuncParameter(plf::FunctionDecl& func);
+	
 	plf::DeclPtr parseVariable();
 	plf::DeclPtr parseClass();
 	plf::DeclPtr parseTrait();

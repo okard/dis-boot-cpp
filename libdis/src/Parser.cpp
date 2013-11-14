@@ -30,6 +30,7 @@ THE SOFTWARE.
 #include <plf/ast/Declaration.hpp>
 #include <plf/ast/Statement.hpp>
 #include <plf/ast/Expression.hpp>
+#include <plf/ast/Type.hpp>
 
 using namespace dis;
 using namespace plf;
@@ -268,9 +269,10 @@ plf::DeclPtr Parser::parseFunction()
 	{
 		next();
 		//parse params
+		parseFuncParameter(*func);
 		
-		//skip RCBracket
-		throw plf::FormatException("parseFunctionDecl: Parameter Parsing not implemented");
+		check(TokenId::RCBracket);
+		next();
 	}
 	
 	//return type
@@ -315,6 +317,54 @@ plf::DeclPtr Parser::parseFunction()
 	
 	
 	throw plf::FormatException("parseFunctionDecl: invalid funcdecl");
+}
+
+/**
+* Function parameter parsing
+* {[var|let] ident: datatype }
+*/
+void Parser::parseFuncParameter(plf::FunctionDecl& func)
+{
+	if(tok_.id == TokenId::RCBracket)
+		return;
+	
+	while(false)
+	{
+		bool readonly = false;
+		
+		//prefix
+		if(tok_.id == TokenId::KwVar)
+			next();
+		else if(tok_.id == TokenId::KwLet)
+		{
+			readonly = true;
+			next();
+		}
+		
+		//ident
+		check(TokenId::Ident);
+		BufferPtr id = tok_.buffer;
+		next();
+		
+		//optional : <datatype>
+		if(tok_.id == TokenId::Colon)
+		{
+			next();
+			parseDataType();
+		}
+		
+		func.params.push_back(FunctionParameter(readonly, id, UnkownType::getInstance()));
+		
+		//, or break
+		if(tok_.id == TokenId::Comma)
+			continue;
+		else
+			break;
+		
+	}
+	
+	//fo
+	throw plf::FormatException("parseFuncParameter: Parameter Parsing not implemented");
 }
 
 /*
