@@ -68,7 +68,7 @@ private:
 	
 	plf::DeclPtr parsePackageDecl();
 	plf::DeclPtr parseImportDecl();
-	plf::DeclPtr parseFunction();
+	plf::DeclPtr parseFunctionDecl();
 	void parseFuncParameter(plf::FunctionDecl& func);
 	
 	plf::DeclPtr parseVariable();
@@ -105,7 +105,7 @@ private:
 	
 	////////////////////////////////////////////////////////////////////
 	// DataType
-	plf::NodePtr parseDataType();
+	plf::TypePtr parseDataType();
 	
 	////////////////////////////////////////////////////////////////////
 	// Utils

@@ -122,7 +122,7 @@ DeclPtr Parser::parseDeclaration()
 			decl = parseImportDecl();
 			break;
 		case TokenId::KwDef: 
-			decl = parseFunction();
+			decl = parseFunctionDecl();
 			break;
 		case TokenId::KwTrait: 
 			decl = parseTrait();
@@ -253,7 +253,7 @@ plf::DeclPtr Parser::parseImportDecl()
 /*
 * def name [(params)] [: rettype] body
 */
-plf::DeclPtr Parser::parseFunction()
+plf::DeclPtr Parser::parseFunctionDecl()
 {
 	assert(tok_.id == TokenId::KwDef);
 	
@@ -328,7 +328,7 @@ void Parser::parseFuncParameter(plf::FunctionDecl& func)
 	if(tok_.id == TokenId::RCBracket)
 		return;
 	
-	while(false)
+	while(true)
 	{
 		bool readonly = false;
 		
@@ -346,25 +346,22 @@ void Parser::parseFuncParameter(plf::FunctionDecl& func)
 		BufferPtr id = tok_.buffer;
 		next();
 		
+		TypePtr type = UnkownType::getInstance();
 		//optional : <datatype>
 		if(tok_.id == TokenId::Colon)
 		{
 			next();
-			parseDataType();
+			type = parseDataType();
 		}
 		
-		func.params.push_back(FunctionParameter(readonly, id, UnkownType::getInstance()));
+		func.params.push_back(FunctionParameter(readonly, id, type));
 		
 		//, or break
 		if(tok_.id == TokenId::Comma)
 			continue;
 		else
-			break;
-		
+			return;
 	}
-	
-	//fo
-	throw plf::FormatException("parseFuncParameter: Parameter Parsing not implemented");
 }
 
 /*
@@ -511,7 +508,7 @@ ExprPtr Parser::parseExpression()
 * : ~<datatype>
 * : [] 
 */
-plf::NodePtr Parser::parseDataType()
+TypePtr Parser::parseDataType()
 {
 	//simple id
 	
