@@ -40,9 +40,7 @@ class StructDecl;
 class EnumDecl;
 class AliasDecl;
 class FunctionDecl;
-class VariableDecl;
-class ValueDecl;
-class ConstDecl;
+class InstanceDecl;
 
 //Stmt
 class BlockStmt;
@@ -90,9 +88,7 @@ public:
 	virtual NodePtr visit(EnumDecl& n, ParamPtr& arg);
 	virtual NodePtr visit(AliasDecl& n, ParamPtr& arg);
 	virtual NodePtr visit(FunctionDecl& n, ParamPtr& arg);
-	virtual NodePtr visit(VariableDecl& n, ParamPtr& arg);
-	virtual NodePtr visit(ValueDecl& n, ParamPtr& arg);
-	virtual NodePtr visit(ConstDecl& n, ParamPtr& arg);
+	virtual NodePtr visit(InstanceDecl& n, ParamPtr& arg);
 	
 	
 	//Statements--------------------------------------------------------

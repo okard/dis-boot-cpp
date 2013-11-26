@@ -119,17 +119,7 @@ NodePtr Visitor::visit(FunctionDecl& n, ParamPtr& arg)
 	return n;
 }
 
-NodePtr Visitor::visit(VariableDecl& n, ParamPtr& arg)
-{
-	return n;
-}
-
-NodePtr Visitor::visit(ValueDecl& n, ParamPtr& arg)
-{
-	return n;
-}
-
-NodePtr Visitor::visit(ConstDecl& n, ParamPtr& arg)
+NodePtr Visitor::visit(InstanceDecl& n, ParamPtr& arg)
 {
 	return n;
 }

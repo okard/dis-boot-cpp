@@ -251,61 +251,33 @@ public:
 };
 
 /**
+* Instance Type
+*/
+enum class InstanceType
+{
+	Variable,
+	Value,
+	Constant
+};
+
+/**
 * All declarations which creates an instance of a type
 */
 class InstanceDecl : public Declaration
 {
 public:
-	InstanceDecl(const NodeKind kind) : Declaration(kind) {}
+	static const NodeKind Kind = NodeKind::InstanceDecl;
+	InstanceDecl() : Declaration(Kind) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	//TODO only 3 types? var/let/const
 	
 	virtual inline bool isType() const final { return false; }
 	virtual inline bool isInstance() const final { return true; }
-};
-
-/**
-* Variable Declaration
-*/
-class VariableDecl final : public InstanceDecl
-{
-public:
-	static const NodeKind Kind = NodeKind::VariableDecl;
-	VariableDecl(const NodeKind kind) : InstanceDecl(kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
-	BufferPtr ident;
-	TypePtr type;
-	ExprPtr init;
-};
-
-/**
-* Value Declaration (readonly value)
-*/
-class ValueDecl final : public InstanceDecl
-{
-public:
-	static const NodeKind Kind = NodeKind::ValueDecl;
-	ValueDecl(const NodeKind kind) : InstanceDecl(kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
-
-	BufferPtr ident;
-	TypePtr type;
-	ExprPtr init;
+	InstanceType itype;
 	
-};
-
-/**
-* Constant Declaration
-*/
-class ConstDecl final : public InstanceDecl
-{
-public:
-	static const NodeKind Kind = NodeKind::ConstDecl;
-	ConstDecl(const NodeKind kind) : InstanceDecl(kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
-	
-	BufferPtr ident;
+	BufferPtr name;
 	TypePtr type;
 	ExprPtr init;
 };

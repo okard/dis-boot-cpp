@@ -79,9 +79,7 @@ enum class NodeKind : unsigned short
 	AliasDecl,
 	EnumDecl,
 	//Instances
-	VariableDecl,
-	ValueDecl,
-	ConstDecl,
+	InstanceDecl,
 
 	//Type
 	PrimaryType,

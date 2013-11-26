@@ -136,11 +136,11 @@ DeclPtr Parser::parseDeclaration()
 		case TokenId::KwObj:
 			decl = parseClass();
 			break;
-		case TokenId::KwVar: 		
-			decl = parseVariableDecl();
-			break;
+		//Instance Declarations
+		case TokenId::KwVar: 
 		case TokenId::KwLet:
-		  	throw FormatException("parseDeclaration: parsing let not implemented");
+		case TokenId::KwConst:		
+			decl = parseInstanceDecl();
 			break;
 		case TokenId::Eof:
 			return Node::create<ErrorDecl>(true);
@@ -376,15 +376,6 @@ void Parser::parseFuncParameter(plf::FunctionDecl& func)
 	}
 }
 
-/*
-* var name [: type] [= init];
-*/
-plf::DeclPtr Parser::parseVariableDecl()
-{
-	assert(tok_.id == TokenId::KwVar);
-	throw plf::FormatException("parseVariable: not yet implemented");
-}
-
 /**
 * Parse a class
 */
@@ -405,6 +396,52 @@ plf::DeclPtr Parser::parseTrait()
 	throw plf::FormatException("Not implemented");
 	
 	//tpl
+}
+
+/*
+* var/let/const name [: type] [= init];
+*/
+plf::DeclPtr Parser::parseInstanceDecl()
+{
+	auto inst = Node::create<InstanceDecl>();
+	
+	switch(tok_.id)
+	{
+		case TokenId::KwVar:
+			inst->itype = InstanceType::Variable;
+			break;
+		case TokenId::KwLet:
+			inst->itype = InstanceType::Value;
+			break;
+		case TokenId::KwConst:
+			inst->itype = InstanceType::Constant;
+			break;
+		default:
+			throw FormatException("parseInstanceDecl: Invalid Token");
+	}
+	
+	checkNext(TokenId::Ident);
+	
+	inst->name = tok_.buffer;
+	
+	next();
+	
+	if(tok_.id == TokenId::Colon)
+	{
+		next();
+		inst->type = parseDataType();
+	}
+	
+	if(tok_.id == TokenId::Assign)
+	{
+		next();
+		inst->init = parseExpression();
+	}
+	
+	check(TokenId::Semicolon);
+	next();
+	
+	return inst;
 }
 
 ////////////////////////////////////////////////////////////////////////
