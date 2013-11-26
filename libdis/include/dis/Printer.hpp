@@ -1,5 +1,5 @@
 /*
-Programming Language Framework (PLF)
+Dis Programming Language Frontend Library
 
 Copyright (c) 2013 okard
 
@@ -21,22 +21,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <plf/ast/Declaration.hpp>
+#pragma once
+#ifndef DIS_PARSER_HPP
+#define DIS_PARSER_HPP
 
-using namespace plf;
+#include <plf/ast/Visitor.hpp>
 
-namespace plf {
-
-DeclFlags operator|(DeclFlags a, DeclFlags b)
+namespace dis {
+	
+/**
+* Source Printer Visitor
+*/ 
+class Printer : public plf::Visitor
 {
-  typedef std::underlying_type<DeclFlags>::type enum_type;
-  return static_cast<DeclFlags>(static_cast<enum_type>(a) | static_cast<enum_type>(b));
+public:
+	virtual plf::NodePtr visit(plf::PackageDecl& n, plf::ParamPtr& arg);
+	
+};
+	
 }
 
-DeclFlags operator&(DeclFlags a, DeclFlags b)
-{
-  typedef std::underlying_type<DeclFlags>::type enum_type;
-  return static_cast<DeclFlags>(static_cast<enum_type>(a) & static_cast<enum_type>(b));
-}
-
-} //end namespace plf
+#endif // DIS_PARSER_HPP

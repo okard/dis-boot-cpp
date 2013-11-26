@@ -54,17 +54,9 @@ enum class DeclFlags : unsigned char
 	External    = 1<<7
 };
 
-DeclFlags operator|(DeclFlags a, DeclFlags b)
-{
-  typedef std::underlying_type<DeclFlags>::type enum_type;
-  return static_cast<DeclFlags>(static_cast<enum_type>(a) | static_cast<enum_type>(b));
-}
+DeclFlags operator|(DeclFlags a, DeclFlags b);
 
-DeclFlags operator&(DeclFlags a, DeclFlags b)
-{
-  typedef std::underlying_type<DeclFlags>::type enum_type;
-  return static_cast<DeclFlags>(static_cast<enum_type>(a) & static_cast<enum_type>(b));
-}
+DeclFlags operator&(DeclFlags a, DeclFlags b);
 
 	
 /**

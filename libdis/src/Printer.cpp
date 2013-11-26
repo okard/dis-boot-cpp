@@ -1,5 +1,5 @@
 /*
-Programming Language Framework (PLF)
+Dis Programming Language Frontend Library
 
 Copyright (c) 2013 okard
 
@@ -21,22 +21,29 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+#include <dis/Printer.hpp>
+
+#include <iostream>
+
 #include <plf/ast/Declaration.hpp>
 
+using namespace dis;
 using namespace plf;
 
-namespace plf {
-
-DeclFlags operator|(DeclFlags a, DeclFlags b)
+NodePtr Printer::visit(PackageDecl& n, ParamPtr& arg)
 {
-  typedef std::underlying_type<DeclFlags>::type enum_type;
-  return static_cast<DeclFlags>(static_cast<enum_type>(a) | static_cast<enum_type>(b));
+	std::cout << "package ";
+		for(auto p: n.path)
+		{
+			std::cout << p->ptr() << '.';
+		}
+	std::cout << ";" << std::endl;
+	
+	//accept subnodes
+	for(auto d: n.decls)
+	{
+		d->accept(*this, arg);
+	}
+	
+	return n;
 }
-
-DeclFlags operator&(DeclFlags a, DeclFlags b)
-{
-  typedef std::underlying_type<DeclFlags>::type enum_type;
-  return static_cast<DeclFlags>(static_cast<enum_type>(a) & static_cast<enum_type>(b));
-}
-
-} //end namespace plf

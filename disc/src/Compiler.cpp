@@ -31,6 +31,8 @@ THE SOFTWARE.
 #include <plf/base/SourceFile.hpp>
 #include <plf/base/SourceManager.hpp>
 
+#include <dis/Printer.hpp>
+
 using namespace plf;
 using namespace dis;
 
@@ -139,6 +141,10 @@ void Compiler::testParse(const char* filename)
 	lexer.open(src);
 	
 	auto n = parser.parse();
+	
+	Printer p;
+	ParamPtr pp;
+	n->accept(p, pp);
 	
 	//prettyPrinter()
 }
