@@ -109,7 +109,7 @@ DeclPtr Parser::parseDeclaration()
 {
 	//flags (public,private,protected) pub priv prot
 	
-	DeclFlags flags;
+	DeclFlags flags = DeclFlags::None;
 	parseDeclFlags(flags); //parseDeclFlags(DeclFlags&);
 	
 	//assign flags before
@@ -137,7 +137,7 @@ DeclPtr Parser::parseDeclaration()
 			decl = parseClass();
 			break;
 		case TokenId::KwVar: 		
-			decl = parseVariable();
+			decl = parseVariableDecl();
 			break;
 		case TokenId::KwLet:
 		  	throw FormatException("parseDeclaration: parsing let not implemented");
@@ -379,7 +379,7 @@ void Parser::parseFuncParameter(plf::FunctionDecl& func)
 /*
 * var name [: type] [= init];
 */
-plf::DeclPtr Parser::parseVariable()
+plf::DeclPtr Parser::parseVariableDecl()
 {
 	assert(tok_.id == TokenId::KwVar);
 	throw plf::FormatException("parseVariable: not yet implemented");

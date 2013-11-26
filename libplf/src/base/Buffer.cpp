@@ -72,7 +72,7 @@ Buffer::~Buffer()
 
 Buffer& Buffer::operator=(const Buffer& buf)
 {
-	if(this != &buf)
+	if(this != &buf && buf.size() > 0)
 	{
 		alloc(buf.size_);
 		memcpy(buffer_, buf.buffer_, size_);
@@ -83,8 +83,12 @@ Buffer& Buffer::operator=(const Buffer& buf)
 Buffer& Buffer::operator=(const char* str)
 {
 	auto size = strlen(str);
-	alloc(size);
-	memcpy(buffer_, str, size_);
+	
+	if(size > 0)
+	{
+		alloc(size);
+		memcpy(buffer_, str, size_);
+	}
 	
 	return *this;
 }

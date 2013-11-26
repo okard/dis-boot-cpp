@@ -30,7 +30,7 @@ THE SOFTWARE.
 namespace plf {
 
 /**
-* Represents a struct
+* Represents a source code location
 */
 struct Location
 {
@@ -40,7 +40,7 @@ struct Location
 	unsigned int column; //user information
 };
 
-//better?
+//TODO better?
 struct SLocation
 {
 	SourceId sourceId;

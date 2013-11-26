@@ -42,6 +42,7 @@ class FunctionDecl;
 */
 enum class DeclFlags : unsigned char
 {
+	None		= 0,
 	Public 		= 1<<0,
 	Private  	= 1<<1,
 	Protected   = 1<<2,
@@ -301,7 +302,7 @@ class ConstDecl final : public InstanceDecl
 {
 public:
 	static const NodeKind Kind = NodeKind::ConstDecl;
-	ConstDecl(const NodeKind kind) : ConstDecl(kind) {}
+	ConstDecl(const NodeKind kind) : InstanceDecl(kind) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	BufferPtr ident;

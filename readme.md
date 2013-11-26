@@ -18,9 +18,11 @@ License: MIT
 * libplf-llvm -  LLVM Code Generation/Compiling
 	
 * libdis - dis programming language library
+	- Handle all syntax stuff
 	- Token
 	- Lexer
 	- Parser
+	- Printer
 	
 * disc - dis compiler binary
 	- use libdis & libplf
@@ -33,7 +35,7 @@ License: MIT
 * C++11 Compiler
 * CMake
 * make or ninja
-* CUL - C++ Utility Library (as subrepository)
+* CUL - C++ Utility Library (included as subrepository)
 
 
 ## Build on Linux/Posix

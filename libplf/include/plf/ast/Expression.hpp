@@ -179,6 +179,8 @@ public:
 	DeclPtr func;		//funcdecl
 	ExprPtr klass; 		//instance expr
 	ExprList params;	//instance expr
+	
+	//is ctcall 		//compile time call
 };
 
 //pathexpression

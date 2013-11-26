@@ -39,8 +39,14 @@ private:
 	//tabs/idention
 	//some options
 public:
+
+	//Declarations------------------------------------------------------
 	virtual plf::NodePtr visit(plf::PackageDecl& n, plf::ParamPtr& arg);
 	
+	//Statements--------------------------------------------------------
+	
+	
+	//Expressions-------------------------------------------------------
 };
 	
 }
