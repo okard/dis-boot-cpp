@@ -103,8 +103,15 @@ enum class NodeKind : unsigned short
 	DeclStmt,
 	
 	//Expression
+	IntegerLiteral,
+	FloatLiteral,
+	HexLiteral,
+	BinaryLiteral,
+	StringLiteral,
+
 	UnaryExpr,
 	BinaryExpr,
+	TernaryExpr,
 	CallExpr,
 	
 	CTCallExpr, //compile time call expression $$name()

@@ -244,7 +244,9 @@ public:
 	List<FunctionParameter> params;
 	StmtPtr body;
 	TypePtr returnType; //leave unset for unkown?
+	
 	bool classFunc = false; //means parent is classdecl
+	bool tplFunc = false;	//means is template function
 	
 	bool hasBody() const { return body ? true : false; }
 	//template 

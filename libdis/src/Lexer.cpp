@@ -223,7 +223,9 @@ void  Lexer::lexToken(Token& tok)
 	{
 		case TokenId::DblColon: checkForChar(tok, ':', TokenId::DblColon); break;
 		case TokenId::Dot: checkForChar(tok, '.', TokenId::DotDot); break;
-		case TokenId::Sharp: checkForChar(tok, '!', TokenId::Shebang); break;
+		case TokenId::Sharp: checkForChar(tok, '!', TokenId::Shebang); 
+							 checkForChar(tok, '[', TokenId::AttrStart);
+							 break;
 		case TokenId::EPoint: checkForChar(tok, '=', TokenId::NEqual); break;
 		case TokenId::Assign: checkForChar(tok, '=', TokenId::Equal); break;
 		case TokenId::Plus: checkForChar(tok, '=', TokenId::PlusAssign); 
@@ -241,12 +243,14 @@ void  Lexer::lexToken(Token& tok)
 		case TokenId::Greater: checkForChar(tok, '=', TokenId::GTE); break;
 		case TokenId::And: checkForChar(tok, '&', TokenId::LAnd); break;
 		case TokenId::Or: checkForChar(tok, '|', TokenId::LOr); break;
+		default:break;
 	}
 	
 	//check triple token
 	switch(tok.id)
 	{
 		case TokenId::DotDot: checkForChar(tok, '.', TokenId::TripleDot); break;
+		default:break;
 	}
 }
 

@@ -50,6 +50,9 @@ public:
 	{}
 	
 	bool eof = false;
+	unsigned int col;
+	unsigned int line;
+	TokenId id;
 	//EOF
 	//Location
 	//Message
@@ -142,7 +145,13 @@ DeclPtr Parser::parseDeclaration()
 		case TokenId::Eof:
 			return Node::create<ErrorDecl>(true);
 		default:
-			return Node::create<ErrorDecl>();
+		{
+			auto err = Node::create<ErrorDecl>();
+			err->line = tok_.loc.line;
+			err->col = tok_.loc.column;
+			err->id = tok_.id;
+			return err;
+		}
 	}
 	
 	decl->flags = flags;
@@ -220,7 +229,8 @@ plf::DeclPtr Parser::parsePackageDecl()
 	&&  decl->kind() == NodeKind::Error
 	&&  !decl->to<ErrorDecl>()->eof)
 	{
-		throw FormatException("Error during parsing package");
+		auto err = decl->to<ErrorDecl>();
+		throw FormatException("(%d, %d) Error during parsing package", err->line, err->col);
 	}
 
 	return pkg;
@@ -278,22 +288,20 @@ plf::DeclPtr Parser::parseFunctionDecl()
 	//return type
 	if(tok_.id == TokenId::Colon)
 	{
-		//parseDataType
-		throw plf::FormatException("parseFunctionDecl: Return type parsing not implemented");
+		next();
+		func->returnType = parseDataType(); 
 	}
 	
 	// direct expression body: = expr;
 	if(tok_.id == TokenId::Assign)
 	{
-		throw plf::FormatException("parseFunctionDecl: = <expr>; not implemented");
-		
 		//parse expression
 		next();
 		auto expr = parseExpression();
 		check(TokenId::Semicolon);
 		next();
 		
-		//setup return
+		//setup returnq
 		auto exprStmt = Node::create<ExprStmt>();
 		exprStmt->expr = expr;
 		exprStmt->expr->parent = exprStmt;
@@ -443,7 +451,10 @@ StmtPtr Parser::parseStatement()
 	//if ; parseStatment if no error return block stmt?
 }
 
-
+/**
+* Parses a Block Statement 
+*  {}
+*/
 plf::StmtPtr Parser::parseBlockStmt()
 {
 	assert(tok_.id == TokenId::COBracket);
@@ -471,26 +482,120 @@ plf::StmtPtr Parser::parseBlockStmt()
 */
 ExprPtr Parser::parseExpression()
 {
-	throw Exception("Expression parsing not yet implemented");
+	//TODO change to bottom up parsing via token stack?
 	
+	ExprPtr expr;
 	
-	//literals
+	switch(tok_.id)
+	{
+		//---------------------------
+		//literals
+		case TokenId::IntLiteral:
+		{
+			auto l = Node::create<IntegerLiteral>();
+			l->rawValue = tok_.buffer;
+			expr = l;
+			next();
+			break;
+		}
+			
+		case TokenId::FloatLiteral:
+		{
+			auto l = Node::create<FloatLiteral>();
+			l->rawValue = tok_.buffer;
+			expr = l;
+			next();
+			break;
+		}
+			
+		case TokenId::HexLiteral:
+		{
+			auto l = Node::create<HexLiteral>();
+			l->rawValue = tok_.buffer;
+			expr = l;
+			next();
+			break;
+		}
+			
+		case TokenId::BinaryLiteral:
+		{
+			auto l = Node::create<BinaryLiteral>();
+			l->rawValue = tok_.buffer;
+			expr = l;
+			next();
+			break;
+		}
+			
+		case TokenId::StringLiteral:
+		{
+			auto l = Node::create<StringLiteral>();
+			l->rawValue = tok_.buffer;
+			expr = l;
+			next();
+			break;
+		}
+			
+		//---------------------------
+		//keyword expressions
+		case TokenId::KwIf:
+			throw Exception("If-Expression parsing not yet implemented");
+			break;
+		case TokenId::KwSwitch:
+			throw Exception("Switch-Expression parsing not yet implemented");
+			break;
+		
+		//unary expression prefixed
+		
+		case TokenId::PlusPlus:
+		case TokenId::MinusMinus:
+			throw Exception("Unary-Prefix-Expression parsing not yet implemented");
+			break;
+		
+		//sub expression (<expr>)
+		case TokenId::ROBracket:
+			throw Exception("Sub-Expression (<expr>) parsing not yet implemented");
+			break;
+		
+		default:
+			throw Exception("Invalid Expression or not implemented");
+			break;
+	}
 	
-	//keyword expressions
-	//IfExpr
-	//SwitchExpr
+	//special: lambda expressions
 	
-	//call expressions
+	//call expressions: <expr>(<expr>, ...)
 	
 	//connected expressions:
 	
-	//operator
-	//unary
-	//binary
-	//tenary
-
+	switch(tok_.id)
+	{
+		case TokenId::Semicolon:
+			return expr;
+			
+		//operator:
+		//unary postfix
+		case TokenId::PlusPlus:
+		case TokenId::MinusMinus:
+			throw Exception("Unary-Postfix-Expression parsing not yet implemented");
+			
+		//binary 
+		case TokenId::Plus:
+		case TokenId::Minus:
+		case TokenId::Mul:
+		case TokenId::Div:
+			throw Exception("Binary-Expression parsing not yet implemented");
+			/*
+			*/
+			
+		//tenary
+			
+		default:
+			throw Exception("Invalid Expression or not implemented");
+	}
 
 	//return Node::create<ErrorExpr>();
+	
+	return expr;
 }
 
 
@@ -502,15 +607,38 @@ ExprPtr Parser::parseExpression()
 /**
 * : id
 * : id.<datatype>
-* : id[]
+* : []id
 * : @<datatype>
 * : &<datatype>
 * : ~<datatype>
-* : [] 
+* : || 
+* : <datatype>!<datatype>
+* : <datatype>!(<datatype>*)
 */
 TypePtr Parser::parseDataType()
 {
-	//simple id
+	TypePtr t = UnkownType::getInstance();
+	
+	
+	if(tok_.id == TokenId::Ident)
+	{
+		auto type = Node::create<UnsolvedType>();
+		type->idents.push_back(tok_.buffer);
+		next();
+		
+		switch(tok_.id)
+		{
+			case TokenId::Dot:
+			case TokenId::EPoint: //!
+				throw FormatException("parseDataType: not yet implemented");
+				break;
+			default:
+				break;
+		}
+		
+		return type;
+		
+	}
 	
 	throw FormatException("parseDataType: not yet implemented");
 }

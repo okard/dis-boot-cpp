@@ -41,15 +41,78 @@ public:
 	//constant expression
 };
 
+
+//Literal Expressions:
+
+//IntegerLiteral
+class IntegerLiteral : public Expression
+{
+public:
+	static const NodeKind Kind = NodeKind::IntegerLiteral;
+	IntegerLiteral() : Expression(Kind) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
+	BufferPtr rawValue;
+	
+	//union
+	//long long
+	int value;
+};
+
+//FloatLiteral
+class FloatLiteral : public Expression
+{
+public:
+	static const NodeKind Kind = NodeKind::FloatLiteral;
+	FloatLiteral() : Expression(Kind) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
+	BufferPtr rawValue;
+};
+
+//HexLiteral
+class HexLiteral : public Expression
+{
+public:
+	static const NodeKind Kind = NodeKind::HexLiteral;
+	HexLiteral() : Expression(Kind) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
+	BufferPtr rawValue;
+};
+
+//BinaryLiteral
+class BinaryLiteral : public Expression
+{
+public:
+	static const NodeKind Kind = NodeKind::BinaryLiteral;
+	BinaryLiteral() : Expression(Kind) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
+	BufferPtr rawValue;
+};
+
+//StringLiteral
+class StringLiteral : public Expression
+{
+public:
+	static const NodeKind Kind = NodeKind::StringLiteral;
+	StringLiteral() : Expression(Kind) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
+	BufferPtr rawValue;
+	//Encoding?
+};
+
 ///Operators for Unary Expressions
 enum class UnaryOperator
 {
-	Neg, 
-	Not, 
-	PostIncr, 
-	PreIncr, 
-	PostDecr, 
-	PreDecr
+	Neg, 	  // ~?
+	Not, 	  // !?
+	PostIncr, //expr++
+	PreIncr,  //++expr
+	PostDecr, //expr--
+	PreDecr	  //--expr
 	
 	// ~, &, @ for memory types?
 };
@@ -71,18 +134,19 @@ public:
 ///Operators for Binary Expressions
 enum class BinaryOperator
 {
-	Plus,
-	Minus,
-	Mul,
-	Div,
-	Mod,
-	Equal,
-	NotEqual,
-	Assign,
-	Gt, 	//GreaterThan
-	Lt, 	//LessThan
-	Gte, 	//GreaterThan or Equals 
-	Lte 	// LessThan or Equals
+	Plus,	// +
+	Minus,	// -
+	Mul,	// *
+	Div,	// /
+	Mod,	// %
+	Pow,	// ^^?
+	Equal,	// ==
+	NotEqual, // !=
+	Assign,	// =
+	Gt, 	//GreaterThan >
+	Lt, 	//LessThan <
+	Gte, 	//GreaterThan or Equals >=
+	Lte 	// LessThan or Equals <=
 };
 
 /**

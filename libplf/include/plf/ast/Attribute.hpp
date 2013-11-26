@@ -59,6 +59,9 @@ class TestAttribute : public Node
 
 //CustomAttribute
 
+//Lang Attribute?
+// #[lang="op:eq"] 
+
 	
 } //end namespace plf
 

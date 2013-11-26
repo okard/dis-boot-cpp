@@ -68,6 +68,7 @@ THE SOFTWARE.
 		TOKEN(DblColon)				   /* :: */ \
 		TOKEN(DotDot)				   /* .. */ \
 		TOKEN(Shebang)				   /* #! */ \
+		TOKEN(AttrStart)			   /* #[ */ \
 		TOKEN(TildeAssign)			   /* ~= */ \
 		TOKEN(Equal)				   /* == */ \
 		TOKEN(NEqual)				   /* != */ \
@@ -96,6 +97,7 @@ THE SOFTWARE.
 		TOKEN(KwConst)							\
 		TOKEN(KwIf)								\
 		TOKEN(KwElse)							\
+		TOKEN(KwSwitch)							\
 		TOKEN(KwFor)							\
 		TOKEN(KwWhile)							\
 		TOKEN(KwTrue)							\
