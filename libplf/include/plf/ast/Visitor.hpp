@@ -31,8 +31,39 @@ THE SOFTWARE.
 
 namespace plf {
 	
+//Decl
 class PackageDecl;
-	
+class ImportDecl;
+class ClassDecl;
+class TraitDecl;
+class StructDecl;
+class EnumDecl;
+class AliasDecl;
+class FunctionDecl;
+class VariableDecl;
+class ValueDecl;
+class ConstDecl;
+
+//Stmt
+class BlockStmt;
+class ReturnStmt;
+class ForStmt;
+class WhileStmt;
+class DeclStmt;
+class ExprStmt; 
+
+//Expr
+class IntegerLiteral;
+class FloatLiteral;
+class HexLiteral;
+class BinaryLiteral;
+class StringLiteral;
+
+class UnaryExpr;
+class BinaryExpr;
+class CallExpr;	
+
+
 /**
 * Ast Visitor Class
 */
@@ -49,27 +80,40 @@ public:
 	virtual NodePtr visit(Statement& n, ParamPtr& arg);
 	virtual NodePtr visit(Expression& n, ParamPtr& arg);
 	 
-	//Declarations
+	//Declarations------------------------------------------------------
 	virtual NodePtr visit(PackageDecl& n, ParamPtr& arg);
-	//ImportDecl
-	//ClassDecl
-	//TraitDecl
-	//StructDecl
-	//EnumDecl
-	//AliasDecl
-	//FunctionDecl
-	//VariableDecl
-	//ValueDecl
-	//ConstDecl
+	virtual NodePtr visit(ImportDecl& n, ParamPtr& arg);
+	virtual NodePtr visit(ClassDecl& n, ParamPtr& arg);
+	virtual NodePtr visit(TraitDecl& n, ParamPtr& arg);
+	virtual NodePtr visit(StructDecl& n, ParamPtr& arg);
 	
-	//Statements
-	//ReturnStmt
-	//ForStmt
-	//WhileStmt
-	//DeclStmt
-	//ExprStmt
+	virtual NodePtr visit(EnumDecl& n, ParamPtr& arg);
+	virtual NodePtr visit(AliasDecl& n, ParamPtr& arg);
+	virtual NodePtr visit(FunctionDecl& n, ParamPtr& arg);
+	virtual NodePtr visit(VariableDecl& n, ParamPtr& arg);
+	virtual NodePtr visit(ValueDecl& n, ParamPtr& arg);
+	virtual NodePtr visit(ConstDecl& n, ParamPtr& arg);
 	
-	//Expressions
+	
+	//Statements--------------------------------------------------------
+	virtual NodePtr visit(BlockStmt& n, ParamPtr& arg);
+	virtual NodePtr visit(ReturnStmt& n, ParamPtr& arg);
+	virtual NodePtr visit(ForStmt& n, ParamPtr& arg);
+	virtual NodePtr visit(WhileStmt& n, ParamPtr& arg);
+	virtual NodePtr visit(DeclStmt& n, ParamPtr& arg);
+	virtual NodePtr visit(ExprStmt& n, ParamPtr& arg);
+	
+	//Expressions-------------------------------------------------------
+	virtual NodePtr visit(IntegerLiteral& n, ParamPtr& arg);
+	virtual NodePtr visit(FloatLiteral& n, ParamPtr& arg);
+	virtual NodePtr visit(HexLiteral& n, ParamPtr& arg);
+	virtual NodePtr visit(BinaryLiteral& n, ParamPtr& arg);
+	virtual NodePtr visit(StringLiteral& n, ParamPtr& arg);
+	
+	virtual NodePtr visit(UnaryExpr& n, ParamPtr& arg);
+	virtual NodePtr visit(BinaryExpr& n, ParamPtr& arg);
+	virtual NodePtr visit(CallExpr& n, ParamPtr& arg);
+	
 	//UnaryExpr
 		//SubUnaryExpressions
 	//BinaryExpr

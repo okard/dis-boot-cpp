@@ -34,6 +34,10 @@ namespace dis {
 */ 
 class Printer : public plf::Visitor
 {
+private:
+	//print to out buffer
+	//tabs/idention
+	//some options
 public:
 	virtual plf::NodePtr visit(plf::PackageDecl& n, plf::ParamPtr& arg);
 	

@@ -147,6 +147,8 @@ enum class BinaryOperator
 	Lt, 	//LessThan <
 	Gte, 	//GreaterThan or Equals >=
 	Lte 	// LessThan or Equals <=
+	
+	//Access, // ./: foo.a(asad)
 };
 
 /**

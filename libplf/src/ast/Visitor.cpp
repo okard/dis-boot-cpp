@@ -26,6 +26,8 @@ THE SOFTWARE.
 #include <plf/ast/Declaration.hpp>
 #include <plf/ast/Statement.hpp>
 #include <plf/ast/Expression.hpp>
+#include <plf/ast/Type.hpp>
+#include <plf/ast/Attribute.hpp>
 
 using namespace plf;
 
@@ -67,6 +69,9 @@ NodePtr Visitor::visit(Expression& n, ParamPtr& arg)
 	return n;
 }
 
+////////////////////////////////////////////////////////////////////////
+// Declaration
+
 NodePtr Visitor::visit(PackageDecl& pd, ParamPtr& arg)
 {
 	//visit declarations
@@ -76,6 +81,134 @@ NodePtr Visitor::visit(PackageDecl& pd, ParamPtr& arg)
 	}
 	
 	return pd;
+}
+
+NodePtr Visitor::visit(ImportDecl& n, ParamPtr& arg)
+{
+	
+	return n;
+}
+	
+NodePtr Visitor::visit(ClassDecl& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(TraitDecl& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(StructDecl& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(EnumDecl& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(AliasDecl& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(FunctionDecl& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(VariableDecl& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(ValueDecl& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(ConstDecl& n, ParamPtr& arg)
+{
+	return n;
+}
+
+////////////////////////////////////////////////////////////////////////
+// Stmt
+
+NodePtr Visitor::visit(BlockStmt& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(ReturnStmt& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(ForStmt& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(WhileStmt& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(DeclStmt& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(ExprStmt& n, ParamPtr& arg)
+{
+	return n;
+}
+
+////////////////////////////////////////////////////////////////////////
+// Expr
+
+NodePtr Visitor::visit(IntegerLiteral& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(FloatLiteral& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(HexLiteral& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(BinaryLiteral& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(StringLiteral& n, ParamPtr& arg)
+{
+	return n;
+}
+
+
+NodePtr Visitor::visit(UnaryExpr& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(BinaryExpr& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr Visitor::visit(CallExpr& n, ParamPtr& arg)
+{
+	return n;
 }
 
 
