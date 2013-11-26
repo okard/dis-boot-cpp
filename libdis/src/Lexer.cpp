@@ -199,10 +199,15 @@ void  Lexer::lexToken(Token& tok)
 		case '>': tok.id = TokenId::Greater; nextChar(); break;
 		
 
+		//TODO FIXIT
+		case 0x00:
+			//throw plf::FormatException("Nullchar");
+			tok.id = TokenId::Eof;
+			return;
 		
 		default: 
 			//error unkown char
-			throw plf::FormatException("Unknown Character: %c", c);
+			throw plf::FormatException("(%d, %d) Unknown Character: %02x", line_, column_, c);
 	}
 	
 	//check for comments

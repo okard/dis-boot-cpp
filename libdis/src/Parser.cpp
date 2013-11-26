@@ -320,6 +320,7 @@ plf::DeclPtr Parser::parseFunctionDecl()
 	//declaration only
 	if(tok_.id == TokenId::Semicolon)
 	{
+		next(); //skip it
 		return func;
 	}
 	
@@ -366,7 +367,10 @@ void Parser::parseFuncParameter(plf::FunctionDecl& func)
 		
 		//, or break
 		if(tok_.id == TokenId::Comma)
+		{
+			next();
 			continue;
+		}
 		else
 			return;
 	}
