@@ -145,10 +145,11 @@ public:
 	ClassDecl() : TypeDecl(NodeKind::ClassDecl) {}
 	NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
+	BufferPtr name;
+	
 	//ctors
 	PtrList<FunctionDecl> ctors;
 	SharedPtr<FunctionDecl> dtor;
-	
 	PtrList<ClassDecl> inherits;
 	
 	//tpl parameter
@@ -240,6 +241,7 @@ public:
 	
 	bool classFunc = false; //means parent is classdecl
 	bool tplFunc = false;	//means is template function
+	bool extFunc = false;	//extension function
 	
 	bool hasBody() const { return body ? true : false; }
 	//template 

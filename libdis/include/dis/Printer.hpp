@@ -43,6 +43,8 @@ public:
 	//Declarations------------------------------------------------------
 	virtual plf::NodePtr visit(plf::PackageDecl& n, plf::ParamPtr& arg);
 	
+	
+	virtual plf::NodePtr visit(plf::FunctionDecl& n, plf::ParamPtr& arg);
 	//Statements--------------------------------------------------------
 	
 	

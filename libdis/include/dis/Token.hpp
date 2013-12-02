@@ -105,7 +105,8 @@ THE SOFTWARE.
 		TOKEN(KwNull)							\
 		TOKEN(KwPub)							\
 		TOKEN(KwPriv)							\
-		TOKEN(KwProt)							
+		TOKEN(KwProt)							\
+		TOKEN(KwAs)								
 
 namespace dis {
 	

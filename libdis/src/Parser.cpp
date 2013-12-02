@@ -94,7 +94,7 @@ NodePtr Parser::parse()
 		//expr
 		
 		default:
-			throw Exception("parse(): Not yet implemented");
+			throw FormatException("parse(): [%s] Not yet implemented", toString(tok_.id));
 	}
 }
 
@@ -164,6 +164,7 @@ DeclPtr Parser::parseDeclaration()
 */
 void Parser::parseDeclFlags(DeclFlags& flags)
 {	
+	//TODO no multiple pub/priv/prot flags
 	switch(tok_.id)
 	{
 		case TokenId::KwPub:
@@ -378,13 +379,50 @@ void Parser::parseFuncParameter(plf::FunctionDecl& func)
 
 /**
 * Parse a class
+* class <ident> [ ( <tpl args> ) ] [ : <type> ] { <decls> }
 */
 plf::DeclPtr Parser::parseClass()
 {
 	assert(tok_.id == TokenId::KwObj);
-	throw plf::FormatException("parseClass: Not yet implemented");
+	next();
 	
-	//tpl
+	check(TokenId::Ident);
+	auto classDecl = Node::create<ClassDecl>();
+	classDecl->name = tok_.buffer;
+	next();
+	
+	//template class
+	if(tok_.id == TokenId::ROBracket)
+	{
+		next();
+		//parse template arguments ( name: type, ...)
+		throw plf::FormatException("parseClass: tpl args parsing not implemented");
+		check(TokenId::RCBracket);
+		next();
+	}
+	
+	//inheritance
+	if(tok_.id == TokenId::Colon)
+	{
+		next();
+		//parse base class
+		throw plf::FormatException("parseClass: inheritance parsing not implemented");
+	}
+	
+	check(TokenId::COBracket);
+	next();
+	
+	DeclPtr decl;
+	while((decl = parseDeclaration())->kind() != NodeKind::Error)
+	{
+		decl->parent = classDecl;
+		classDecl->decls.push_back(decl);
+	}
+	
+	check(TokenId::CCBracket);
+	next();
+	
+	return classDecl;
 }
 
 /**
@@ -405,6 +443,7 @@ plf::DeclPtr Parser::parseInstanceDecl()
 {
 	auto inst = Node::create<InstanceDecl>();
 	
+	//type of instance
 	switch(tok_.id)
 	{
 		case TokenId::KwVar:
@@ -420,18 +459,20 @@ plf::DeclPtr Parser::parseInstanceDecl()
 			throw FormatException("parseInstanceDecl: Invalid Token");
 	}
 	
+	//name
 	checkNext(TokenId::Ident);
-	
 	inst->name = tok_.buffer;
 	
 	next();
 	
+	//datatype
 	if(tok_.id == TokenId::Colon)
 	{
 		next();
 		inst->type = parseDataType();
 	}
 	
+	//initializer expression
 	if(tok_.id == TokenId::Assign)
 	{
 		next();
@@ -587,14 +628,19 @@ ExprPtr Parser::parseExpression()
 		
 		//unary expression prefixed
 		
-		case TokenId::PlusPlus:
-		case TokenId::MinusMinus:
+		case TokenId::PlusPlus:		// ++<expr>
+		case TokenId::MinusMinus: 	// --<expr>
+		case TokenId::And:			// &<expr>
+		case TokenId::Tilde:		// ~<expr>
 			throw Exception("Unary-Prefix-Expression parsing not yet implemented");
 			break;
 		
 		//sub expression (<expr>)
 		case TokenId::ROBracket:
-			throw Exception("Sub-Expression (<expr>) parsing not yet implemented");
+			next();
+			expr = parseExpression();
+			check(TokenId::RCBracket);
+			next();
 			break;
 		
 		default:
@@ -629,6 +675,12 @@ ExprPtr Parser::parseExpression()
 			*/
 			
 		//tenary
+		
+		//<expr> ? <expr> : <expr>
+		
+		//cast: <expr> as <datatype>
+		case TokenId::KwAs:
+			throw Exception("Cast-Expression parsing not yet implemented");
 			
 		default:
 			throw Exception("Invalid Expression or not implemented");
@@ -679,6 +731,39 @@ TypePtr Parser::parseDataType()
 		
 		return type;
 		
+	}
+	
+	switch(tok_.id)
+	{
+		//heap owned ptr type
+		case TokenId::Tilde:
+		{
+			next();
+			auto opt = Node::create<OwnedPtrType>();
+			opt->targetType = parseDataType();
+			return opt;
+		}
+			
+		//borrowed pointer
+		case TokenId::And:
+		{
+			next();
+			auto bpt = Node::create<BorrowedPtrType>();
+			bpt->targetType = parseDataType();
+			return bpt;
+		}
+			
+		//raw unsafe pointer
+		case TokenId::Mul:
+		{
+			next();
+			auto rpt = Node::create<RawPtrType>();
+			rpt->targetType = parseDataType();
+			return rpt;
+		}
+			
+		default:
+			throw FormatException("parseDataType: not yet implemented");
 	}
 	
 	throw FormatException("parseDataType: not yet implemented");

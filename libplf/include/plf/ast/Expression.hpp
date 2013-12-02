@@ -107,12 +107,15 @@ public:
 ///Operators for Unary Expressions
 enum class UnaryOperator
 {
-	Neg, 	  // ~?
-	Not, 	  // !?
+	Neg, 	  // - 
+	Not, 	  // ! logical negative
 	PostIncr, //expr++
 	PreIncr,  //++expr
 	PostDecr, //expr--
-	PreDecr	  //--expr
+	PreDecr,  //--expr
+	
+	Ref,	  // &
+	OPtr 	  // ~
 	
 	// ~, &, @ for memory types?
 };
@@ -181,6 +184,20 @@ public:
 	ExprList params;	//instance expr
 	
 	//is ctcall 		//compile time call
+};
+
+/**
+* Cast Expr
+*/
+class CastExpr final : public Expression
+{
+public:
+	static const NodeKind Kind = NodeKind::CastExpr;
+	CastExpr() : Expression(Kind) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	
+	ExprPtr left;
+	TypePtr type;
 };
 
 //pathexpression

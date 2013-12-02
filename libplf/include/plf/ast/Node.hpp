@@ -68,31 +68,36 @@ typedef SharedPtr<Type> TypePtr;
 enum class NodeKind : unsigned short
 {
 	Unknown,
-	//Declarations
+	//Declarations------------------------------------------------------
 	PackageDecl,
 	ImportDecl,
-	//Types
+	//-Type Decl
 	FunctionDecl,
 	ClassDecl,
 	TraitDecl,
 	StructDecl,
 	AliasDecl,
 	EnumDecl,
-	//Instances
+	//-Instance Decl
 	InstanceDecl,
 
-	//Type
+	//Type--------------------------------------------------------------
 	PrimaryType,
 	UnkownType,
 	DeclType,
 	UnsolvedType,
-	PtrType,
-	RefType,
-	//RT Types:
+	//-Pointer Types
+	OwnedPtrType,
+	BorrowedPtrType,
+	RawPtrType,
+	//PtrType,
+	//RefType,
+	
+	//-RT Types:
 	ArrayType,
 	MapType,
 	
-	//Statement
+	//Statement---------------------------------------------------------
 	BlockStmt,
 	ReturnStmt,
 	ForStmt,
@@ -100,7 +105,7 @@ enum class NodeKind : unsigned short
 	ExprStmt,
 	DeclStmt,
 	
-	//Expression
+	//Expression--------------------------------------------------------
 	IntegerLiteral,
 	FloatLiteral,
 	HexLiteral,
@@ -111,9 +116,9 @@ enum class NodeKind : unsigned short
 	BinaryExpr,
 	TernaryExpr,
 	CallExpr,
+	CastExpr,
 	
-	CTCallExpr, //compile time call expression $$name()
-	
+	//Special-----------------------------------------------------------
 	
 	Error		//custom type for handling errors
 	//ErrorDecl, ErrorStmt, ErrorExpr, 

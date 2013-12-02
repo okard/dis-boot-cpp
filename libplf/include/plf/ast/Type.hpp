@@ -97,6 +97,35 @@ public:
 	List<BufferPtr> idents;
 };
 
+/**
+* Owned Pointer Type
+*/
+class OwnedPtrType : public Type
+{
+public:
+	OwnedPtrType() : Type(NodeKind::OwnedPtrType) {}
+	TypePtr targetType;
+};
+
+/**
+* Owned Pointer Type
+*/
+class BorrowedPtrType : public Type
+{
+public:
+	BorrowedPtrType() : Type(NodeKind::BorrowedPtrType) {}
+	TypePtr targetType;
+};
+
+/**
+* Owned Pointer Type
+*/
+class RawPtrType : public Type
+{
+public:
+	RawPtrType() : Type(NodeKind::RawPtrType) {}
+	TypePtr targetType;
+};
 
 //array types
 //path type

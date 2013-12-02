@@ -35,7 +35,8 @@ NodePtr Printer::visit(PackageDecl& n, ParamPtr& arg)
 	std::cout << "package ";
 		for(auto p: n.path)
 		{
-			std::cout << p->ptr() << '.';
+			std::cout.write(p->ptr(), p->size());
+			std::cout << '.';
 		}
 	std::cout << ";" << std::endl;
 	
@@ -44,6 +45,16 @@ NodePtr Printer::visit(PackageDecl& n, ParamPtr& arg)
 	{
 		d->accept(*this, arg);
 	}
+	
+	return n;
+}
+
+plf::NodePtr Printer::visit(plf::FunctionDecl& n, plf::ParamPtr& arg)
+{
+	//decl flags
+	std::cout << "def ";
+	std::cout.write(n.name->ptr(), n.name->size());
+	std::cout << std::endl;
 	
 	return n;
 }
