@@ -29,6 +29,8 @@ THE SOFTWARE.
 
 #include <plf/base/FormatException.hpp>
 
+#include <iostream>
+
 using namespace dis;
 
 ////////////////////////
@@ -285,6 +287,8 @@ void Lexer::lexNumber(Token& tok)
 {
 	tok.id = TokenId::IntLiteral;
 	
+	assert(isNumeric(current()));
+	
 	//binary
 	if(current() == '0' 
 	&& peekChar(1) == 'b')
@@ -294,7 +298,7 @@ void Lexer::lexNumber(Token& tok)
 		nextChar(); //now first digit
 		
 		int i;
-		for(i = 0; isBin(current()); i++); //TODO check for eob
+		for(i = 0; isBin(peekChar(i)); i++); //TODO check for eob
 		
 		reader_.copyto(*tok.buffer, reader_.pos(), i);
 		//skip over
@@ -311,7 +315,7 @@ void Lexer::lexNumber(Token& tok)
 		nextChar(); //now first digit
 		
 		int i;
-		for(i = 0; isHex(current()); i++); //TODO check for eob
+		for(i = 0; isHex(peekChar(i)); i++); //TODO check for eob
 		reader_.copyto(*tok.buffer, reader_.pos(), i);
 		//skip over
 		reader_.skip(i);
@@ -319,8 +323,16 @@ void Lexer::lexNumber(Token& tok)
 	}
 	
 	
-	int i;
-	for(i = 0; isNumeric(peekChar(i)); i++); 
+	int i=0;
+	for(i = 0; isNumeric(peekChar(i)); i++);
+	
+	//float/doubles
+	if(peekChar(i) == '.')
+	{
+		tok.id = TokenId::FloatLiteral;
+		i++;
+		for(; isNumeric(peekChar(i)); i++);
+	}
 	
 	reader_.copyto(*tok.buffer, reader_.pos(), i);
 		//skip over

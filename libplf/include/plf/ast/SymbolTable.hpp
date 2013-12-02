@@ -33,10 +33,11 @@ namespace plf {
 class Symbol
 {
 	//name(mangled?) BufferPtr (mangled name)
-	//decl
+	//DeclPtr
 	//extern elsewhere declared resolved by linking
 	//static not exported symbols package internal only
 	//use_counter //is referenced or not used
+	//external type? (RTTI relevant)
 };
 
 /**

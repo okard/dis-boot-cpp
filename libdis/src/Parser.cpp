@@ -683,7 +683,7 @@ ExprPtr Parser::parseExpression()
 			throw Exception("Cast-Expression parsing not yet implemented");
 			
 		default:
-			throw Exception("Invalid Expression or not implemented");
+			throw FormatException("[%s] Invalid Expression or not implemented", toString(tok_.id));
 	}
 
 	//return Node::create<ErrorExpr>();
@@ -704,37 +704,29 @@ ExprPtr Parser::parseExpression()
 * : @<datatype>
 * : &<datatype>
 * : ~<datatype>
+* : *<datatype>
 * : || 
 * : <datatype>!<datatype>
 * : <datatype>!(<datatype>*)
+* -----------------------------
+* : ~<datatype>!<datatype>
 */
 TypePtr Parser::parseDataType()
 {
 	TypePtr t = UnkownType::getInstance();
 	
-	
-	if(tok_.id == TokenId::Ident)
-	{
-		auto type = Node::create<UnsolvedType>();
-		type->idents.push_back(tok_.buffer);
-		next();
-		
-		switch(tok_.id)
-		{
-			case TokenId::Dot:
-			case TokenId::EPoint: //!
-				throw FormatException("parseDataType: not yet implemented");
-				break;
-			default:
-				break;
-		}
-		
-		return type;
-		
-	}
-	
+	//start tokens
 	switch(tok_.id)
 	{
+		case TokenId::Ident:
+		{
+			auto type = Node::create<UnsolvedType>();
+			type->idents.push_back(tok_.buffer);
+			next();
+			t = type;
+			break;
+		}
+		
 		//heap owned ptr type
 		case TokenId::Tilde:
 		{
@@ -761,12 +753,27 @@ TypePtr Parser::parseDataType()
 			rpt->targetType = parseDataType();
 			return rpt;
 		}
+		
+		case TokenId::SOBracket:
+			throw FormatException("parseDataType: parsing of array and map types not implemented");
+			break;
 			
 		default:
-			throw FormatException("parseDataType: not yet implemented");
+			throw FormatException("parseDataType: not yet implemented or invalid type");
 	}
 	
-	throw FormatException("parseDataType: not yet implemented");
+	//follow up
+	switch(tok_.id)
+	{
+		case TokenId::Dot:	//.
+		case TokenId::EPoint: //!
+			throw FormatException("parseDataType: not yet implemented");
+			break;
+		default:
+			break;
+	}
+	
+	return t;
 }
 
 

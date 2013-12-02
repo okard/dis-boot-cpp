@@ -31,6 +31,9 @@ THE SOFTWARE.
 
 namespace plf {
 	
+/**
+* Basic class for Expressions
+*/
 class Expression : public Node
 {
 public:

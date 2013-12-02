@@ -31,6 +31,8 @@ THE SOFTWARE.
 #include <plf/ast/Attribute.hpp>
 #include <plf/ast/Visitor.hpp>
 
+#include <plf/ast/SymbolTable.hpp>
+
 namespace plf {
 
 //Forward Declarations
@@ -81,7 +83,8 @@ public:
 
 
 /**
-* A package
+* A package or module
+* represents a object file (*.o) 
 */
 class PackageDecl final : public Declaration
 {
@@ -90,15 +93,14 @@ public:
 	PackageDecl() : Declaration(NodeKind::PackageDecl) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
-	//symbol table mangled names
-	
 	AttrList attribs;
 	DeclList decls;	
 	List<BufferPtr> path;
 	
-	//all lists are private add "add","remove" functions
+	//all lists are private add "add","remove" functions?
 	
 	//complete flat symbol table for AST
+	SymbolTable symbolTbl;
 };
 
 /**
@@ -152,7 +154,7 @@ public:
 	SharedPtr<FunctionDecl> dtor;
 	PtrList<ClassDecl> inherits;
 	
-	//tpl parameter
+	//tpl parameter (can be types or instances)
 
 	//nested
 	//template
@@ -213,10 +215,9 @@ public:
 */
 struct FunctionParameter
 {
-	bool readonly;
-	BufferPtr ident;
-	TypePtr type;
-	
+	bool readonly;		//can not changed
+	BufferPtr ident;	//name
+	TypePtr type;		//datatype
 	
 	FunctionParameter(bool ro, const BufferPtr& id, const TypePtr& type)
 		: readonly(ro), ident(id), type(type)
