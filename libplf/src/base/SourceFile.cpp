@@ -69,7 +69,7 @@ size_t SourceFile::readComplete(Buffer& buf)
 }
 
 
-const char* SourceFile::identifier()
+const char* SourceFile::identifier() const
 {
 	return nullptr;
 }

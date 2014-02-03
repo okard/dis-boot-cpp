@@ -1,7 +1,7 @@
 /*
 Programming Language Framework (PLF)
 
-Copyright (c) 2013 okard
+Copyright (c) 2014 okard
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,8 +31,6 @@ namespace plf {
 
 /**
 * Basic Attribute class 
-* @attr(param)
-* [attr(param)]
 * #[attr(param)]
 */
 class Attribute : public Node //required to inherit from node?
@@ -43,7 +41,7 @@ class Attribute : public Node //required to inherit from node?
 * define ABI for functions etc
 * C, stdcall, fastcall
 */
-class AbiAttribute : public Node
+class AbiAttribute : public Attribute
 {
 	//default
 };
@@ -51,9 +49,20 @@ class AbiAttribute : public Node
 /**
 * Test ABI
 */
-class TestAttribute : public Node
+class TestAttribute : public Attribute
 {
+
 };
+
+
+/**
+* @brief The UserAttribute class
+*/
+class UserAttribute : public Attribute
+{
+
+};
+
 
 //attach attribute to functions
 

@@ -26,6 +26,8 @@ THE SOFTWARE.
 #include <iostream>
 
 #include <plf/ast/Declaration.hpp>
+#include <plf/ast/Statement.hpp>
+#include <plf/ast/Expression.hpp>
 
 using namespace dis;
 using namespace plf;
@@ -56,5 +58,34 @@ plf::NodePtr Printer::visit(plf::FunctionDecl& n, plf::ParamPtr& arg)
 	std::cout.write(n.name->ptr(), n.name->size());
 	std::cout << std::endl;
 	
+	return n;
+}
+
+NodePtr Printer::visit(InstanceDecl& n, ParamPtr& arg)
+{
+	switch(n.itype)
+	{
+	case InstanceType::Constant:
+		std::cout << "const ";
+		break;
+	case InstanceType::Value:
+		std::cout << "let ";
+		break;
+	case InstanceType::Variable:
+		std::cout << "var ";
+		break;
+	}
+
+	std::cout.write(n.name->ptr(), n.name->size());
+
+	//if has initializer write it
+	if(n.init)
+	{
+		std::cout << " = ";
+		n.init->accept(*this, arg);
+	}
+
+	std::cout << ";" << std::endl;
+
 	return n;
 }

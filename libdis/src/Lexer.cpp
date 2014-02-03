@@ -132,6 +132,7 @@ Token& Lexer::peek(int num)
 	//check toklist_.size() 
 	//push token until num in toklist
 	//return element
+	throw plf::FormatException("Lexer::peek: Not implemented yet");
 }
 
 
@@ -422,8 +423,9 @@ inline void checkKeyword(Token& tok)
 {
 	if(chkKw(tok, "package")) { tok.id = TokenId::KwPackage; }
 	else if(chkKw(tok, "import")) { tok.id = TokenId::KwImport; }
+	else if(chkKw(tok, "mod")) { tok.id = TokenId::KwMod; }
+	else if(chkKw(tok, "use")) { tok.id = TokenId::KwUse; }
 	else if(chkKw(tok, "def")) { tok.id = TokenId::KwDef; }
-	else if(chkKw(tok, "obj")) { tok.id = TokenId::KwObj; }
 	else if(chkKw(tok, "trait")) { tok.id = TokenId::KwTrait; }
 	else if(chkKw(tok, "type")) { tok.id = TokenId::KwType; }
 	else if(chkKw(tok, "var")) { tok.id = TokenId::KwVar; }
@@ -433,9 +435,9 @@ inline void checkKeyword(Token& tok)
 	else if(chkKw(tok, "else")) { tok.id = TokenId::KwElse; }
 	else if(chkKw(tok, "for")) { tok.id = TokenId::KwFor; }
 	else if(chkKw(tok, "while")) { tok.id = TokenId::KwWhile; }
+	else if(chkKw(tok, "match")) { tok.id = TokenId::KwMatch; }
 	else if(chkKw(tok, "true")) { tok.id = TokenId::KwTrue; }
 	else if(chkKw(tok, "false")) { tok.id = TokenId::KwFalse; }
-	else if(chkKw(tok, "null")) { tok.id = TokenId::KwNull; }
 	else if(chkKw(tok, "pub")) { tok.id = TokenId::KwPub; }
 	else if(chkKw(tok, "priv")) { tok.id = TokenId::KwPriv; }
 	else if(chkKw(tok, "prot")) { tok.id = TokenId::KwProt; }

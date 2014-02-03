@@ -77,7 +77,7 @@ public:
 	virtual bool isInstance() const { return false; }
 	
 	
-	//quick cast required?
+	//TODO quick cast required?
 	operator DeclPtr () { return to<Declaration>(); }
 };
 

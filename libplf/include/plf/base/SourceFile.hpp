@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_SOURCEFILE_HPP__
-#define __PLF_SOURCEFILE_HPP__
+#ifndef PLF_SOURCEFILE_HPP
+#define PLF_SOURCEFILE_HPP
 
 #include <fstream>
 
@@ -50,7 +50,7 @@ public:
 	size_t readComplete(Buffer&);
 	
 	///return file name
-	const char* identifier();
+    const char* identifier() const;
 	
 	///return file size
 	size_t size() const { return size_; }
@@ -58,4 +58,4 @@ public:
 	
 } // end namespace plf
 
-#endif // __PLF_SOURCEFILE_HPP__
+#endif // PLF_SOURCEFILE_HPP

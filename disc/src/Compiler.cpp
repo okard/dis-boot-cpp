@@ -87,12 +87,24 @@ int Compiler::run(int argc, char *argv[])
 	//lexer_.open(src);
 	
 	
+	//0. auto crate = new plf::Crate();
+
 	//1. open files
-	//2. parse files (Lex->Parse->Ast)
+	//2. parse input files (Lex->Parse->Ast)
+		// for(src: sources)
+			 //parse; crate->add(decl Node);
+
 	//3. resolve imports (Ast)
+		//resolve imports (&crate)
+
 	//4. semantic run (Ast -> DAst)
+		//semantic(&crate)
+
 	//5. codegen ( Ast -> ObjectFile)
+		//codegen(&crate)
+
 	//6. link ( ObjectFile -> Binary)
+		//link(&crate);
 	
 	return 0;
 }
@@ -140,10 +152,12 @@ void Compiler::testParse(const char* filename)
 	Parser parser(lexer);
 	lexer.open(src);
 	
-	auto n = parser.parse();
-	
+
 	Printer p;
 	ParamPtr pp;
+
+	//parse to end?
+	auto n = parser.parse();
 	n->accept(p, pp);
 	
 	//prettyPrinter()

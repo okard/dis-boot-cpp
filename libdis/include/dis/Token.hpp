@@ -69,6 +69,8 @@ THE SOFTWARE.
 		TOKEN(DotDot)				   /* .. */ \
 		TOKEN(Shebang)				   /* #! */ \
 		TOKEN(AttrStart)			   /* #[ */ \
+		TOKEN(ConstraintStart)         /* [[ */ \
+		TOKEN(ConstraintEnd)           /* ]] */ \
 		TOKEN(TildeAssign)			   /* ~= */ \
 		TOKEN(Equal)				   /* == */ \
 		TOKEN(NEqual)				   /* != */ \
@@ -85,10 +87,14 @@ THE SOFTWARE.
 		TOKEN(MinusMinus)			   /* -- */ \
 		TOKEN(Lambda)				   /* -> */ \
 		TOKEN(TripleDot)			  /* ... */ \
+		TOKEN(DocMultipleStart)		 /* / *** */ \
+		TOKEN(DocSingleStart)		  /* /// */ \
 		/* KEYWORDS DECLARATION */ 				\
 		TOKEN(KwPackage)						\
+		TOKEN(KwMod)							\
+		TOKEN(KwUse)							\
 		TOKEN(KwImport)							\
-		TOKEN(KwObj)							\
+		TOKEN(KwUnsafe)							\
 		TOKEN(KwTrait)							\
 		TOKEN(KwType)							\
 		TOKEN(KwDef) 							\
@@ -97,12 +103,11 @@ THE SOFTWARE.
 		TOKEN(KwConst)							\
 		TOKEN(KwIf)								\
 		TOKEN(KwElse)							\
-		TOKEN(KwSwitch)							\
+		TOKEN(KwMatch)							\
 		TOKEN(KwFor)							\
 		TOKEN(KwWhile)							\
 		TOKEN(KwTrue)							\
 		TOKEN(KwFalse)							\
-		TOKEN(KwNull)							\
 		TOKEN(KwPub)							\
 		TOKEN(KwPriv)							\
 		TOKEN(KwProt)							\

@@ -33,6 +33,8 @@ using namespace plf;
 
 
 /*
+example usage:
+
 NodePtr Visitor::visit(PackageDecl& n, ParamPtr& arg)
 {
 	for (int i=0; i < n.Decl.size(); i++) 

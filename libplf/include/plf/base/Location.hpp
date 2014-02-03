@@ -41,7 +41,7 @@ struct Location
 };
 
 //TODO better?
-struct SLocation
+struct SourceSpan
 {
 	SourceId sourceId;
 	size_t beginOffset;

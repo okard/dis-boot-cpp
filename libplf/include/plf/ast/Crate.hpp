@@ -1,7 +1,7 @@
 /*
-Dis Programming Language Frontend Library
+Programming Language Framework (PLF)
 
-Copyright (c) 2013 okard
+Copyright (c) 2014 okard
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,38 +21,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#pragma once
-#ifndef DIS_PARSER_HPP
-#define DIS_PARSER_HPP
+#ifndef AST_CRATE_HPP
+#define AST_CRATE_HPP
 
-#include <plf/ast/Visitor.hpp>
+#include <plf/ast/Node.hpp>
 
-namespace dis {
-	
-/**
-* Source Printer Visitor
-*/ 
-class Printer : public plf::Visitor
+namespace plf {
+
+class Crate
 {
 private:
-	//print to out buffer
-	//tabs/idention
-	//some options
+	//decl list
+	DeclList decls_;
+
+	//link objects/libraries/etc
 
 public:
-
-	//Declarations------------------------------------------------------
-	virtual plf::NodePtr visit(plf::PackageDecl& n, plf::ParamPtr& arg);
-	
-	virtual plf::NodePtr visit(plf::FunctionDecl& n, plf::ParamPtr& arg);
-
-	virtual plf::NodePtr visit(plf::InstanceDecl& n, plf::ParamPtr& arg);
-	//Statements--------------------------------------------------------
-	
-	
-	//Expressions-------------------------------------------------------
+	Crate();
 };
-	
+
+
 }
 
-#endif // DIS_PARSER_HPP
+
+
+#endif // AST_CRATE_HPP

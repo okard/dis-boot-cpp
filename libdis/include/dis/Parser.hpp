@@ -1,7 +1,7 @@
 /*
 Dis Programming Language Frontend Library
 
-Copyright (c) 2013 okard
+Copyright (c) 2014 okard
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -55,6 +55,7 @@ public:
 	~Parser();
 
 
+	//parse into crate
 	plf::NodePtr parse();
 
 
@@ -71,8 +72,8 @@ private:
 	plf::DeclPtr parseFunctionDecl();
 	void parseFuncParameter(plf::FunctionDecl& func);
 	
-	plf::DeclPtr parseClass();
 	plf::DeclPtr parseTrait();
+
 	//enum, struct, union
 	plf::DeclPtr parseTypeDecl();
 	
@@ -98,10 +99,11 @@ private:
 	// Expressions
 	plf::ExprPtr parseExpression();
 	
-	//parse
-	
-	//parseIfExpr()
-	//parseSwitchExpr()
+	plf::ExprPtr parseIfExpr();
+	plf::ExprPtr parseMatchExpr();
+
+	/// return operator precedence
+	int op_prec(TokenId id);
 	
 	////////////////////////////////////////////////////////////////////
 	// DataType
@@ -112,7 +114,7 @@ private:
 	void next();
 	
 	bool peek(int count, TokenId id);
-	//sync();
+	//void sync(TokenId id); //for better error diagnostic?
 	
 	void check(TokenId id);
 	void checkNext(TokenId id);

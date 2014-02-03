@@ -32,35 +32,10 @@ THE SOFTWARE.
 #include <plf/ast/Expression.hpp>
 #include <plf/ast/Type.hpp>
 
+#include <dis/ParserError.hpp>
+
 using namespace dis;
 using namespace plf;
-
-/**
-* Error Result from parsing function
-*/
-class ErrorDecl : public Declaration
-{
-public:
-	ErrorDecl() 
-		: Declaration(NodeKind::Error)
-	{}
-	
-	ErrorDecl(bool eof) 
-		: Declaration(NodeKind::Error), eof(eof)
-	{}
-	
-	bool eof = false;
-	unsigned int col;
-	unsigned int line;
-	TokenId id;
-	//EOF
-	//Location
-	//Message
-	//Token?
-	//type? Decl/Stmt/Expr/Type
-	
-	//print function?
-};
 
 
 //Exception with Token
@@ -80,6 +55,11 @@ Parser::~Parser()
 NodePtr Parser::parse()
 {
 	next(); //initial token
+
+
+	//try_parse Decl
+	//try_parse Stmt
+	//try_parse Expr
 	
 	switch(tok_.id)
 	{
@@ -132,9 +112,6 @@ DeclPtr Parser::parseDeclaration()
 			break;
 		case TokenId::KwType:
 			throw FormatException("parseDeclaration: parsing type not implemented");
-			break;
-		case TokenId::KwObj:
-			decl = parseClass();
 			break;
 		//Instance Declarations
 		case TokenId::KwVar: 
@@ -381,7 +358,7 @@ void Parser::parseFuncParameter(plf::FunctionDecl& func)
 * Parse a class
 * class <ident> [ ( <tpl args> ) ] [ : <type> ] { <decls> }
 */
-plf::DeclPtr Parser::parseClass()
+/*plf::DeclPtr Parser::parseClass()
 {
 	assert(tok_.id == TokenId::KwObj);
 	next();
@@ -423,7 +400,7 @@ plf::DeclPtr Parser::parseClass()
 	next();
 	
 	return classDecl;
-}
+}*/
 
 /**
 * Parse a trait
@@ -620,11 +597,11 @@ ExprPtr Parser::parseExpression()
 		//---------------------------
 		//keyword expressions
 		case TokenId::KwIf:
-			throw Exception("If-Expression parsing not yet implemented");
-			break;
-		case TokenId::KwSwitch:
-			throw Exception("Switch-Expression parsing not yet implemented");
-			break;
+			return parseIfExpr();
+
+		case TokenId::KwMatch:
+			return parseMatchExpr();
+
 		
 		//unary expression prefixed
 		
@@ -691,7 +668,33 @@ ExprPtr Parser::parseExpression()
 	return expr;
 }
 
+ExprPtr Parser::parseIfExpr()
+{
+	throw Exception("If-Expression parsing not yet implemented");
+}
 
+ExprPtr Parser::parseMatchExpr()
+{
+	throw Exception("Match-Expression parsing not yet implemented");
+}
+
+//return operator precedence
+int Parser::op_prec(TokenId id)
+{
+	switch(id)
+	{
+	case TokenId::Plus:
+	case TokenId::Minus:
+		return 0;
+
+	case TokenId::Mul:
+	case TokenId::Div:
+		return 1;
+
+	default:
+			throw Exception("Not an operator");
+	}
+}
 
 ////////////////////////////////////////////////////////////////////////
 // DataType

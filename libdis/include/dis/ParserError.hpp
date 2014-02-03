@@ -1,7 +1,7 @@
 /*
 Dis Programming Language Frontend Library
 
-Copyright (c) 2013 okard
+Copyright (c) 2014 okard
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,38 +21,48 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#pragma once
-#ifndef DIS_PARSER_HPP
-#define DIS_PARSER_HPP
 
-#include <plf/ast/Visitor.hpp>
+#ifndef DIS_PARSER_ERROR
+#define DIS_PARSER_ERROR
+
+#include <plf/ast/Node.hpp>
+#include <plf/ast/Declaration.hpp>
 
 namespace dis {
-	
+
 /**
-* Source Printer Visitor
-*/ 
-class Printer : public plf::Visitor
+* Error Result from parsing function
+*/
+class ErrorDecl : public plf::Declaration
 {
-private:
-	//print to out buffer
-	//tabs/idention
-	//some options
-
 public:
+	ErrorDecl()
+		: plf::Declaration(plf::NodeKind::Error)
+	{}
 
-	//Declarations------------------------------------------------------
-	virtual plf::NodePtr visit(plf::PackageDecl& n, plf::ParamPtr& arg);
-	
-	virtual plf::NodePtr visit(plf::FunctionDecl& n, plf::ParamPtr& arg);
+	ErrorDecl(bool eof)
+		: plf::Declaration(plf::NodeKind::Error), eof(eof)
+	{}
 
-	virtual plf::NodePtr visit(plf::InstanceDecl& n, plf::ParamPtr& arg);
-	//Statements--------------------------------------------------------
-	
-	
-	//Expressions-------------------------------------------------------
+	bool eof = false;
+	unsigned int col;
+	unsigned int line;
+	TokenId id;
+	//EOF
+	//Location
+	//Message
+	//Token?
+	//type? Decl/Stmt/Expr/Type
+
+	//in context flag? -> so current token hangs in air and for future parsing requires syncing
+
+	//print function?
 };
-	
+
+//errorstmt
+//errorexpr
+
+
 }
 
-#endif // DIS_PARSER_HPP
+#endif // DIS_PARSER_ERROR
