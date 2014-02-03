@@ -13,6 +13,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic")
 
 # libplf
 add_subdirectory("libplf")
+add_subdirectory("libplf-llvm")
+
 # libdis
 add_subdirectory("libdis")
 

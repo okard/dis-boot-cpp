@@ -32,10 +32,11 @@ namespace plf {
 /**
 * Source in Memory
 */
-class SourceString : public Source
+class SourceBuffer : public Source
 {
 private:
-	//buffer
+	//BufferPtr buffer_;
+
 public:	
 	//SourceString(buffer)
 	//SourceString(const char* );

@@ -404,7 +404,7 @@ inline void Lexer::skip(int i)
 	column_ += i;
 }
 	
-
+//checks if the current token is c then set tok id to id and go to next char
 inline void Lexer::checkForChar(Token& tok, char c, TokenId id)
 {
 	if(current() == c)
@@ -428,6 +428,8 @@ inline void checkKeyword(Token& tok)
 	else if(chkKw(tok, "def")) { tok.id = TokenId::KwDef; }
 	else if(chkKw(tok, "trait")) { tok.id = TokenId::KwTrait; }
 	else if(chkKw(tok, "type")) { tok.id = TokenId::KwType; }
+	else if(chkKw(tok, "struct")) { tok.id = TokenId::KwStruct; }
+	else if(chkKw(tok, "enum")) { tok.id = TokenId::KwEnum; }
 	else if(chkKw(tok, "var")) { tok.id = TokenId::KwVar; }
 	else if(chkKw(tok, "let")) { tok.id = TokenId::KwLet; }
 	else if(chkKw(tok, "const")) { tok.id = TokenId::KwConst; }

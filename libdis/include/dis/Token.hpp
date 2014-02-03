@@ -32,6 +32,7 @@ THE SOFTWARE.
 #undef TOKEN
 #define DIS_TOKEN 								\
 		TOKEN(Unkown) 							\
+		TOKEN(NotInitialized)					\
 		TOKEN(Eof) 								\
 		/* LITERALE */ 							\
 		TOKEN(Ident) 							\
@@ -98,6 +99,8 @@ THE SOFTWARE.
 		TOKEN(KwTrait)							\
 		TOKEN(KwType)							\
 		TOKEN(KwDef) 							\
+		TOKEN(KwStruct)							\
+		TOKEN(KwEnum)							\
 		TOKEN(KwVar) 							\
 		TOKEN(KwLet) 							\
 		TOKEN(KwConst)							\

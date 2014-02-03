@@ -30,6 +30,18 @@ THE SOFTWARE.
 
 namespace dis {
 
+
+class EofNode : public plf::Node
+{
+public:
+	EofNode()
+		: plf::Node(plf::NodeKind::Error)
+	{
+	}
+};
+
+
+
 /**
 * Error Result from parsing function
 */

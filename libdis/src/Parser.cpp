@@ -24,6 +24,7 @@ THE SOFTWARE.
 #include <dis/Parser.hpp>
 
 #include <cassert>
+#include <iostream>
 
 #include <plf/base/Exception.hpp>
 #include <plf/base/FormatException.hpp>
@@ -44,7 +45,7 @@ using namespace plf;
 Parser::Parser(Lexer& lex)
 	: lexer_(lex)
 {
-	
+	tok_.id = TokenId::NotInitialized;
 }
 
 Parser::~Parser()
@@ -54,28 +55,38 @@ Parser::~Parser()
 //starting parse function
 NodePtr Parser::parse()
 {
-	next(); //initial token
+	//first call initialize token
+	if(tok_.id == TokenId::NotInitialized)
+	{
+		next();
+	}
 
+	//std::cout << "DEBUG: parse() TOK: " << toString(tok_.id) << std::endl;
+
+	if(tok_.id == TokenId::Eof)
+	{
+		return Node::create<EofNode>();
+	}
+
+
+	NodePtr n;
 
 	//try_parse Decl
+	n = parseDeclaration();
+	if(n && n->kind() != NodeKind::Error)
+		return n;
+
 	//try_parse Stmt
+	n = parseStatement();
+	if(n && n->kind() != NodeKind::Error)
+		return n;
+
 	//try_parse Expr
-	
-	switch(tok_.id)
-	{
-		//decl
-		case TokenId::KwPackage:
-		case TokenId::KwDef:
-			return parseDeclaration();
-			break;
-		//stmt
-		
-		//if stmtexpr return expr
-		//expr
-		
-		default:
-			throw FormatException("parse(): [%s] Not yet implemented", toString(tok_.id));
-	}
+	//will returned as ExprStmt
+
+	//throw FormatException("parse(): [%s] Not yet implemented", toString(tok_.id));
+
+	throw FormatException("parse(): No valid stuff to parse");
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -104,14 +115,22 @@ DeclPtr Parser::parseDeclaration()
 		case TokenId::KwImport:
 			decl = parseImportDecl();
 			break;
+
+
 		case TokenId::KwDef: 
 			decl = parseFunctionDecl();
 			break;
 		case TokenId::KwTrait: 
-			decl = parseTrait();
+			decl = parseTraitDecl();
+			break;
+		case TokenId::KwStruct:
+			decl = parseStructDecl();
+			break;
+		case TokenId::KwEnum:
+			decl = parseEnumDecl();
 			break;
 		case TokenId::KwType:
-			throw FormatException("parseDeclaration: parsing type not implemented");
+			decl = parseTypeDecl();
 			break;
 		//Instance Declarations
 		case TokenId::KwVar: 
@@ -405,12 +424,33 @@ void Parser::parseFuncParameter(plf::FunctionDecl& func)
 /**
 * Parse a trait
 */
-plf::DeclPtr Parser::parseTrait()
+plf::DeclPtr Parser::parseTraitDecl()
 {
 	assert(tok_.id == TokenId::KwTrait);
-	throw plf::FormatException("Not implemented");
-	
-	//tpl
+
+
+	throw plf::FormatException("Parsing traits not yet implemented");
+}
+
+DeclPtr Parser::parseStructDecl()
+{
+	assert(tok_.id == TokenId::KwStruct);
+
+	throw plf::FormatException("Parsing structs not yet implemented");
+}
+
+DeclPtr Parser::parseEnumDecl()
+{
+	assert(tok_.id == TokenId::KwEnum);
+
+	throw plf::FormatException("Parsing enums not yet implemented");
+}
+
+DeclPtr Parser::parseTypeDecl()
+{
+	assert(tok_.id == TokenId::KwType);
+
+	throw plf::FormatException("Parsing type aliases not yet implemented");
 }
 
 /*
@@ -759,8 +799,10 @@ TypePtr Parser::parseDataType()
 		
 		case TokenId::SOBracket:
 			throw FormatException("parseDataType: parsing of array and map types not implemented");
-			break;
-			
+
+		case TokenId::ConstraintStart:
+			throw FormatException("parseDataType: parsing of type constraints not yet implemented");
+
 		default:
 			throw FormatException("parseDataType: not yet implemented or invalid type");
 	}

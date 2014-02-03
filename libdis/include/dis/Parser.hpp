@@ -69,15 +69,21 @@ private:
 	
 	plf::DeclPtr parsePackageDecl();
 	plf::DeclPtr parseImportDecl();
+
+
 	plf::DeclPtr parseFunctionDecl();
 	void parseFuncParameter(plf::FunctionDecl& func);
 	
-	plf::DeclPtr parseTrait();
+	plf::DeclPtr parseTraitDecl();
 
-	//enum, struct, union
+	plf::DeclPtr parseStructDecl();
+
+	plf::DeclPtr parseEnumDecl();
+
+	//alias etc
 	plf::DeclPtr parseTypeDecl();
 	
-	
+	//const, let, var
 	plf::DeclPtr parseInstanceDecl();
 	
 	//parse a Ident : Type

@@ -56,6 +56,9 @@ Compiler::~Compiler()
 int Compiler::run(int argc, char *argv[])
 {
 	std::cout << "Running dis compiler" << std::endl;
+
+
+	List<BufferPtr> source_files;
 	
 	//- parse arguments
 	for(int i=1; i < argc; i++)
@@ -78,9 +81,21 @@ int Compiler::run(int argc, char *argv[])
 		
 		//-arch / -platform / -backend
 		//-c / -executable / -static / -shared
+		//-dump ir
+
+
+		//not an option so it is a source file
+		source_files.push_back(std::make_shared<Buffer>(argv[i]));
 		
 	}
-		
+
+	for(auto src_file: source_files)
+	{
+		auto src = SourceManager::getInstance().loadFile(src_file->ptr());
+		lexer_.open(src);
+		auto n = parser_.parse();
+	}
+
 	
 	//auto src = std::make_shared<SourceFile>();
 	//src->open(argv[1]);
@@ -155,10 +170,15 @@ void Compiler::testParse(const char* filename)
 
 	Printer p;
 	ParamPtr pp;
+	NodePtr n;
 
-	//parse to end?
-	auto n = parser.parse();
-	n->accept(p, pp);
-	
+	do
+	{
+		n = parser.parse();
+		//print:
+		n->accept(p, pp);
+	}
+	while(n && n->kind() != NodeKind::Error);
+
 	//prettyPrinter()
 }
