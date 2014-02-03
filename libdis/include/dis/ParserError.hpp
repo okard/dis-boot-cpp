@@ -30,6 +30,24 @@ THE SOFTWARE.
 
 namespace dis {
 
+//TODO generic ErrorInterface in plf/ast/Node.hpp?
+//TODO clear error interface
+
+//Cases of ErrorNodes
+// - Invalid Decl
+// - Invalid Stmt
+// - Invalid Expr
+// - EOF (is not an error -> seperate nodekind?)
+
+//Properties
+// - Message?
+// - Accepted  (expected 'errors' so it is fine)
+// - Fail	   (stop parsing)
+// - Error Count ( count of errors in this parsing step?)
+
+//handle error nodes through an signal(&Node);
+//when one slot handler of signal changes attributes end parsing?)
+
 
 class EofNode : public plf::Node
 {
