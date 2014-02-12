@@ -42,11 +42,9 @@ NodePtr Printer::visit(PackageDecl& n, ParamPtr& arg)
 		}
 	std::cout << ";" << std::endl;
 	
-	//accept subnodes
-	for(auto d: n.decls)
-	{
-		d->accept(*this, arg);
-	}
+
+	//Iterate through declarations
+	visitList<Declaration>(n.decls, arg);
 	
 	return n;
 }

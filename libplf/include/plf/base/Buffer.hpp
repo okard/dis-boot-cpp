@@ -39,7 +39,7 @@ public:
 	typedef char byte;
 private:
 	size_t size_;
-	byte* buffer_;
+	byte* buffer_; //TODO std::unique_ptr???
 	
 public:
 
@@ -52,9 +52,13 @@ public:
 	
 	//TODO set to 0
 	//clear();
+	//empty();
 
 	//allocates the buffer with a new size, old buffer data is freed
 	void alloc(size_t size);
+
+	//realloc
+	//append
 
 	//assign other buffer/ 0-terminated strings
 	Buffer& operator=(const Buffer& buf);

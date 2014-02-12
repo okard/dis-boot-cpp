@@ -167,7 +167,12 @@ public:
 	template<class T>
 	SharedPtr<T> to()
 	{
-		return std::static_pointer_cast<T>(shared_from_this());
+		//debug dynamic cast
+		#if DEBUG
+			return std::dynamic_pointer_cast<T>(shared_from_this());
+		#else
+			return std::static_pointer_cast<T>(shared_from_this());
+		#endif
 	}
 	
 	/**

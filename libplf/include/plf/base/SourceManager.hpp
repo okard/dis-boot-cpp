@@ -56,7 +56,7 @@ public:
 	///load a physical source file
 	SourcePtr loadFile(const char*);
 	
-	
+	//SourcePtr loadBuffer(BufferPtr& buf);
 	//SourcePtr loadBuffer(Buffer& buf);
 	
 	

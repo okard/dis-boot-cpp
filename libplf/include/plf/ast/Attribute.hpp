@@ -65,12 +65,15 @@ class UserAttribute : public Attribute
 
 
 //attach attribute to functions
+	// enter_function,
+	// leave_function
 
 //CustomAttribute
 
 //Lang Attribute?
-// #[lang="op:eq"] 
-
+// #[lang("op:eq")]
+// implement operators as functions
+	//def opabcblabla(this: &foo, b: T)
 	
 } //end namespace plf
 

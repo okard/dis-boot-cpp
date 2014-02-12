@@ -59,7 +59,8 @@ class StringLiteral;
 
 class UnaryExpr;
 class BinaryExpr;
-class CallExpr;	
+class CallExpr;
+class CastExpr;
 
 
 /**
@@ -117,6 +118,18 @@ public:
 	//CallExpr
 	
 	//Types-------------------------------------------------------------
+
+
+	//Helper
+	template<class T>
+	void visitList(PtrList<T>& list, ParamPtr& arg)
+	{
+		for(int i=0; list.size(); i++)
+		{
+			NodePtr n = list[i]->accept(*this, arg);
+			list[i] = n->to<T>();
+		}
+	}
 };
 
 

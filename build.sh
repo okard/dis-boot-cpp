@@ -15,11 +15,11 @@ cd build
 # make or ninja build
 if command -v ninja >/dev/null 2>&1; then
 	cmake -G "Ninja" .. -DCMAKE_BUILD_TYPE=Debug
-	ninja
 else
-	cmake -G "Unix Makefiles" ..
-	make
+	cmake -G "Unix Makefiles" .. -DCMAKE_BUILD_TYPE=Debug
 fi
+
+cmake --build .
 
 
 

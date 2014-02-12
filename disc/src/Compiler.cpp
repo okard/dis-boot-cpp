@@ -36,6 +36,16 @@ THE SOFTWARE.
 using namespace plf;
 using namespace dis;
 
+
+struct CompilationUnit
+{
+	SourceId sourceId;
+	NodePtr ast;
+
+	//SymbolTable?
+	//ObjectFile obj;
+};
+
 /*
  { "-parse", 1, std::function<void(argc, argv)> } 
  rest
@@ -94,6 +104,8 @@ int Compiler::run(int argc, char *argv[])
 		auto src = SourceManager::getInstance().loadFile(src_file->ptr());
 		lexer_.open(src);
 		auto n = parser_.parse();
+
+		//add n to root_crate
 	}
 
 	
@@ -111,6 +123,8 @@ int Compiler::run(int argc, char *argv[])
 
 	//3. resolve imports (Ast)
 		//resolve imports (&crate)
+			// root crate "exports" module structure
+			// resolve the modules defined by root crate and add sources/asts for modules
 
 	//4. semantic run (Ast -> DAst)
 		//semantic(&crate)
