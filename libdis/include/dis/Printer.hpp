@@ -31,6 +31,7 @@ namespace dis {
 	
 /**
 * Source Printer Visitor
+* Pretty Printer
 */ 
 class Printer : public plf::Visitor
 {
@@ -51,6 +52,13 @@ public:
 	
 	
 	//Expressions-------------------------------------------------------
+
+private:
+	//write functions for formatted strings/buffer
+	//write(const char* msg, ...)
+	//write(const BufferPtr& buf);
+	//ident //tabs++
+	//unident //tabs--
 };
 	
 }

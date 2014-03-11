@@ -32,6 +32,7 @@ PrimaryType::PrimaryType(size_t size, const char* name, bool signedT)
 {
 }
 
+namespace plf {
 
 PrimaryType typeInt8(1, "int8", true);
 PrimaryType typeUInt8(1, "uint8", false);
@@ -42,6 +43,7 @@ PrimaryType typeUInt32(4, "uint32", false);
 PrimaryType typeInt64(8, "int64", true);
 PrimaryType typeUInt64(8, "uint64", false);
 
+}
 
 
 TypePtr UnkownType::getInstance()

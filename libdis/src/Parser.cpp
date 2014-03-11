@@ -576,6 +576,32 @@ plf::StmtPtr Parser::parseBlockStmt()
 // Expression
 ////////////////////////////////////////////////////////////////////////
 
+/*
+ Expression Parsing 'Operator' Pre
+
+ Unary Prefix
+	!<expr>
+	&<expr>
+	-<expr>
+	++<expr>
+	--<expr>
+
+ Unary Postfix
+	<expr>()
+	<expr>++
+	<expr>--
+
+
+
+	atoms
+		(<expr>)
+		Ident
+		Literal
+		
+		
+
+*/
+
 /**
 * Parse Expressions
 */
@@ -708,11 +734,44 @@ ExprPtr Parser::parseExpression()
 	return expr;
 }
 
+ExprPtr Parser::parseExprAtom()
+{
+	//special '('
+
+	//prefix
+	//- UnaryOpPrefix
+
+	//main
+	//-ident
+	//-literal
+
+	//postfix
+
+	//- UnaryOpPostfix
+	//- ArrayAccess
+	//- Call
+
+	throw Exception("Not yet implemented");
+}
+
+ExprPtr Parser::parseExprBinary(int min_prec)
+{
+	throw Exception("Not yet implemented");
+}
+
+/*
+* if(<expr>){}
+* else if(<expr>){}
+* else{}
+*/
 ExprPtr Parser::parseIfExpr()
 {
 	throw Exception("If-Expression parsing not yet implemented");
 }
 
+/*
+* match(<expr>)
+*/
 ExprPtr Parser::parseMatchExpr()
 {
 	throw Exception("Match-Expression parsing not yet implemented");
@@ -723,13 +782,18 @@ int Parser::op_prec(TokenId id)
 {
 	switch(id)
 	{
+
+	//Binary:
 	case TokenId::Plus:
 	case TokenId::Minus:
 		return 0;
 
 	case TokenId::Mul:
 	case TokenId::Div:
+		//pow
 		return 1;
+		
+	//Unary:
 
 	default:
 			throw Exception("Not an operator");
@@ -753,6 +817,7 @@ int Parser::op_prec(TokenId id)
 * : <datatype>!(<datatype>*)
 * -----------------------------
 * : ~<datatype>!<datatype>
+* (precedence climbing?)
 */
 TypePtr Parser::parseDataType()
 {
@@ -829,13 +894,13 @@ TypePtr Parser::parseDataType()
 /// Read next token
 void Parser::next()
 {
-	tok_ = lexer_.next();
+	lexer_.next(tok_);
 }
 
 /// do a peek check with a TokenId
 bool Parser::peek(int count, TokenId id)
 {
-	return lexer_.peek(count).id == id;
+	throw FormatException("Parser::peek: not yet implemented");
 }
 
 /// Check current token

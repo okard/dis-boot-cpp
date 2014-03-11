@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __DIS_PARSER_HPP__
-#define __DIS_PARSER_HPP__
+#ifndef DIS_PARSER_HPP
+#define DIS_PARSER_HPP
 
 #include <plf/ast/Node.hpp>
 
@@ -44,20 +44,20 @@ class Parser
 private:
 	Lexer& lexer_;
 	
+	//TODO token peek/lookahead
+	//Stack<Token>/std::dequeue<Token>
 	Token tok_;
-	//TODO Tokenstack?
+
 	//DeclFlags
-	
 	//error handler?
+
 public:
 
 	Parser(Lexer& lex);
 	~Parser();
 
-
 	//parse into crate
 	plf::NodePtr parse();
-
 
 private:
 	////////////////////////////////////////////////////////////////////
@@ -96,6 +96,7 @@ private:
 	
 	//parseForStmt
 	//parseWhileStmt
+
 	//parseDoWhileStmt
 	//parseIfStmt
 	//parseSwitchStmt
@@ -104,6 +105,9 @@ private:
 	////////////////////////////////////////////////////////////////////
 	// Expressions
 	plf::ExprPtr parseExpression();
+
+	plf::ExprPtr parseExprAtom();
+	plf::ExprPtr parseExprBinary(int min_prec);
 	
 	plf::ExprPtr parseIfExpr();
 	plf::ExprPtr parseMatchExpr();
@@ -129,4 +133,4 @@ private:
 
 } //end namespace dis
 
-#endif // __DIS_PARSER_HPP__
+#endif // DIS_PARSER_HPP

@@ -102,37 +102,14 @@ void Lexer::open(plf::SourcePtr srcptr)
 	reader_.load(srcptr);
 	
 	//TODO reset internal status
-	toklist_.clear();
-	
 	column_ = 1;
 	line_ = 1;
 }
 
 
-Token& Lexer::next()
+void Lexer::next(Token& token)
 {
-	//pop front the old one
-	if(!toklist_.empty())
-		toklist_.pop_front();
-	
-	//if now empty add a new one
-	if(toklist_.empty())
-	{
-		toklist_.push_back(Token());
-		Token& tok =  toklist_.back();
-		lexToken(tok);
-	}
-	
-	//return actual at front
-	return toklist_.front();
-}
-
-Token& Lexer::peek(int num)
-{
-	//check toklist_.size() 
-	//push token until num in toklist
-	//return element
-	throw plf::FormatException("Lexer::peek: Not implemented yet");
+	lexToken(token);
 }
 
 

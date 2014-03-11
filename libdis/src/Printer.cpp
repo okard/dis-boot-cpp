@@ -54,7 +54,17 @@ plf::NodePtr Printer::visit(plf::FunctionDecl& n, plf::ParamPtr& arg)
 	//decl flags
 	std::cout << "def ";
 	std::cout.write(n.name->ptr(), n.name->size());
+	
+	for(FunctionParameter& p: n.params)
+	{
+		std::cout.write(p.ident->ptr(), p.ident->size());
+		std::cout << ", ";
+	}
+	
 	std::cout << std::endl;
+	
+	if(n.body)
+		n.body->accept(*this, arg);
 	
 	return n;
 }

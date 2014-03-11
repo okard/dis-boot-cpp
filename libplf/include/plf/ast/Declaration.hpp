@@ -244,6 +244,8 @@ public:
 	bool tplFunc = false;	//means is template function
 	bool extFunc = false;	//extension function
 	
+	//ctf - compile time function
+	
 	bool hasBody() const { return body ? true : false; }
 	//template 
 	//nested 

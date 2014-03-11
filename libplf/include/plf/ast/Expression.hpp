@@ -42,6 +42,8 @@ public:
 	TypePtr returnType;
 	
 	//constant expression
+	
+	//cte - compile time expression
 };
 
 
@@ -110,13 +112,20 @@ public:
 ///Operators for Unary Expressions
 enum class UnaryOperator
 {
-	Neg, 	  // - 
+	//Logical
 	Not, 	  // ! logical negative
+
+	//Bitwise Not
+
+	//Arithmetic
+	Neg, 	  // Prefix -
+	Pos,	  // Prefix +
 	PostIncr, //expr++
 	PreIncr,  //++expr
 	PostDecr, //expr--
 	PreDecr,  //--expr
 	
+	//Memory
 	Ref,	  // &
 	OPtr 	  // ~
 	
@@ -140,21 +149,38 @@ public:
 ///Operators for Binary Expressions
 enum class BinaryOperator
 {
+	Assign,	// =
+
+	//Arithmetic
 	Plus,	// +
 	Minus,	// -
 	Mul,	// *
 	Div,	// /
 	Mod,	// %
 	Pow,	// ^^?
-	Equal,	// ==
-	NotEqual, // !=
-	Assign,	// =
-	Gt, 	//GreaterThan >
-	Lt, 	//LessThan <
-	Gte, 	//GreaterThan or Equals >=
-	Lte 	// LessThan or Equals <=
-	
-	//Access, // ./: foo.a(asad)
+
+	//Combound Assign
+	PlusAssign, //+=
+
+	//boolean operators
+	Equal,		// ==
+	NotEqual,	// !=
+	Gt,			//GreaterThan >
+	Lt,			//LessThan <
+	Gte,		//GreaterThan or Equals >=
+	Lte,		// LessThan or Equals <=
+	LAnd,		// && Logic And
+	LOr,		// || Logic Or
+
+	//Bitwise
+
+	Access // ./: foo.a(asad)
+};
+
+enum class OpAssociativity
+{
+	Left,
+	Right
 };
 
 /**

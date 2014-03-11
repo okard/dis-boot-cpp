@@ -44,8 +44,8 @@ private:
 	//reader to handle source input
 	plf::SourceReader reader_;
 	
-	//ring buffer?
-	std::deque<Token> toklist_;
+	//current token
+	Token token_;
 	
 	bool doc_comment_enabled; //lex doc comments
 
@@ -58,8 +58,7 @@ public:
 	
 	void open(plf::SourcePtr srcptr);
 	
-	Token& next();
-	Token& peek(int num);
+	void next(Token& token);
 	
 	//TODO Lexer hooks for inline asm
 	//get SavePoint& 
@@ -72,6 +71,7 @@ private:
 	void lexNumber(Token& tok);
 	void lexComment(Token& tok);
 	
+	//use int32 as utf32 representation?
 	inline void nextChar();
 	inline char& current();
 	inline char& peekChar(size_t n);

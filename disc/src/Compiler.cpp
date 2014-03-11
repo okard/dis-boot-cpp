@@ -151,18 +151,14 @@ void Compiler::testLex(const char* filename)
 	Token tok;
 	do
 	{
-		tok = lexer.next();
+		lexer.next(tok);
 		std::cout << "Token(L" << tok.loc.line << ", C" << tok.loc.column << "): " << dis::toString(tok.id);
-		switch(tok.id)
+
+		//when has buffer content
+		if(tok.buffer)
 		{
-			case TokenId::Ident: 
-			case TokenId::StringLiteral:
-				std::cout << " Buffer: ";
-				std::cout.write(tok.buffer->ptr(), tok.buffer->size());
-				break;
-				
-			default:
-				break;
+			std::cout << " Buffer: ";
+			std::cout.write(tok.buffer->ptr(), tok.buffer->size());
 		}
 		std::cout << std::endl;
 	}
