@@ -31,6 +31,9 @@ THE SOFTWARE.
 #include <plf/base/SourceFile.hpp>
 #include <plf/base/SourceManager.hpp>
 
+#include <plf/ast/Crate.hpp>
+#include <plf/ast/Declaration.hpp>
+
 #include <dis/Printer.hpp>
 
 using namespace plf;
@@ -40,15 +43,43 @@ using namespace dis;
 struct CompilationUnit
 {
 	SourceId sourceId;
-	NodePtr ast;
-
-	//SymbolTable?
+	plf::Crate crate;
+	//SymbolTable? -> in crate
 	//ObjectFile obj;
 };
 
 /*
  { "-parse", 1, std::function<void(argc, argv)> } 
  rest
+
+
+ Command Line Options:
+
+Generic Target Information
+	-arch		arm, x32, x64
+	-platform	Linux, Posix, Windows,FreeBSD, ...
+	-backend    llvm, js, jit, etc
+
+
+Compilation Style:
+	-c				to object file
+	-executable     to executeable
+	-static         to static library
+	-shared			to shared library (dll)
+
+	//when -c compile each file in a own crate (append path)
+
+Module Prefixed
+	-parser     Parser Options..
+	-sem		Semantic
+	-cg			Code Generation
+	-link		Linker stuff
+
+LLVM Backend:
+
+	-cg-llvm-dump-ir		llvm ir
+
+
 */
 
 
@@ -88,25 +119,35 @@ int Compiler::run(int argc, char *argv[])
 			testParse(argv[i+1]);
 			return 0;
 		}
-		
+
+
 		//-arch / -platform / -backend
 		//-c / -executable / -static / -shared
-		//-dump ir
+		//-llvm dump ir
+
+		//when -c compile each file in a own crate (append path)
 
 
 		//not an option so it is a source file
-		source_files.push_back(std::make_shared<Buffer>(argv[i]));
-		
+		source_files.push_back(std::make_shared<Buffer>(argv[i]));		
 	}
 
+
+	plf::Crate crate;
 	for(auto src_file: source_files)
 	{
 		auto src = SourceManager::getInstance().loadFile(src_file->ptr());
 		lexer_.open(src);
-		auto n = parser_.parse();
 
-		//add n to root_crate
+		auto n = parser_.parse();
+		auto decl = n->to<Declaration>(); //Declaration.hpp required because of knowing inheritance
+		//add to crate
+		crate.decls.push_back(decl);
 	}
+
+
+	//semantic runs
+
 
 	
 	//auto src = std::make_shared<SourceFile>();
@@ -177,11 +218,10 @@ void Compiler::testParse(const char* filename)
 	Parser parser(lexer);
 	lexer.open(src);
 	
-
+	//parse file
 	Printer p;
 	ParamPtr pp;
 	NodePtr n;
-
 	do
 	{
 		n = parser.parse();

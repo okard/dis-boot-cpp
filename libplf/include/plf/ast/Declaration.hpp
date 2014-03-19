@@ -86,21 +86,18 @@ public:
 * A package or module
 * represents a object file (*.o) 
 */
-class PackageDecl final : public Declaration
+class ModDecl final : public Declaration
 {
 public:
-	static const NodeKind Kind = NodeKind::PackageDecl;
-	PackageDecl() : Declaration(NodeKind::PackageDecl) {}
+	static const NodeKind Kind = NodeKind::ModDecl;
+	ModDecl() : Declaration(Kind) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	AttrList attribs;
 	DeclList decls;	
-	List<BufferPtr> path;
+	BufferPtr name;
 	
 	//all lists are private add "add","remove" functions?
-	
-	//complete flat symbol table for AST
-	SymbolTable symbolTbl;
 };
 
 /**
@@ -108,11 +105,11 @@ public:
 * import a = a.b.c;
 * import a.b.c;
 */
-class ImportDecl final : public Declaration
+class UseDecl final : public Declaration
 {
 public:
-	static const NodeKind Kind = NodeKind::ImportDecl;
-	ImportDecl() : Declaration(NodeKind::ImportDecl) {}
+	static const NodeKind Kind = NodeKind::UseDecl;
+	UseDecl() : Declaration(Kind) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	BufferPtr ident;

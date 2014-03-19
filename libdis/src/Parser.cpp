@@ -68,7 +68,6 @@ NodePtr Parser::parse()
 		return Node::create<EofNode>();
 	}
 
-
 	NodePtr n;
 
 	//try_parse Decl
@@ -86,7 +85,7 @@ NodePtr Parser::parse()
 
 	//throw FormatException("parse(): [%s] Not yet implemented", toString(tok_.id));
 
-	throw FormatException("parse(): No valid stuff to parse");
+	throw FormatException("parse(): No valid stuff to parse [Token: %s]", toString(tok_.id));
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -98,8 +97,9 @@ NodePtr Parser::parse()
 */
 DeclPtr Parser::parseDeclaration()
 {
+	//TODO parse options to exclude mod
+
 	//flags (public,private,protected) pub priv prot
-	
 	DeclFlags flags = DeclFlags::None;
 	parseDeclFlags(flags); //parseDeclFlags(DeclFlags&);
 	
@@ -108,15 +108,12 @@ DeclPtr Parser::parseDeclaration()
 	
 	switch(tok_.id)
 	{	
-		case TokenId::KwPackage:  	
-			decl = parsePackageDecl(); 
-			//todo remove here? nested packages?
+		case TokenId::KwMod:
+			decl = parseModDecl();
 			break;
-		case TokenId::KwImport:
-			decl = parseImportDecl();
+		case TokenId::KwUse:
+			decl = parseUseDecl();
 			break;
-
-
 		case TokenId::KwDef: 
 			decl = parseFunctionDecl();
 			break;
@@ -138,6 +135,8 @@ DeclPtr Parser::parseDeclaration()
 		case TokenId::KwConst:		
 			decl = parseInstanceDecl();
 			break;
+
+		//TODO think over error node stuff
 		case TokenId::Eof:
 			return Node::create<ErrorDecl>(true);
 		default:
@@ -146,6 +145,7 @@ DeclPtr Parser::parseDeclaration()
 			err->line = tok_.loc.line;
 			err->col = tok_.loc.column;
 			err->id = tok_.id;
+			//signal callback
 			return err;
 		}
 	}
@@ -187,71 +187,38 @@ void Parser::parseDeclFlags(DeclFlags& flags)
 	}
 }
 
-/*
-* package a.b.c;
-* package ident .ident .ident ;
-*/
-plf::DeclPtr Parser::parsePackageDecl()
+/**
+ * @brief Parse a module declaration
+ *	      mod ident;
+ *		  mod ident {}
+ * @return
+ */
+DeclPtr Parser::parseModDecl()
 {
-	assert(tok_.id == TokenId::KwPackage);
-	
-	auto pkg = Node::create<PackageDecl>();
-	
-	//parse path
-	checkNext(TokenId::Ident);
-	while(tok_.id == TokenId::Ident)
-	{
-		pkg->path.push_back(tok_.buffer);
-		next();
-		
-		if(tok_.id == TokenId::Dot)
-			next();
-	}
-	
-	//ends with semicolon
-	check(TokenId::Semicolon);
-	next();
-	
-	//read all declaration in package
-	// no other package declarations?
-	NodePtr decl;
-	while((decl = parseDeclaration())->kind() != NodeKind::Error)
-	{
-		decl->parent = pkg;
-		pkg->decls.push_back(decl->to<Declaration>());
-	}
-	
-	//error declarations not allowed
-	if( decl
-	&&  decl->kind() == NodeKind::Error
-	&&  !decl->to<ErrorDecl>()->eof)
-	{
-		auto err = decl->to<ErrorDecl>();
-		throw FormatException("(%d, %d) Error during parsing package", err->line, err->col);
-	}
-
-	return pkg;
+	throw Exception("Not yet implemented");
 }
 
 /**
-* import a.b.c;
-* import d = a.b.c;
-*/
-plf::DeclPtr Parser::parseImportDecl()
+ * @brief parse a use Declaration
+ *		  use abc::abc
+ *		  use ident = abc::abc;
+ *		  use this = abc::abc
+ *		  ?use("file.dis")?
+ * @return a use decl or error decl?
+ */
+DeclPtr Parser::parseUseDecl()
 {
-	assert(tok_.id == TokenId::KwImport);
-	
+	assert(tok_.id == TokenId::KwUse);
 	next();
-	
+
 	if(tok_.id != TokenId::Ident)
-		throw FormatException("Expected <Ident> at import declaration: L %d C %d", tok_.loc.line, tok_.loc.column);
-	
-	auto import = Node::create<ImportDecl>();
+		throw FormatException("Expected <Ident> at use declaration: L %d C %d", tok_.loc.line, tok_.loc.column);
+
+	auto import = Node::create<UseDecl>();
 	import->ident = tok_.buffer;
-	
+
 	// can has = or .
-	
-	
+
 	//end with semicolon
 	checkNext(TokenId::Semicolon);
 	return import;
@@ -269,6 +236,7 @@ plf::DeclPtr Parser::parseFunctionDecl()
 	//function name
 	checkNext(TokenId::Ident);
 	func->name = tok_.buffer;
+	tok_.buffer = std::make_shared<Buffer>();
 	next();
 	
 	//parameter
@@ -322,7 +290,7 @@ plf::DeclPtr Parser::parseFunctionDecl()
 	}
 	
 	
-	throw plf::FormatException("parseFunctionDecl: invalid funcdecl");
+	throw plf::FormatException("parseFunctionDecl: invalid function declaration");
 }
 
 /**
@@ -350,6 +318,7 @@ void Parser::parseFuncParameter(plf::FunctionDecl& func)
 		//ident
 		check(TokenId::Ident);
 		BufferPtr id = tok_.buffer;
+		tok_.buffer = std::make_shared<Buffer>();
 		next();
 		
 		TypePtr type = UnkownType::getInstance();
@@ -423,6 +392,8 @@ void Parser::parseFuncParameter(plf::FunctionDecl& func)
 
 /**
 * Parse a trait
+*
+* trait ident(param) : inherit type { }
 */
 plf::DeclPtr Parser::parseTraitDecl()
 {
@@ -432,6 +403,11 @@ plf::DeclPtr Parser::parseTraitDecl()
 	throw plf::FormatException("Parsing traits not yet implemented");
 }
 
+/**
+ * @brief Parse a struct declaration
+ *        struct <name> { <flag name : type>* }
+ * @return
+ */
 DeclPtr Parser::parseStructDecl()
 {
 	assert(tok_.id == TokenId::KwStruct);
@@ -479,6 +455,7 @@ plf::DeclPtr Parser::parseInstanceDecl()
 	//name
 	checkNext(TokenId::Ident);
 	inst->name = tok_.buffer;
+	tok_.buffer = std::make_shared<Buffer>();
 	
 	next();
 	
@@ -619,6 +596,7 @@ ExprPtr Parser::parseExpression()
 		{
 			auto l = Node::create<IntegerLiteral>();
 			l->rawValue = tok_.buffer;
+			tok_.buffer = std::make_shared<Buffer>();
 			expr = l;
 			next();
 			break;
@@ -628,6 +606,7 @@ ExprPtr Parser::parseExpression()
 		{
 			auto l = Node::create<FloatLiteral>();
 			l->rawValue = tok_.buffer;
+			tok_.buffer = std::make_shared<Buffer>();
 			expr = l;
 			next();
 			break;
@@ -637,6 +616,7 @@ ExprPtr Parser::parseExpression()
 		{
 			auto l = Node::create<HexLiteral>();
 			l->rawValue = tok_.buffer;
+			tok_.buffer = std::make_shared<Buffer>();
 			expr = l;
 			next();
 			break;
@@ -646,6 +626,7 @@ ExprPtr Parser::parseExpression()
 		{
 			auto l = Node::create<BinaryLiteral>();
 			l->rawValue = tok_.buffer;
+			tok_.buffer = std::make_shared<Buffer>();
 			expr = l;
 			next();
 			break;
@@ -655,6 +636,7 @@ ExprPtr Parser::parseExpression()
 		{
 			auto l = Node::create<StringLiteral>();
 			l->rawValue = tok_.buffer;
+			tok_.buffer = std::make_shared<Buffer>();
 			expr = l;
 			next();
 			break;
@@ -830,6 +812,7 @@ TypePtr Parser::parseDataType()
 		{
 			auto type = Node::create<UnsolvedType>();
 			type->idents.push_back(tok_.buffer);
+			tok_.buffer = std::make_shared<Buffer>();
 			next();
 			t = type;
 			break;

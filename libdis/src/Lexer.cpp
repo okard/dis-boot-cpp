@@ -25,19 +25,24 @@ THE SOFTWARE.
 
 #include <cstring>
 #include <cassert>
-//#include <unordered_map>
+#include <unordered_map>
 
+#include <plf/base/Exception.hpp>
 #include <plf/base/FormatException.hpp>
 
 #include <iostream>
 
 using namespace dis;
+using namespace plf;
 
 ////////////////////////
 // Helper
+namespace {
+
+//todo generic utf32 int as char
 
 /// Is a whitespace character
-inline bool isWhitespace(char c)
+inline static bool isWhitespace(char c)
 {
 	switch(c)
 	{
@@ -52,7 +57,7 @@ inline bool isWhitespace(char c)
 }
 
 ///is c a alpha character
-inline bool isAlpha(char c) 
+inline static bool isAlpha(char c)
 {
 	return (c >= 'a' && c <= 'z')
 		|| (c >= 'A' && c <= 'Z')
@@ -60,7 +65,7 @@ inline bool isAlpha(char c)
 }
 
 //is c a numeric character
-inline bool isNumeric(char c)
+inline static bool isNumeric(char c)
 {
 	return (c >= '0' && c <= '9');
 }
@@ -72,7 +77,7 @@ inline bool isBin(char c)
 }
 
 ///is c a hex character
-inline bool isHex(char c)
+inline static bool isHex(char c)
 {
 	return (c >= 'a' && c <= 'f')
 		|| (c >= 'A' && c <= 'F')
@@ -81,7 +86,52 @@ inline bool isHex(char c)
 
 //readable ascii: 0x21-0x7E
 
-inline void checkKeyword(Token& tok);
+inline static bool chkKw(const Token& tok, const char* kw)
+{
+	return *tok.buffer == kw;
+}
+
+inline static void checkKeyword(Token& tok)
+{
+	static std::unordered_map<const char*, TokenId> keywordMap =
+	{
+		{"mod", TokenId::KwMod }
+	};
+
+	auto it = keywordMap.find(tok.buffer->ptr());
+	if(it != keywordMap.end())
+	{
+		std::cout << "Keyword found: " << toString(it->second) << std::endl;
+	}
+
+	//TODO use std::map?
+
+	if(chkKw(tok, "package")) { tok.id = TokenId::KwPackage; }
+	else if(chkKw(tok, "import")) { tok.id = TokenId::KwImport; }
+	else if(chkKw(tok, "mod")) { tok.id = TokenId::KwMod; }
+	else if(chkKw(tok, "use")) { tok.id = TokenId::KwUse; }
+	else if(chkKw(tok, "def")) { tok.id = TokenId::KwDef; }
+	else if(chkKw(tok, "trait")) { tok.id = TokenId::KwTrait; }
+	else if(chkKw(tok, "type")) { tok.id = TokenId::KwType; }
+	else if(chkKw(tok, "struct")) { tok.id = TokenId::KwStruct; }
+	else if(chkKw(tok, "enum")) { tok.id = TokenId::KwEnum; }
+	else if(chkKw(tok, "var")) { tok.id = TokenId::KwVar; }
+	else if(chkKw(tok, "let")) { tok.id = TokenId::KwLet; }
+	else if(chkKw(tok, "const")) { tok.id = TokenId::KwConst; }
+	else if(chkKw(tok, "if")) { tok.id = TokenId::KwIf; }
+	else if(chkKw(tok, "else")) { tok.id = TokenId::KwElse; }
+	else if(chkKw(tok, "for")) { tok.id = TokenId::KwFor; }
+	else if(chkKw(tok, "while")) { tok.id = TokenId::KwWhile; }
+	else if(chkKw(tok, "match")) { tok.id = TokenId::KwMatch; }
+	else if(chkKw(tok, "true")) { tok.id = TokenId::KwTrue; }
+	else if(chkKw(tok, "false")) { tok.id = TokenId::KwFalse; }
+	else if(chkKw(tok, "pub")) { tok.id = TokenId::KwPub; }
+	else if(chkKw(tok, "priv")) { tok.id = TokenId::KwPriv; }
+	else if(chkKw(tok, "prot")) { tok.id = TokenId::KwProt; }
+	else if(chkKw(tok, "as")) { tok.id = TokenId::KwAs; }
+}
+
+}
 
 Lexer::Lexer()
 {
@@ -93,12 +143,7 @@ Lexer::~Lexer()
 
 void Lexer::open(plf::SourcePtr srcptr)
 {
-	//read in the complete file
-	/*auto size = srcptr->size();
-	buf_ = plf::Buffer(size);
-	srcptr->readComplete(buf_);
-	*/
-	
+	//open in reader
 	reader_.load(srcptr);
 	
 	//TODO reset internal status
@@ -109,6 +154,8 @@ void Lexer::open(plf::SourcePtr srcptr)
 
 void Lexer::next(Token& token)
 {
+	//token.buffer = std::make_shared<Buffer>();
+	token.buffer->alloc(0);
 	lexToken(token);
 }
 
@@ -351,6 +398,7 @@ void Lexer::lexComment(Token& tok)
 {
 	//look for doc comments
 	//create doc comment tokens or 
+	throw Exception("Lexer::lexComment not yet implemented");
 }
 
 inline void Lexer::nextChar()
@@ -389,36 +437,4 @@ inline void Lexer::checkForChar(Token& tok, char c, TokenId id)
 		tok.id = id;
 		nextChar();
 	}
-}
-
-inline bool chkKw(const Token& tok, const char* kw)
-{
-	return *tok.buffer == kw;
-}
-
-inline void checkKeyword(Token& tok)
-{
-	if(chkKw(tok, "package")) { tok.id = TokenId::KwPackage; }
-	else if(chkKw(tok, "import")) { tok.id = TokenId::KwImport; }
-	else if(chkKw(tok, "mod")) { tok.id = TokenId::KwMod; }
-	else if(chkKw(tok, "use")) { tok.id = TokenId::KwUse; }
-	else if(chkKw(tok, "def")) { tok.id = TokenId::KwDef; }
-	else if(chkKw(tok, "trait")) { tok.id = TokenId::KwTrait; }
-	else if(chkKw(tok, "type")) { tok.id = TokenId::KwType; }
-	else if(chkKw(tok, "struct")) { tok.id = TokenId::KwStruct; }
-	else if(chkKw(tok, "enum")) { tok.id = TokenId::KwEnum; }
-	else if(chkKw(tok, "var")) { tok.id = TokenId::KwVar; }
-	else if(chkKw(tok, "let")) { tok.id = TokenId::KwLet; }
-	else if(chkKw(tok, "const")) { tok.id = TokenId::KwConst; }
-	else if(chkKw(tok, "if")) { tok.id = TokenId::KwIf; }
-	else if(chkKw(tok, "else")) { tok.id = TokenId::KwElse; }
-	else if(chkKw(tok, "for")) { tok.id = TokenId::KwFor; }
-	else if(chkKw(tok, "while")) { tok.id = TokenId::KwWhile; }
-	else if(chkKw(tok, "match")) { tok.id = TokenId::KwMatch; }
-	else if(chkKw(tok, "true")) { tok.id = TokenId::KwTrue; }
-	else if(chkKw(tok, "false")) { tok.id = TokenId::KwFalse; }
-	else if(chkKw(tok, "pub")) { tok.id = TokenId::KwPub; }
-	else if(chkKw(tok, "priv")) { tok.id = TokenId::KwPriv; }
-	else if(chkKw(tok, "prot")) { tok.id = TokenId::KwProt; }
-	else if(chkKw(tok, "as")) { tok.id = TokenId::KwAs; }
 }

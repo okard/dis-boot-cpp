@@ -32,8 +32,8 @@ THE SOFTWARE.
 namespace plf {
 	
 //Decl
-class PackageDecl;
-class ImportDecl;
+class ModDecl;
+class UseDecl;
 class ClassDecl;
 class TraitDecl;
 class StructDecl;
@@ -80,8 +80,8 @@ public:
 	virtual NodePtr visit(Expression& n, ParamPtr& arg);
 	 
 	//Declarations------------------------------------------------------
-	virtual NodePtr visit(PackageDecl& n, ParamPtr& arg);
-	virtual NodePtr visit(ImportDecl& n, ParamPtr& arg);
+	virtual NodePtr visit(ModDecl& n, ParamPtr& arg);
+	virtual NodePtr visit(UseDecl& n, ParamPtr& arg);
 	virtual NodePtr visit(ClassDecl& n, ParamPtr& arg);
 	virtual NodePtr visit(TraitDecl& n, ParamPtr& arg);
 	virtual NodePtr visit(StructDecl& n, ParamPtr& arg);

@@ -69,8 +69,8 @@ enum class NodeKind : unsigned short
 {
 	Unknown,
 	//Declarations------------------------------------------------------
-	PackageDecl,
-	ImportDecl,
+	ModDecl,
+	UseDecl,
 	//-Type Decl
 	FunctionDecl,
 	ClassDecl,
@@ -168,7 +168,7 @@ public:
 	SharedPtr<T> to()
 	{
 		//debug dynamic cast
-		#if DEBUG
+		#ifndef NDEBUG
 			return std::dynamic_pointer_cast<T>(shared_from_this());
 		#else
 			return std::static_pointer_cast<T>(shared_from_this());

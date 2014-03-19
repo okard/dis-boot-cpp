@@ -22,10 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef DIS_PARSER_HPP
-#define DIS_PARSER_HPP
+#ifndef DIS_PRINTER_HPP
+#define DIS_PRINTER_HPP
 
 #include <plf/ast/Visitor.hpp>
+
+namespace plf {
+	enum class DeclFlags : unsigned char;
+}
 
 namespace dis {
 	
@@ -43,7 +47,7 @@ private:
 public:
 
 	//Declarations------------------------------------------------------
-	virtual plf::NodePtr visit(plf::PackageDecl& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::ModDecl& n, plf::ParamPtr& arg);
 	
 	virtual plf::NodePtr visit(plf::FunctionDecl& n, plf::ParamPtr& arg);
 
@@ -54,6 +58,8 @@ public:
 	//Expressions-------------------------------------------------------
 
 private:
+	void write(plf::DeclFlags& flags);
+
 	//write functions for formatted strings/buffer
 	//write(const char* msg, ...)
 	//write(const BufferPtr& buf);
@@ -63,4 +69,4 @@ private:
 	
 }
 
-#endif // DIS_PARSER_HPP
+#endif // DIS_PRINTER_HPP

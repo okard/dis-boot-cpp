@@ -44,10 +44,8 @@ private:
 	//reader to handle source input
 	plf::SourceReader reader_;
 	
-	//current token
-	Token token_;
-	
-	bool doc_comment_enabled; //lex doc comments
+	//lex doc comments
+	bool doc_comment_enabled;
 
 	size_t column_ = 0;
 	size_t line_ = 0;
@@ -60,7 +58,12 @@ public:
 	
 	void next(Token& token);
 	
+	// Loc/ OffsetLoc stuff
+
 	//TODO Lexer hooks for inline asm
+		//Stackable ILexer Interfaces Stack<ILexer>
+		//push(lexer), pop(lexer)
+
 	//get SavePoint& 
 	//load SavePoint&
 	

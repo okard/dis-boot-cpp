@@ -32,19 +32,17 @@ THE SOFTWARE.
 using namespace dis;
 using namespace plf;
 
-NodePtr Printer::visit(PackageDecl& n, ParamPtr& arg)
-{
-	std::cout << "package ";
-		for(auto p: n.path)
-		{
-			std::cout.write(p->ptr(), p->size());
-			std::cout << '.';
-		}
-	std::cout << ";" << std::endl;
-	
 
+NodePtr Printer::visit(ModDecl& n, ParamPtr& arg)
+{
+	std::cout << "mod ";
+	std::cout.write(n.name->ptr(), n.name->size());
+	std::cout << std::endl << "{" << std::endl;
+	
 	//Iterate through declarations
 	visitList<Declaration>(n.decls, arg);
+
+	std::cout << "}" << std::endl;
 	
 	return n;
 }
@@ -52,15 +50,19 @@ NodePtr Printer::visit(PackageDecl& n, ParamPtr& arg)
 plf::NodePtr Printer::visit(plf::FunctionDecl& n, plf::ParamPtr& arg)
 {
 	//decl flags
+
+	write(n.flags);
+
 	std::cout << "def ";
 	std::cout.write(n.name->ptr(), n.name->size());
 	
+	std::cout << "(";
 	for(FunctionParameter& p: n.params)
 	{
 		std::cout.write(p.ident->ptr(), p.ident->size());
 		std::cout << ", ";
 	}
-	
+	std::cout << ")";
 	std::cout << std::endl;
 	
 	if(n.body)
@@ -96,4 +98,14 @@ NodePtr Printer::visit(InstanceDecl& n, ParamPtr& arg)
 	std::cout << ";" << std::endl;
 
 	return n;
+}
+
+void Printer::write(DeclFlags& flags)
+{
+	if((flags & DeclFlags::Private) == DeclFlags::Private)
+		std::cout << "priv ";
+	if((flags & DeclFlags::Public) == DeclFlags::Public)
+		std::cout << "pub ";
+	if((flags & DeclFlags::Protected) == DeclFlags::Protected)
+		std::cout << "prot ";
 }

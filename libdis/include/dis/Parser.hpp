@@ -59,6 +59,8 @@ public:
 	//parse into crate
 	plf::NodePtr parse();
 
+	//TODO template parse function?
+
 private:
 	////////////////////////////////////////////////////////////////////
 	// Declaration
@@ -66,10 +68,9 @@ private:
 	plf::DeclPtr parseDeclaration();
 	
 	void parseDeclFlags(plf::DeclFlags& flags);
-	
-	plf::DeclPtr parsePackageDecl();
-	plf::DeclPtr parseImportDecl();
 
+	plf::DeclPtr parseModDecl();
+	plf::DeclPtr parseUseDecl();
 
 	plf::DeclPtr parseFunctionDecl();
 	void parseFuncParameter(plf::FunctionDecl& func);
@@ -96,8 +97,8 @@ private:
 	
 	//parseForStmt
 	//parseWhileStmt
+	//parseDoWhileStmt?
 
-	//parseDoWhileStmt
 	//parseIfStmt
 	//parseSwitchStmt
 	
@@ -128,6 +129,9 @@ private:
 	
 	void check(TokenId id);
 	void checkNext(TokenId id);
+
+
+	//TODO create error, warning signals and callbacks
 };
 
 

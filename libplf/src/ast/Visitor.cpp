@@ -74,7 +74,7 @@ NodePtr Visitor::visit(Expression& n, ParamPtr& arg)
 ////////////////////////////////////////////////////////////////////////
 // Declaration
 
-NodePtr Visitor::visit(PackageDecl& pd, ParamPtr& arg)
+NodePtr Visitor::visit(ModDecl& pd, ParamPtr& arg)
 {
 	//visit declarations
 	for(unsigned int i = 0; i < pd.decls.size(); i++)
@@ -85,7 +85,7 @@ NodePtr Visitor::visit(PackageDecl& pd, ParamPtr& arg)
 	return pd;
 }
 
-NodePtr Visitor::visit(ImportDecl& n, ParamPtr& arg)
+NodePtr Visitor::visit(UseDecl& n, ParamPtr& arg)
 {
 	
 	return n;

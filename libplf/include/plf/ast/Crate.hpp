@@ -21,28 +21,39 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#ifndef AST_CRATE_HPP
-#define AST_CRATE_HPP
+#ifndef PLF_AST_CRATE_HPP
+#define PLF_AST_CRATE_HPP
 
 #include <plf/ast/Node.hpp>
+#include <plf/ast/SymbolTable.hpp>
 
 namespace plf {
 
 class Crate
 {
 private:
-	//decl list
-	DeclList decls_;
-
 	//link objects/libraries/etc
 
+	//path information for mangeling
+		//-crate id
+		//-name
+		//-subpath
+
+	//output type
+
+	//symbol table
+
 public:
+	//save declarations
+	DeclList decls;
+
+	//symbol table
+	SymbolTable symTab;
+
 	Crate();
 };
 
 
 }
 
-
-
-#endif // AST_CRATE_HPP
+#endif // PLF_AST_CRATE_HPP
