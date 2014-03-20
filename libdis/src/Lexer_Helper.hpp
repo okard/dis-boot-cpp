@@ -92,7 +92,7 @@ unsigned constexpr const_hash(char const *input)
 unsigned hash(char const *input, std::size_t size)
 {
 	unsigned hash = 5381;
-	for (std::size_t pos = size -1; pos != -1; pos-- )
+	for (std::size_t pos = size -1; pos != -1; pos-- ) //warning is ok here
 	{
 		hash = static_cast<unsigned int>(input[pos]) + ((hash << 5) + hash); /* hash * 33+ c*/
 	}

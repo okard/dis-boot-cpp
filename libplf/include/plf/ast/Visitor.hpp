@@ -63,10 +63,147 @@ class CallExpr;
 class CastExpr;
 
 
+//basic pattern with struct XXX { typedef xxx Type } Ref, ConstRef, Pure
+
+//TODO more flexible type deductions? For Return Values/Parameter/...
+
+/**
+ * Visitor Base
+ */
+template<bool isConst, typename R, typename... Args>
+class VisitorBase
+{
+private:
+	//for const switch:
+	template<bool flag, typename T, typename U>
+	struct Select { typedef T Result; };
+
+	template<typename T, typename U>
+	struct Select<false, T, U> { typedef U Result; };
+
+protected:
+
+	//retrieve selected type for nodes
+	template<class T>
+	using TypeDef = typename Select<isConst, const T&, T&>::Result;
+
+public:
+
+	virtual R visit(TypeDef<Node> l, Args&... args) = 0;
+
+	//Declarations------------------------------------------------------
+	virtual R visit(TypeDef<ModDecl> n, Args&... args)=0;
+	virtual R visit(TypeDef<UseDecl> n, Args&... args)=0;
+	virtual R visit(TypeDef<ClassDecl> n, Args&... args)=0;
+	virtual R visit(TypeDef<TraitDecl> n, Args&... args)=0;
+	virtual R visit(TypeDef<StructDecl> n, Args&... args)=0;
+
+	virtual R visit(TypeDef<EnumDecl> n, Args&... args)=0;
+	virtual R visit(TypeDef<AliasDecl> n, Args&... args)=0;
+	virtual R visit(TypeDef<FunctionDecl> n, Args&... args)=0;
+	virtual R visit(TypeDef<InstanceDecl> n, Args&... args)=0;
+
+	//Statements--------------------------------------------------------
+	//Expressions-------------------------------------------------------
+
+//=======================================================================================
+//Dispatch instead of visiting keep idea here
+protected:
+//	//cast helper for debug switch between casts
+//	template<typename O>
+//	static inline O cast(TypeDef<Node> in)
+//	{
+//		#ifndef NDEBUG
+//			return dynamic_cast<O>(in);
+//		#else
+//			return static_cast<O>(in);
+//		#endif
+//	}
+
+
+	//for table dispatch
+	/*typedef Visitor<isConst, R, Args...> VisitorType;
+
+	template<class RT>
+	struct FuncType { };
+	template<class RT, class... ArgsF >
+	struct FuncType<RT(ArgsF...)>
+	{
+		typedef RT (*Type)(ArgsF...);
+	};
+
+	template<typename E>
+	constexpr auto to_integral(E e) -> typename std::underlying_type<E>::type
+	{
+	   return static_cast<typename std::underlying_type<E>::type>(e);
+	}
+	*/
+
+public:
+
+//	inline R dispatch(TypeDef<Node> n, Args&... args)
+//	{
+//		/*
+//		static const typename FuncType<R(VisitorType*, TypeDef<Node>, Args&...)>::Type dispatch_table[to_integral(NodeKind::MAX)] =
+//		{
+//			[](VisitorType* lv, TypeDef<Node> ln, Args&... largs){return lv->visit(cast<TypeDef<Literal>>(ln), largs...);},
+//			[](VisitorType* lv, TypeDef<Node> ln, Args&... largs){return lv->visit(cast<TypeDef<BinExpression>>(ln), largs...);}
+//		};
+
+//		return dispatch_table[to_integral(n.Kind)](this, n, args...);
+//		*/
+
+//		//return visit(cast<TypeDef<typename NodeTypeMap<n.Kind>::Type>>(n), args...);
+
+//		//TODO use dynamic cast in debug
+//		//create static function table to call with this? -> lambdas?
+//		//can compiler optimise this?
+//		switch(n.Kind)
+//		{
+//		case NodeKind::ModDecl:
+//			return visit(cast<TypeDef<ModDecl>>(n), args...);
+//		case NodeKind::UseDecl:
+//			return visit(cast<TypeDef<UseDecl>>(n), args...);
+
+//		default:
+//			throw "error";
+//		}
+
+//	}
+
+
+//	//implement twice for template parameter deduction
+
+//	template<typename T>
+//	inline R dispatch(std::shared_ptr<T>& n
+//					 , Args&... args)
+//	{
+//		if(!n)
+//		{
+//			throw "error";
+//		}
+//		return dispatch(*(n.get()), args...);
+//	}
+
+
+//	template<typename T>
+//	inline R dispatch(const std::shared_ptr<T>& n
+//					 , Args&... args)
+//	{
+//		if(!n)
+//		{
+//			throw "error";
+//		}
+//		return dispatch(*(n.get()), args...);
+//	}
+
+};
+
+
 /**
 * Ast Visitor Class
 */
-class Visitor
+class Visitor : public VisitorBase<false, NodePtr, ParamPtr>
 {
 
 public:	
