@@ -31,8 +31,8 @@ using namespace plf;
 {
 }*/
 
-Node::Node(const NodeKind nk)
-	: kind_(nk)
+Node::Node(const NodeKind kind)
+	: kind(kind)
 {
 	
 }

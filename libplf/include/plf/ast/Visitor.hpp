@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_VISITOR_HPP__
-#define __PLF_VISITOR_HPP__
+#ifndef PLF_VISITOR_HPP
+#define PLF_VISITOR_HPP
 
 #include <memory>
 
@@ -74,6 +74,7 @@ template<bool isConst, typename R, typename... Args>
 class VisitorBase
 {
 private:
+	//deliver via parameter?
 	//for const switch:
 	template<bool flag, typename T, typename U>
 	struct Select { typedef T Result; };
@@ -106,9 +107,15 @@ public:
 	//Statements--------------------------------------------------------
 	//Expressions-------------------------------------------------------
 
+};
+
+
+
 //=======================================================================================
 //Dispatch instead of visiting keep idea here
-protected:
+
+//class DispatchingVisitor : public VisitorBase
+
 //	//cast helper for debug switch between casts
 //	template<typename O>
 //	static inline O cast(TypeDef<Node> in)
@@ -121,25 +128,23 @@ protected:
 //	}
 
 
-	//for table dispatch
-	/*typedef Visitor<isConst, R, Args...> VisitorType;
+//for table dispatch
+//	typedef Visitor<isConst, R, Args...> VisitorType;
 
-	template<class RT>
-	struct FuncType { };
-	template<class RT, class... ArgsF >
-	struct FuncType<RT(ArgsF...)>
-	{
-		typedef RT (*Type)(ArgsF...);
-	};
+//	template<class RT>
+//	struct FuncType { };
+//	template<class RT, class... ArgsF >
+//	struct FuncType<RT(ArgsF...)>
+//	{
+//		typedef RT (*Type)(ArgsF...);
+//	};
 
-	template<typename E>
-	constexpr auto to_integral(E e) -> typename std::underlying_type<E>::type
-	{
-	   return static_cast<typename std::underlying_type<E>::type>(e);
-	}
-	*/
+//	template<typename E>
+//	constexpr auto to_integral(E e) -> typename std::underlying_type<E>::type
+//	{
+//	   return static_cast<typename std::underlying_type<E>::type>(e);
+//	}
 
-public:
 
 //	inline R dispatch(TypeDef<Node> n, Args&... args)
 //	{
@@ -197,7 +202,6 @@ public:
 //		return dispatch(*(n.get()), args...);
 //	}
 
-};
 
 
 /**
@@ -272,4 +276,4 @@ public:
 
 } //end namespace plf
 
-#endif // __PLF_VISITOR_HPP__
+#endif // PLF_VISITOR_HPP

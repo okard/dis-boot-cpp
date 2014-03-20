@@ -129,19 +129,18 @@ enum class NodeKind : unsigned short
 */
 class Node : public std::enable_shared_from_this<Node>
 {
-private:
-	const NodeKind kind_; //const
-	
 public:
+	//kind of actual node
+	const NodeKind kind;
 
+	//weak ptr to parent
+	WNodePtr parent;
+
+public:
 	//Node();
-	Node(const NodeKind nk);
+	Node(const NodeKind kind);
 	virtual ~Node();
 	
-	/**
-	* Return Node Type
-	*/
-	inline NodeKind kind() const { return kind_; }
 	
 	/**
 	* The Visitor Function
@@ -181,12 +180,9 @@ public:
 	template<class T, typename... Args>
 	static SharedPtr<T> create(Args... args)
 	{
+		//NodeKind k = T::Kind; //make shure each node has it?
 		return std::make_shared<T>(args...);
 	}	
-	
-	
-public:
-	WNodePtr parent;
 };
 	
 	

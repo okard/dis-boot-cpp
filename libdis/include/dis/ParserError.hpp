@@ -52,6 +52,7 @@ namespace dis {
 class EofNode : public plf::Node
 {
 public:
+	static const plf::NodeKind Kind = plf::NodeKind::Error;
 	EofNode()
 		: plf::Node(plf::NodeKind::Error)
 	{
@@ -66,6 +67,8 @@ public:
 class ErrorDecl : public plf::Declaration
 {
 public:
+	static const plf::NodeKind Kind = plf::NodeKind::Error;
+
 	ErrorDecl()
 		: plf::Declaration(plf::NodeKind::Error)
 	{}

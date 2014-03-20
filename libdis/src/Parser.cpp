@@ -72,12 +72,12 @@ NodePtr Parser::parse()
 
 	//try_parse Decl
 	n = parseDeclaration();
-	if(n && n->kind() != NodeKind::Error)
+	if(n && n->kind != NodeKind::Error)
 		return n;
 
 	//try_parse Stmt
 	n = parseStatement();
-	if(n && n->kind() != NodeKind::Error)
+	if(n && n->kind != NodeKind::Error)
 		return n;
 
 	//try_parse Expr
@@ -508,7 +508,7 @@ StmtPtr Parser::parseStatement()
 	
 	//try declaration parsing:
 	auto decl = parseDeclaration();
-	if(decl && decl->kind() != NodeKind::Error)
+	if(decl && decl->kind != NodeKind::Error)
 	{
 		auto declStmt = Node::create<DeclStmt>();
 		

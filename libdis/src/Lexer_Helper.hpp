@@ -99,10 +99,6 @@ unsigned hash(char const *input, std::size_t size)
 	return hash;
 }
 
-
-
 }
-
-
 
 #endif //DIS_LEXER_HELPER_HPP

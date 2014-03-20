@@ -41,7 +41,6 @@ using namespace plf;
 
 namespace {
 
-
 inline static void checkKeyword(Token& tok)
 {
 	static std::unordered_map<std::size_t, TokenId, hash_dummy> keywordMap =
@@ -81,7 +80,7 @@ inline static void checkKeyword(Token& tok)
 	}
 }
 
-}
+} //end anonymous namespace
 
 Lexer::Lexer()
 {

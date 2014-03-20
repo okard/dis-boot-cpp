@@ -228,7 +228,7 @@ void Compiler::testParse(const char* filename)
 		//print:
 		n->accept(p, pp);
 	}
-	while(n && n->kind() != NodeKind::Error);
+	while(n && n->kind != NodeKind::Error);
 
 	//prettyPrinter()
 }
