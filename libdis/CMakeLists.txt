@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 2.8.10)
 
 # dis compiler library
-file(GLOB_RECURSE LIBDIS_SOURCES src/*.cpp include/*.hpp)
+file(GLOB_RECURSE LIBDIS_SOURCES src/*.cpp src/*.hpp include/*.hpp)
 include_directories("include")
 include_directories("../libplf/include")
 

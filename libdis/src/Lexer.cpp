@@ -37,98 +37,48 @@ using namespace plf;
 
 ////////////////////////
 // Helper
+#include "Lexer_Helper.hpp"
+
 namespace {
 
-//todo generic utf32 int as char
-
-/// Is a whitespace character
-inline static bool isWhitespace(char c)
-{
-	switch(c)
-	{
-		case '\n':
-		case '\r':
-		case '\t':
-		case ' ':
-			return true;
-		default:
-			return false;
-	}
-}
-
-///is c a alpha character
-inline static bool isAlpha(char c)
-{
-	return (c >= 'a' && c <= 'z')
-		|| (c >= 'A' && c <= 'Z')
-		|| c == '_';
-}
-
-//is c a numeric character
-inline static bool isNumeric(char c)
-{
-	return (c >= '0' && c <= '9');
-}
-
-///is c a binary character
-inline bool isBin(char c)
-{
-	return(c == '0' || c == '1');
-}
-
-///is c a hex character
-inline static bool isHex(char c)
-{
-	return (c >= 'a' && c <= 'f')
-		|| (c >= 'A' && c <= 'F')
-		|| (c >= '0' && c <= '9');
-}
-
-//readable ascii: 0x21-0x7E
-
-inline static bool chkKw(const Token& tok, const char* kw)
-{
-	return *tok.buffer == kw;
-}
 
 inline static void checkKeyword(Token& tok)
 {
-	static std::unordered_map<const char*, TokenId> keywordMap =
+	static std::unordered_map<std::size_t, TokenId, hash_dummy> keywordMap =
 	{
-		{"mod", TokenId::KwMod }
+		{ const_hash("mod"), TokenId::KwMod },
+		{ const_hash("use"), TokenId::KwUse },
+		{ const_hash("def"), TokenId::KwDef },
+		{ const_hash("trait"), TokenId::KwTrait },
+		{ const_hash("struct"), TokenId::KwStruct },
+		{ const_hash("enum"), TokenId::KwEnum },
+		{ const_hash("type"), TokenId::KwType},
+
+		{ const_hash("var"), TokenId::KwVar },
+		{ const_hash("let"), TokenId::KwLet },
+		{ const_hash("const"), TokenId::KwConst },
+
+		{ const_hash("if"), TokenId::KwIf },
+		{ const_hash("else"), TokenId::KwElse },
+		{ const_hash("for"), TokenId::KwFor },
+		{ const_hash("while"), TokenId::KwWhile },
+		{ const_hash("match"), TokenId::KwMatch },
+
+		{ const_hash("true"), TokenId::KwTrue },
+		{ const_hash("false"), TokenId::KwFalse },
+
+		{ const_hash("pub"), TokenId::KwPub },
+		{ const_hash("priv"), TokenId::KwPriv},
+		{ const_hash("prot"), TokenId::KwProt },
+
+		{ const_hash("as"), TokenId::KwAs }
 	};
 
-	auto it = keywordMap.find(tok.buffer->ptr());
+	auto it = keywordMap.find(hash(tok.buffer->ptr(), tok.buffer->size()));
 	if(it != keywordMap.end())
 	{
-		std::cout << "Keyword found: " << toString(it->second) << std::endl;
+		tok.id=it->second;
 	}
-
-	//TODO use std::map?
-
-	if(chkKw(tok, "package")) { tok.id = TokenId::KwPackage; }
-	else if(chkKw(tok, "import")) { tok.id = TokenId::KwImport; }
-	else if(chkKw(tok, "mod")) { tok.id = TokenId::KwMod; }
-	else if(chkKw(tok, "use")) { tok.id = TokenId::KwUse; }
-	else if(chkKw(tok, "def")) { tok.id = TokenId::KwDef; }
-	else if(chkKw(tok, "trait")) { tok.id = TokenId::KwTrait; }
-	else if(chkKw(tok, "type")) { tok.id = TokenId::KwType; }
-	else if(chkKw(tok, "struct")) { tok.id = TokenId::KwStruct; }
-	else if(chkKw(tok, "enum")) { tok.id = TokenId::KwEnum; }
-	else if(chkKw(tok, "var")) { tok.id = TokenId::KwVar; }
-	else if(chkKw(tok, "let")) { tok.id = TokenId::KwLet; }
-	else if(chkKw(tok, "const")) { tok.id = TokenId::KwConst; }
-	else if(chkKw(tok, "if")) { tok.id = TokenId::KwIf; }
-	else if(chkKw(tok, "else")) { tok.id = TokenId::KwElse; }
-	else if(chkKw(tok, "for")) { tok.id = TokenId::KwFor; }
-	else if(chkKw(tok, "while")) { tok.id = TokenId::KwWhile; }
-	else if(chkKw(tok, "match")) { tok.id = TokenId::KwMatch; }
-	else if(chkKw(tok, "true")) { tok.id = TokenId::KwTrue; }
-	else if(chkKw(tok, "false")) { tok.id = TokenId::KwFalse; }
-	else if(chkKw(tok, "pub")) { tok.id = TokenId::KwPub; }
-	else if(chkKw(tok, "priv")) { tok.id = TokenId::KwPriv; }
-	else if(chkKw(tok, "prot")) { tok.id = TokenId::KwProt; }
-	else if(chkKw(tok, "as")) { tok.id = TokenId::KwAs; }
 }
 
 }
