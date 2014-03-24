@@ -31,18 +31,6 @@ namespace plf {
 
 class Crate
 {
-private:
-	//link objects/libraries/etc
-
-	//path information for mangeling
-		//-crate id
-		//-name
-		//-subpath
-
-	//output type
-
-	//symbol table
-
 public:
 	//save declarations
 	DeclList decls;
@@ -50,7 +38,16 @@ public:
 	//symbol table
 	SymbolTable symTab;
 
-	Crate();
+	//path information for mangeling
+		//-crate id
+		//-name
+		//-subpath
+
+	//output type -> OutputType
+
+	//link objects/libraries/etc
+		//link other crates
+		//List<Crate> linkCrates;
 };
 
 

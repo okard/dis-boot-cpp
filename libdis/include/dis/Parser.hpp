@@ -30,8 +30,12 @@ THE SOFTWARE.
 #include "Lexer.hpp"
 
 namespace plf {
+	//Declaration
 	enum class DeclFlags : unsigned char;
 	class FunctionDecl;
+	//Expression
+	enum class UnaryOperator;
+	enum class BinaryOperator;
 }
 
 namespace dis {
@@ -113,8 +117,6 @@ private:
 	plf::ExprPtr parseIfExpr();
 	plf::ExprPtr parseMatchExpr();
 
-	/// return operator precedence
-	int op_prec(TokenId id);
 	
 	////////////////////////////////////////////////////////////////////
 	// DataType

@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_SOURCE_HPP__
-#define __PLF_SOURCE_HPP__
+#ifndef PLF_SOURCE_HPP
+#define PLF_SOURCE_HPP
 
 #include <cstddef>
 #include <memory>
@@ -94,4 +94,4 @@ typedef std::shared_ptr<Source> SourcePtr;
 	
 } //end namespace
 
-#endif
+#endif //PLF_SOURCE_HPP

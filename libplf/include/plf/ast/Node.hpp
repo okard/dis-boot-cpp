@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_NODE_HPP__
-#define __PLF_NODE_HPP__
+#ifndef PLF_NODE_HPP
+#define PLF_NODE_HPP
 
 #include <plf/base/External.hpp>
 
@@ -191,4 +191,4 @@ public:
 
 
 
-#endif
+#endif //PLF_NODE_HPP

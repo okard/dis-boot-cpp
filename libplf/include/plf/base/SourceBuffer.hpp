@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_SOURCESTRING_HPP__
-#define __PLF_SOURCESTRING_HPP__
+#ifndef PLF_SOURCESTRING_HPP
+#define PLF_SOURCESTRING_HPP
 
 #include "Source.hpp"
 
@@ -44,4 +44,4 @@ public:
 	
 } //end namespace plf
 
-#endif
+#endif //PLF_SOURCESTRING_HPP

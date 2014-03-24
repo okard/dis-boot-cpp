@@ -28,8 +28,6 @@ THE SOFTWARE.
 #include <iostream>
 
 
-#include <plf/base/SourceFile.hpp>
-#include <plf/base/SourceManager.hpp>
 
 #include <plf/ast/Crate.hpp>
 #include <plf/ast/Declaration.hpp>
@@ -99,7 +97,7 @@ int Compiler::run(int argc, char *argv[])
 	std::cout << "Running dis compiler" << std::endl;
 
 
-	List<BufferPtr> source_files;
+
 	
 	//- parse arguments
 	for(int i=1; i < argc; i++)
@@ -129,21 +127,11 @@ int Compiler::run(int argc, char *argv[])
 
 
 		//not an option so it is a source file
-		source_files.push_back(std::make_shared<Buffer>(argv[i]));		
+		_parsed_sourcefiles.push_back(std::make_shared<Buffer>(argv[i]));
 	}
 
 
-	plf::Crate crate;
-	for(auto src_file: source_files)
-	{
-		auto src = SourceManager::getInstance().loadFile(src_file->ptr());
-		lexer_.open(src);
 
-		auto n = parser_.parse();
-		auto decl = n->to<Declaration>(); //Declaration.hpp required because of knowing inheritance
-		//add to crate
-		crate.decls.push_back(decl);
-	}
 
 
 	//semantic runs
@@ -177,6 +165,34 @@ int Compiler::run(int argc, char *argv[])
 		//link(&crate);
 	
 	return 0;
+}
+
+void Compiler::parse()
+{
+	plf::Crate crate;
+	for(auto src_file: _parsed_sourcefiles)
+	{
+		auto src = SourceManager::getInstance().loadFile(src_file->ptr());
+		lexer_.open(src);
+
+		auto n = parser_.parse();
+		auto decl = n->to<Declaration>(); //Declaration.hpp required because of knowing inheritance
+		//add to crate
+		crate.decls.push_back(decl);
+	}
+}
+
+void Compiler::semantic()
+{
+	//semantic steps
+
+	//-> import solving for mods, use decls
+
+	//-> type solving?
+
+	//-> Run Interpreter for compile time execution
+
+	//-> Optimizer stuff (constant folding?)
 }
 
 

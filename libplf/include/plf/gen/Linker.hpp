@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_LINKER_HPP__
-#define __PLF_LINKER_HPP__
+#ifndef PLF_LINKER_HPP
+#define PLF_LINKER_HPP
 
 #include <plf/gen/Target.hpp>
 
@@ -44,6 +44,8 @@ struct OutFile
 class Linker
 {
 public:
+	//parse_arguments?
+
 	///add a objectfile to current linker
 	virtual void add(const ObjectFile& o) = 0;
 	///outputs the final file
@@ -55,4 +57,4 @@ public:
 
 } //end namespace plf
 
-#endif
+#endif //PLF_LINKER_HPP

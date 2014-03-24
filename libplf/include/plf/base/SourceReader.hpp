@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_SOURCEREADER_HPP__
-#define __PLF_SOURCEREADER_HPP__
+#ifndef PLF_SOURCEREADER_HPP
+#define PLF_SOURCEREADER_HPP
 
 #include <plf/base/Source.hpp>
 #include <plf/base/Buffer.hpp>
@@ -96,4 +96,4 @@ private:
 } //end namespace plf
 
 
-#endif
+#endif //PLF_SOURCEREADER_HPP

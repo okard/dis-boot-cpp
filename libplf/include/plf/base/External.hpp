@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_EXTERNAL_HPP__
-#define __PLF_EXTERNAL_HPP__
+#ifndef PLF_EXTERNAL_HPP
+#define PLF_EXTERNAL_HPP
 
 //import all external types (cul::) here at a single file? 
 
@@ -47,6 +47,6 @@ template<class T>
 using List = std::vector<T>;
 
 	
-} // end namespace plf
+} //end namespace plf
 
-#endif 
+#endif //PLF_EXTERNAL_HPP

@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_STATEMENT_HPP__
-#define __PLF_STATEMENT_HPP__
+#ifndef PLF_STATEMENT_HPP
+#define PLF_STATEMENT_HPP
 
 #include <plf/ast/Node.hpp>
 #include <plf/ast/Visitor.hpp>
@@ -128,4 +128,4 @@ public:
 
 } //end namespace plf
 
-#endif //__PLF_STATEMENT_HPP__
+#endif //PLF_STATEMENT_HPP

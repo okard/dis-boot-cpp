@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_BUFFER_HPP__
-#define __PLF_BUFFER_HPP__
+#ifndef PLF_BUFFER_HPP
+#define PLF_BUFFER_HPP
 
 #include <cstddef>
 #include <plf/base/External.hpp>
@@ -84,4 +84,4 @@ typedef SharedPtr<Buffer> BufferPtr;
 	
 } // end namespace plf
 
-#endif // __PLF_BUFFER_HPP__
+#endif //PLF_BUFFER_HPP

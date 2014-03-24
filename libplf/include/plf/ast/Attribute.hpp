@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_ATTRIBUTE_HPP__
-#define __PLF_ATTRIBUTE_HPP__
+#ifndef PLF_ATTRIBUTE_HPP
+#define PLF_ATTRIBUTE_HPP
 
 #include <plf/ast/Node.hpp>
 
@@ -77,4 +77,4 @@ class UserAttribute : public Attribute
 	
 } //end namespace plf
 
-#endif
+#endif //PLF_ATTRIBUTE_HPP

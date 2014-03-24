@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_LOCATION_HPP__
-#define __PLF_LOCATION_HPP__
+#ifndef PLF_LOCATION_HPP
+#define PLF_LOCATION_HPP
 
 #include <plf/base/Source.hpp>
 
@@ -51,4 +51,4 @@ struct SourceSpan
 	
 } //end namespace plf
 
-#endif 
+#endif //PLF_LOCATION_HPP

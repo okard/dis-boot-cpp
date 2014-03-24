@@ -22,17 +22,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include <dis/Lexer.hpp>
-#include <dis/Parser.hpp>
+
+
+#include <plf/base/External.hpp>
+#include <plf/base/Buffer.hpp>
+#include <plf/base/SourceFile.hpp>
+#include <plf/base/SourceManager.hpp>
+
 #include <plf/gen/CodeGen.hpp>
 #include <plf/gen/Linker.hpp>
 #include <plf/gen/Target.hpp>
 
+#include <dis/Lexer.hpp>
+#include <dis/Parser.hpp>
+
+
+/**
+ * @brief Compiler driver class
+ */
 class Compiler
 {
 private:
 	dis::Lexer lexer_;
 	dis::Parser parser_;
+
+
+	plf::List<plf::BufferPtr> _parsed_sourcefiles;
 
 	//custom source manager?
 	
@@ -52,17 +67,20 @@ public:
 	Compiler();
 	~Compiler();
 	
-	//parse args
+	//void parse_args()
 	int run(int argc, char *argv[]);
 	
-	//void parse();
-	//void semantic();
+
+	void parse();
+	void semantic(); //CompilationUnit&
 	
 	//void compile(); //requires process call
 	//void link();	  //requires process call
 	
-	//TODO requires directory/path handling
-	//void resolveImports(); 
+	//import search file handling
+	//TODO requires directory/path
+	//->handling via Semantic Interface? with callbacks?
+	//void resolveImports();
 	//void checkPaths();
 	
 	

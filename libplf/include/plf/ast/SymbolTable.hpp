@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_SYMBOLTABLE_HPP__
-#define __PLF_SYMBOLTABLE_HPP__
+#ifndef PLF_SYMBOLTABLE_HPP
+#define PLF_SYMBOLTABLE_HPP
 
 namespace plf {
 	
@@ -50,6 +50,6 @@ class SymbolTable
 };
 	
 	
-}
+} //end namespace plf
 
-#endif
+#endif //PLF_SYMBOLTABLE_HPP

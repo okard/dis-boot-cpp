@@ -3,6 +3,3 @@
 
 using namespace plf;
 
-Crate::Crate()
-{
-}

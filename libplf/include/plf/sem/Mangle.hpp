@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_MANGLE_HPP__
-#define __PLF_MANGLE_HPP__
+#ifndef PLF_MANGLE_HPP
+#define PLF_MANGLE_HPP
 
 namespace plf {
 	
@@ -33,12 +33,15 @@ namespace plf {
 class Mangle
 {
 public:
-	//variable/value/const
-	//function
-	
-	//datatypes etc for internal handling
+
+	//mangle(FunctionDecl& func);
+	//mange(InstanceDecl& instance);
+	//mangle(ModDecl& mod);
+
+
+	//datatypes etc for internal handling?
 };
 	
-}
+} //end namespace plf
 
-#endif
+#endif //PLF_MANGLE_HPP

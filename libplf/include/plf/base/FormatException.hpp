@@ -23,8 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_FORMATEXCEPTION_HPP__
-#define __PLF_FORMATEXCEPTION_HPP__
+#ifndef PLF_FORMATEXCEPTION_HPP
+#define PLF_FORMATEXCEPTION_HPP
 
 #include <exception>
 
@@ -63,4 +63,4 @@ public:
 
 } // end namespace plf
 
-#endif
+#endif //PLF_FORMATEXCEPTION_HPP

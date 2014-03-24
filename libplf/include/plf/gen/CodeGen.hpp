@@ -22,14 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_CODEGEN_HPP__
-#define __PLF_CODEGEN_HPP__
+#ifndef PLF_CODEGEN_HPP
+#define PLF_CODEGEN_HPP
 
 #include <plf/gen/Target.hpp>
 
 namespace plf {
 	
-class PackageDecl;
+class Crate;
 	
 /**
 * Object File
@@ -46,15 +46,17 @@ struct ObjectFile
 class CodeGen
 {
 public:
-	//DAST -> TargetFile
+	//parse_arguments>?
+
+	//D_AST -> TargetFile
 	
+	//can return multiple ObjectFiles?
 	//use objectfile interface generate in memory obejct files and so on
-	virtual void gen(const PackageDecl&, const Target& t, ObjectFile& file) = 0;
+	virtual void gen(const Crate&, const Target& t, ObjectFile& file) = 0;
 	
-	//ObjectFile gen(PackageDecl n, Param p);
 	//ObjectFile gen(NodePtr n, Parameter);
 };
 
 } //end namespace plf
 
-#endif //__PLF_CODEGEN_HPP__
+#endif //PLF_CODEGEN_HPP

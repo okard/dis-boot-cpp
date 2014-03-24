@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_INTEPRETER_HPP__
-#define __PLF_INTEPRETER_HPP__
+#ifndef PLF_INTEPRETER_HPP
+#define PLF_INTEPRETER_HPP
 
 #include <plf/ast/Visitor.hpp>
 
@@ -34,11 +34,14 @@ namespace plf {
 */
 class Interpreter : public Visitor
 {
+
+public:
 	//struct Context& ctx as AnyPtr
 	
 	//use libffi for native calls? 
 	//symbol resolving in own process?
 };	
 	
-}
-#endif 
+} //end namespace plf
+
+#endif //PLF_INTEPRETER_HPP

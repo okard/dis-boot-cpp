@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_TARGET_HPP__
-#define __PLF_TARGET_HPP__
+#ifndef PLF_TARGET_HPP
+#define PLF_TARGET_HPP
 
 namespace plf {
 	
@@ -57,7 +57,7 @@ enum class OutputType
 */
 struct Target
 {
-public:
+public:PLF_TARGET_HPP
 	Arch arch;
 	Platform platform;
 	OutputType otype;
@@ -70,4 +70,4 @@ public:
 	
 } //end namespace plf
 
-#endif
+#endif //PLF_TARGET_HPP

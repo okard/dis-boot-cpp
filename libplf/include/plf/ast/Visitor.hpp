@@ -25,8 +25,6 @@ THE SOFTWARE.
 #ifndef PLF_VISITOR_HPP
 #define PLF_VISITOR_HPP
 
-#include <memory>
-
 #include <plf/ast/Node.hpp>
 
 namespace plf {
@@ -67,42 +65,41 @@ class CastExpr;
 
 //TODO more flexible type deductions? For Return Values/Parameter/...
 
+template<typename T>
+struct Ref
+{
+	using type = T&;
+};
+
 /**
  * Visitor Base
  */
-template<bool isConst, typename R, typename... Args>
+template<typename R = void,
+		 template<typename> class Wrapper = Ref,
+		 typename... Args>
 class VisitorBase
 {
-private:
-	//deliver via parameter?
-	//for const switch:
-	template<bool flag, typename T, typename U>
-	struct Select { typedef T Result; };
-
-	template<typename T, typename U>
-	struct Select<false, T, U> { typedef U Result; };
-
 protected:
 
 	//retrieve selected type for nodes
-	template<class T>
-	using TypeDef = typename Select<isConst, const T&, T&>::Result;
+	template<typename T>
+	using Type = typename Wrapper<T>::type;
 
 public:
 
-	virtual R visit(TypeDef<Node> l, Args&... args) = 0;
+	virtual R visit(Type<Node> l, Args&... args) = 0;
 
 	//Declarations------------------------------------------------------
-	virtual R visit(TypeDef<ModDecl> n, Args&... args)=0;
-	virtual R visit(TypeDef<UseDecl> n, Args&... args)=0;
-	virtual R visit(TypeDef<ClassDecl> n, Args&... args)=0;
-	virtual R visit(TypeDef<TraitDecl> n, Args&... args)=0;
-	virtual R visit(TypeDef<StructDecl> n, Args&... args)=0;
+	virtual R visit(Type<ModDecl> n, Args&... args)=0;
+	virtual R visit(Type<UseDecl> n, Args&... args)=0;
+	virtual R visit(Type<ClassDecl> n, Args&... args)=0;
+	virtual R visit(Type<TraitDecl> n, Args&... args)=0;
+	virtual R visit(Type<StructDecl> n, Args&... args)=0;
 
-	virtual R visit(TypeDef<EnumDecl> n, Args&... args)=0;
-	virtual R visit(TypeDef<AliasDecl> n, Args&... args)=0;
-	virtual R visit(TypeDef<FunctionDecl> n, Args&... args)=0;
-	virtual R visit(TypeDef<InstanceDecl> n, Args&... args)=0;
+	virtual R visit(Type<EnumDecl> n, Args&... args)=0;
+	virtual R visit(Type<AliasDecl> n, Args&... args)=0;
+	virtual R visit(Type<FunctionDecl> n, Args&... args)=0;
+	virtual R visit(Type<InstanceDecl> n, Args&... args)=0;
 
 	//Statements--------------------------------------------------------
 	//Expressions-------------------------------------------------------
@@ -207,7 +204,7 @@ public:
 /**
 * Ast Visitor Class
 */
-class Visitor : public VisitorBase<false, NodePtr, ParamPtr>
+class Visitor : public VisitorBase<NodePtr, Ref, ParamPtr>
 {
 
 public:	

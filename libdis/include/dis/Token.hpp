@@ -91,10 +91,8 @@ THE SOFTWARE.
 		TOKEN(DocMultipleStart)		 /* / *** */ \
 		TOKEN(DocSingleStart)		  /* /// */ \
 		/* KEYWORDS DECLARATION */ 				\
-		TOKEN(KwPackage)						\
 		TOKEN(KwMod)							\
 		TOKEN(KwUse)							\
-		TOKEN(KwImport)							\
 		TOKEN(KwUnsafe)							\
 		TOKEN(KwTrait)							\
 		TOKEN(KwType)							\

@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_DECLARATION_HPP__
-#define __PLF_DECLARATION_HPP__
+#ifndef PLF_DECLARATION_HPP
+#define PLF_DECLARATION_HPP
 
 #include <plf/base/Buffer.hpp>
 
@@ -148,7 +148,7 @@ public:
 	
 	//ctors
 	PtrList<FunctionDecl> ctors;
-	SharedPtr<FunctionDecl> dtor;
+	SharedPtr<FunctionDecl> dtoop_precr;
 	PtrList<ClassDecl> inherits;
 	
 	//tpl parameter (can be types or instances)
@@ -287,6 +287,6 @@ public:
 
 } //end namespace plf
 
-#endif //__PLF_DECLARATION_HPP__
+#endif //PLF_DECLARATION_HPP
 
 

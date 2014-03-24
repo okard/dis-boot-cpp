@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_TYPES_HPP__
-#define __PLF_TYPES_HPP__
+#ifndef PLF_TYPES_HPP
+#define PLF_TYPES_HPP
 
 #include <plf/base/Buffer.hpp>
 #include <plf/ast/Node.hpp>
@@ -134,4 +134,4 @@ public:
 
 } //end namespace plf
 
-#endif // __PLF_TYPES_HPP__
+#endif // PLF_TYPES_HPP

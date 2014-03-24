@@ -35,6 +35,8 @@ THE SOFTWARE.
 
 #include <dis/ParserError.hpp>
 
+#include "Parser_Helper.hpp"
+
 using namespace dis;
 using namespace plf;
 
@@ -584,64 +586,8 @@ plf::StmtPtr Parser::parseBlockStmt()
 */
 ExprPtr Parser::parseExpression()
 {
-	//TODO change to bottom up parsing via token stack?
-	
-	ExprPtr expr;
-	
 	switch(tok_.id)
 	{
-		//---------------------------
-		//literals
-		case TokenId::IntLiteral:
-		{
-			auto l = Node::create<IntegerLiteral>();
-			l->rawValue = tok_.buffer;
-			tok_.buffer = std::make_shared<Buffer>();
-			expr = l;
-			next();
-			break;
-		}
-			
-		case TokenId::FloatLiteral:
-		{
-			auto l = Node::create<FloatLiteral>();
-			l->rawValue = tok_.buffer;
-			tok_.buffer = std::make_shared<Buffer>();
-			expr = l;
-			next();
-			break;
-		}
-			
-		case TokenId::HexLiteral:
-		{
-			auto l = Node::create<HexLiteral>();
-			l->rawValue = tok_.buffer;
-			tok_.buffer = std::make_shared<Buffer>();
-			expr = l;
-			next();
-			break;
-		}
-			
-		case TokenId::BinaryLiteral:
-		{
-			auto l = Node::create<BinaryLiteral>();
-			l->rawValue = tok_.buffer;
-			tok_.buffer = std::make_shared<Buffer>();
-			expr = l;
-			next();
-			break;
-		}
-			
-		case TokenId::StringLiteral:
-		{
-			auto l = Node::create<StringLiteral>();
-			l->rawValue = tok_.buffer;
-			tok_.buffer = std::make_shared<Buffer>();
-			expr = l;
-			next();
-			break;
-		}
-			
 		//---------------------------
 		//keyword expressions
 		case TokenId::KwIf:
@@ -649,97 +595,158 @@ ExprPtr Parser::parseExpression()
 
 		case TokenId::KwMatch:
 			return parseMatchExpr();
-
-		
-		//unary expression prefixed
-		
-		case TokenId::PlusPlus:		// ++<expr>
-		case TokenId::MinusMinus: 	// --<expr>
-		case TokenId::And:			// &<expr>
-		case TokenId::Tilde:		// ~<expr>
-			throw Exception("Unary-Prefix-Expression parsing not yet implemented");
-			break;
-		
-		//sub expression (<expr>)
-		case TokenId::ROBracket:
-			next();
-			expr = parseExpression();
-			check(TokenId::RCBracket);
-			next();
-			break;
-		
-		default:
-			throw Exception("Invalid Expression or not implemented");
-			break;
-	}
-	
-	//special: lambda expressions
-	
-	//call expressions: <expr>(<expr>, ...)
-	
-	//connected expressions:
-	
-	switch(tok_.id)
-	{
-		case TokenId::Semicolon:
-			return expr;
-			
-		//operator:
-		//unary postfix
-		case TokenId::PlusPlus:
-		case TokenId::MinusMinus:
-			throw Exception("Unary-Postfix-Expression parsing not yet implemented");
-			
-		//binary 
-		case TokenId::Plus:
-		case TokenId::Minus:
-		case TokenId::Mul:
-		case TokenId::Div:
-			throw Exception("Binary-Expression parsing not yet implemented");
-			/*
-			*/
-			
-		//tenary
-		
-		//<expr> ? <expr> : <expr>
-		
-		//cast: <expr> as <datatype>
-		case TokenId::KwAs:
-			throw Exception("Cast-Expression parsing not yet implemented");
 			
 		default:
-			throw FormatException("[%s] Invalid Expression or not implemented", toString(tok_.id));
+			return parseExprBinary(1); //TODO right start prec
 	}
-
-	//return Node::create<ErrorExpr>();
-	
 	return expr;
 }
 
+/**
+ * @brief Parser::parseExprAtom
+ * @return
+ */
 ExprPtr Parser::parseExprAtom()
 {
 	//special '('
 
-	//prefix
-	//- UnaryOpPrefix
+	ExprPtr expr;
 
-	//main
-	//-ident
-	//-literal
+	switch(tok_.id)
+	{
 
-	//postfix
+	case TokenId::ROBracket:
+	{
+		next();
+		expr =  parseExprBinary(1); //TODO right start prec
+		if(tok_.id != TokenId::RCBracket)
+			throw FormatException("Missing )");
+		next();
+		return expr;
+		break;
+	}
+
+	//Prefix==================================
+		//-
+		//+
+		//--
+		//++
+		//&
+
+	//MAIN====================================
+
+	case TokenId::IntLiteral:
+	{
+		auto l = Node::create<IntegerLiteral>();
+		l->rawValue = tok_.buffer;
+		tok_.buffer = std::make_shared<Buffer>();
+		expr = l;
+		next();
+		break;
+	}
+
+	case TokenId::FloatLiteral:
+	{
+		auto l = Node::create<FloatLiteral>();
+		l->rawValue = tok_.buffer;
+		tok_.buffer = std::make_shared<Buffer>();
+		expr = l;
+		next();
+		break;
+	}
+
+	case TokenId::HexLiteral:
+	{
+		auto l = Node::create<HexLiteral>();
+		l->rawValue = tok_.buffer;
+		tok_.buffer = std::make_shared<Buffer>();
+		expr = l;
+		next();
+		break;
+	}
+
+	case TokenId::BinaryLiteral:
+	{
+		auto l = Node::create<BinaryLiteral>();
+		l->rawValue = tok_.buffer;
+		tok_.buffer = std::make_shared<Buffer>();
+		expr = l;
+		next();
+		break;
+	}
+
+	case TokenId::StringLiteral:
+	{
+		auto l = Node::create<StringLiteral>();
+		l->rawValue = tok_.buffer;
+		tok_.buffer = std::make_shared<Buffer>();
+		expr = l;
+		next();
+		break;
+	}
+
+
+	case TokenId::Ident:
+		throw Exception("Ident Expr not yet implemented");
+
+
+	//Postfix=======================================================
 
 	//- UnaryOpPostfix
 	//- ArrayAccess
 	//- Call
 
+
+	//not a token for expressions
+	default:
+		throw FormatException("Not expected token: ", toString(tok_.id));
+	}
+
+	return expr;
+
 	throw Exception("Not yet implemented");
 }
 
+/**
+ * @brief Parser::parseExprBinary
+ * @param min_prec
+ * @return
+ */
 ExprPtr Parser::parseExprBinary(int min_prec)
 {
-	throw Exception("Not yet implemented");
+	ExprPtr left = parseExprAtom();
+
+	while(true)
+	{
+		BinaryOperator op = op_binary(tok_.id);
+
+		if(tok_.id == TokenId::Eof		//end of file
+		|| op == BinaryOperator::NOP	//not a binary operator
+		|| op_prec(op) < min_prec)		//precedence is smaller
+		break;
+
+		//assert(is_bin_op(tok_.id), "no binop");
+
+		//get associativity and min_prec
+		OpAssociativity assoc = op_assoc(op);
+		int next_min_prec = (assoc == OpAssociativity::Left) ? op_prec(op) + 1 : op_prec(op);
+
+		next(); //skip binop token
+
+		//look at right
+		ExprPtr right = parseExprBinary(next_min_prec);
+
+		//create final binary expression
+		auto bin_expr = Node::create<BinaryExpr>();
+		bin_expr->left = left;
+		bin_expr->op = op;
+		bin_expr->right = right;
+
+		left = bin_expr;
+	}
+	return left;
 }
+
 
 /*
 * if(<expr>){}
@@ -759,28 +766,7 @@ ExprPtr Parser::parseMatchExpr()
 	throw Exception("Match-Expression parsing not yet implemented");
 }
 
-//return operator precedence
-int Parser::op_prec(TokenId id)
-{
-	switch(id)
-	{
 
-	//Binary:
-	case TokenId::Plus:
-	case TokenId::Minus:
-		return 0;
-
-	case TokenId::Mul:
-	case TokenId::Div:
-		//pow
-		return 1;
-		
-	//Unary:
-
-	default:
-			throw Exception("Not an operator");
-	}
-}
 
 ////////////////////////////////////////////////////////////////////////
 // DataType

@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_EXPRESSION_HPP__
-#define __PLF_EXPRESSION_HPP__
+#ifndef PLF_EXPRESSION_HPP
+#define PLF_EXPRESSION_HPP
 
 #include <plf/ast/Node.hpp>
 #include <plf/ast/Visitor.hpp>
@@ -112,6 +112,8 @@ public:
 ///Operators for Unary Expressions
 enum class UnaryOperator
 {
+	NOP, // no operator
+
 	//Logical
 	Not, 	  // ! logical negative
 
@@ -149,6 +151,8 @@ public:
 ///Operators for Binary Expressions
 enum class BinaryOperator
 {
+	NOP,	//No operator
+
 	Assign,	// =
 
 	//Arithmetic
@@ -235,4 +239,4 @@ public:
 
 } //end namespace plf
 
-#endif //__PLF_EXPRESSION_HPP__
+#endif //PLF_EXPRESSION_HPP
