@@ -28,6 +28,8 @@ THE SOFTWARE.
 #include <plf/ast/Visitor.hpp>
 
 namespace plf {
+	class Buffer;
+	typedef std::shared_ptr<Buffer> BufferPtr;
 	enum class DeclFlags : unsigned char;
 }
 
@@ -37,7 +39,7 @@ namespace dis {
 * Source Printer Visitor
 * Pretty Printer
 */ 
-class Printer : public plf::Visitor
+class PrettyPrinter : public plf::Visitor
 {
 private:
 	//print to out buffer
@@ -46,18 +48,49 @@ private:
 
 public:
 
+	//basic case
+	virtual plf::NodePtr visit(plf::Node& n, plf::ParamPtr& arg);
+
+	//basic node types
+	virtual plf::NodePtr visit(plf::Declaration& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::Statement& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::Expression& n, plf::ParamPtr& arg);
+
 	//Declarations------------------------------------------------------
 	virtual plf::NodePtr visit(plf::ModDecl& n, plf::ParamPtr& arg);
-	
-	virtual plf::NodePtr visit(plf::FunctionDecl& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::UseDecl& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::ClassDecl& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::TraitDecl& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::StructDecl& n, plf::ParamPtr& arg);
 
+	virtual plf::NodePtr visit(plf::EnumDecl& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::AliasDecl& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::FunctionDecl& n, plf::ParamPtr& arg);
 	virtual plf::NodePtr visit(plf::InstanceDecl& n, plf::ParamPtr& arg);
+
+
 	//Statements--------------------------------------------------------
-	
-	
+	virtual plf::NodePtr visit(plf::BlockStmt& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::ReturnStmt& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::ForStmt& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::WhileStmt& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::DeclStmt& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::ExprStmt& n, plf::ParamPtr& arg);
+
 	//Expressions-------------------------------------------------------
+	virtual plf::NodePtr visit(plf::IntegerLiteral& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::FloatLiteral& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::HexLiteral& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::BinaryLiteral& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::StringLiteral& n, plf::ParamPtr& arg);
+
+	virtual plf::NodePtr visit(plf::IdentExpr& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::UnaryExpr& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::BinaryExpr& n, plf::ParamPtr& arg);
+	virtual plf::NodePtr visit(plf::CallExpr& n, plf::ParamPtr& arg);
 
 private:
+	void write(plf::BufferPtr& buf);
 	void write(plf::DeclFlags& flags);
 
 	//write functions for formatted strings/buffer

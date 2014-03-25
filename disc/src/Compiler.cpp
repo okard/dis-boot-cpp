@@ -235,7 +235,7 @@ void Compiler::testParse(const char* filename)
 	lexer.open(src);
 	
 	//parse file
-	Printer p;
+	PrettyPrinter p;
 	ParamPtr pp;
 	NodePtr n;
 	do

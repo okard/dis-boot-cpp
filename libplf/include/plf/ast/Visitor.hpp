@@ -55,6 +55,7 @@ class HexLiteral;
 class BinaryLiteral;
 class StringLiteral;
 
+class IdentExpr;
 class UnaryExpr;
 class BinaryExpr;
 class CallExpr;
@@ -102,7 +103,25 @@ public:
 	virtual R visit(Type<InstanceDecl> n, Args&... args)=0;
 
 	//Statements--------------------------------------------------------
+	virtual R visit(Type<BlockStmt> n, Args&... args)=0;
+	virtual R visit(Type<ReturnStmt> n, Args&... args)=0;
+	virtual R visit(Type<ForStmt> n, Args&... args)=0;
+	virtual R visit(Type<WhileStmt> n, Args&... args)=0;
+	virtual R visit(Type<DeclStmt> n, Args&... args)=0;
+	virtual R visit(Type<ExprStmt> n, Args&... args)=0;
+
 	//Expressions-------------------------------------------------------
+	virtual R visit(Type<IntegerLiteral> n, Args&... args)=0;
+	virtual R visit(Type<FloatLiteral> n, Args&... args)=0;
+	virtual R visit(Type<HexLiteral> n, Args&... args)=0;
+	virtual R visit(Type<BinaryLiteral> n, Args&... args)=0;
+	virtual R visit(Type<StringLiteral> n, Args&... args)=0;
+
+
+	virtual R visit(Type<IdentExpr> n, Args&... args)=0;
+	virtual R visit(Type<UnaryExpr> n, Args&... args)=0;
+	virtual R visit(Type<BinaryExpr> n, Args&... args)=0;
+	virtual R visit(Type<CallExpr> n, Args&... args)=0;
 
 };
 
@@ -245,6 +264,8 @@ public:
 	virtual NodePtr visit(BinaryLiteral& n, ParamPtr& arg);
 	virtual NodePtr visit(StringLiteral& n, ParamPtr& arg);
 	
+
+	virtual NodePtr visit(IdentExpr& n, ParamPtr& arg);
 	virtual NodePtr visit(UnaryExpr& n, ParamPtr& arg);
 	virtual NodePtr visit(BinaryExpr& n, ParamPtr& arg);
 	virtual NodePtr visit(CallExpr& n, ParamPtr& arg);

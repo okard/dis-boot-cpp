@@ -98,7 +98,7 @@ public:
 };
 
 //StringLiteral
-class StringLiteral : public Expression
+class StringLiteral final : public Expression
 {
 public:
 	static const NodeKind Kind = NodeKind::StringLiteral;
@@ -109,15 +109,36 @@ public:
 	//Encoding?
 };
 
+
+///Ident Expression
+class IdentExpr : public Expression
+{
+public:
+	static const NodeKind Kind = NodeKind::IdentExpr;
+	IdentExpr() : Expression(Kind) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+
+	BufferPtr ident;
+};
+
+
+//op assoc
+enum class OpAssociativity
+{
+	Left,
+	Right
+};
+
 ///Operators for Unary Expressions
 enum class UnaryOperator
 {
 	NOP, // no operator
 
 	//Logical
-	Not, 	  // ! logical negative
+	LNot, 	  // ! logical negative
 
 	//Bitwise Not
+	BNot,	  //
 
 	//Arithmetic
 	Neg, 	  // Prefix -
@@ -129,7 +150,7 @@ enum class UnaryOperator
 	
 	//Memory
 	Ref,	  // &
-	OPtr 	  // ~
+	OwnedPtr  // ~
 	
 	// ~, &, @ for memory types?
 };
@@ -144,6 +165,7 @@ public:
 	UnaryExpr() : Expression(NodeKind::UnaryExpr) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
+	OpAssociativity assoc = OpAssociativity::Left;
 	UnaryOperator op;
 	ExprPtr expr;
 };
@@ -163,28 +185,45 @@ enum class BinaryOperator
 	Mod,	// %
 	Pow,	// ^^?
 
-	//Combound Assign
-	PlusAssign, //+=
+	//Arithmetic Compound Assign
+	PlusAssign,		// +=
+	MinusAssign,	// -=
+	MulAssign,		// *=
+	DivAssign,		// /=
+	ModAssign,		// %=
+	PowAssign,		// ^^=?
 
 	//boolean operators
 	Equal,		// ==
 	NotEqual,	// !=
-	Gt,			//GreaterThan >
-	Lt,			//LessThan <
-	Gte,		//GreaterThan or Equals >=
+	Gt,			// GreaterThan >
+	Lt,			// LessThan <
+	Gte,		// GreaterThan or Equals >=
 	Lte,		// LessThan or Equals <=
 	LAnd,		// && Logic And
 	LOr,		// || Logic Or
 
 	//Bitwise
+	And,		// &
+	Or,			// |
+	Xor,		// ^?
+	ShiftL,		// <<
+	ShiftR,		// >>
 
-	Access // ./: foo.a(asad)
-};
+	//Bitwise Compound Assign
+	AndAssign,
+	OrAssign,
+	XorAssign,
+	ShiftLAssign,
+	ShiftRAssign,
 
-enum class OpAssociativity
-{
-	Left,
-	Right
+	//Other:
+	Concat,		// ~? '
+	Access, // ./: foo.a(asad)
+
+	//Comma Operator?
+
+	As //Cast operator
 };
 
 /**
@@ -197,6 +236,7 @@ public:
 	BinaryExpr() : Expression(NodeKind::BinaryExpr) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
+	OpAssociativity assoc = OpAssociativity::Left;
 	BinaryOperator op;
 	ExprPtr left;
 	ExprPtr right;
@@ -217,6 +257,7 @@ public:
 	ExprList params;	//instance expr
 	
 	//is ctcall 		//compile time call
+
 };
 
 /**

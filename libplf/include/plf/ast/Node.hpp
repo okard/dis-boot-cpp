@@ -112,6 +112,7 @@ enum class NodeKind : unsigned short
 	BinaryLiteral,
 	StringLiteral,
 
+	IdentExpr,
 	UnaryExpr,
 	BinaryExpr,
 	TernaryExpr,

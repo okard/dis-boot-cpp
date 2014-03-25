@@ -187,6 +187,11 @@ NodePtr Visitor::visit(StringLiteral& n, ParamPtr& arg)
 	return n;
 }
 
+NodePtr Visitor::visit(IdentExpr& n, ParamPtr& arg)
+{
+	return n;
+}
+
 
 NodePtr Visitor::visit(UnaryExpr& n, ParamPtr& arg)
 {

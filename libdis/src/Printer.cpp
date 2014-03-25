@@ -25,6 +25,8 @@ THE SOFTWARE.
 
 #include <iostream>
 
+#include <plf/base/Buffer.hpp>
+
 #include <plf/ast/Declaration.hpp>
 #include <plf/ast/Statement.hpp>
 #include <plf/ast/Expression.hpp>
@@ -33,10 +35,52 @@ using namespace dis;
 using namespace plf;
 
 
-NodePtr Printer::visit(ModDecl& n, ParamPtr& arg)
+NodePtr PrettyPrinter::visit(Node& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(Declaration& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(Statement& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(Expression& n, ParamPtr& arg)
+{
+	return n;
+}
+
+
+NodePtr PrettyPrinter::visit(TraitDecl& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(StructDecl& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(EnumDecl& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(AliasDecl& n, ParamPtr& arg)
+{
+	return n;
+}
+
+
+NodePtr PrettyPrinter::visit(ModDecl& n, ParamPtr& arg)
 {
 	std::cout << "mod ";
-	std::cout.write(n.name->ptr(), n.name->size());
+	write(n.name);
 	std::cout << std::endl << "{" << std::endl;
 	
 	//Iterate through declarations
@@ -47,19 +91,29 @@ NodePtr Printer::visit(ModDecl& n, ParamPtr& arg)
 	return n;
 }
 
-plf::NodePtr Printer::visit(plf::FunctionDecl& n, plf::ParamPtr& arg)
+NodePtr PrettyPrinter::visit(UseDecl& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(ClassDecl& n, ParamPtr& arg)
+{
+	return n;
+}
+
+plf::NodePtr PrettyPrinter::visit(plf::FunctionDecl& n, plf::ParamPtr& arg)
 {
 	//decl flags
 
 	write(n.flags);
 
 	std::cout << "def ";
-	std::cout.write(n.name->ptr(), n.name->size());
+	write(n.name);
 	
 	std::cout << "(";
 	for(FunctionParameter& p: n.params)
 	{
-		std::cout.write(p.ident->ptr(), p.ident->size());
+		write(p.ident);
 		std::cout << ", ";
 	}
 	std::cout << ")";
@@ -71,7 +125,7 @@ plf::NodePtr Printer::visit(plf::FunctionDecl& n, plf::ParamPtr& arg)
 	return n;
 }
 
-NodePtr Printer::visit(InstanceDecl& n, ParamPtr& arg)
+NodePtr PrettyPrinter::visit(InstanceDecl& n, ParamPtr& arg)
 {
 	switch(n.itype)
 	{
@@ -86,7 +140,7 @@ NodePtr Printer::visit(InstanceDecl& n, ParamPtr& arg)
 		break;
 	}
 
-	std::cout.write(n.name->ptr(), n.name->size());
+	write(n.name);
 
 	//if has initializer write it
 	if(n.init)
@@ -100,7 +154,127 @@ NodePtr Printer::visit(InstanceDecl& n, ParamPtr& arg)
 	return n;
 }
 
-void Printer::write(DeclFlags& flags)
+NodePtr PrettyPrinter::visit(BlockStmt& n, ParamPtr& arg)
+{
+	for(auto stmt: n.statements)
+		stmt->accept(*this, arg);
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(ReturnStmt& n, ParamPtr& arg)
+{
+	std::cout << "return ";
+	n.expr->accept(*this, arg);
+	std::cout << ";" << std::endl;
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(ForStmt& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(WhileStmt& n, ParamPtr& arg)
+{
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(DeclStmt& n, ParamPtr& arg)
+{
+	n.decl->accept(*this, arg);
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(ExprStmt& n, ParamPtr& arg)
+{
+	n.expr->accept(*this, arg);
+	std::cout << std::endl;
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(IntegerLiteral& n, ParamPtr& arg)
+{
+	write(n.rawValue);
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(FloatLiteral& n, ParamPtr& arg)
+{
+	write(n.rawValue);
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(HexLiteral& n, ParamPtr& arg)
+{
+	write(n.rawValue);
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(BinaryLiteral& n, ParamPtr& arg)
+{
+	write(n.rawValue);
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(StringLiteral& n, ParamPtr& arg)
+{
+	write(n.rawValue);
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(IdentExpr& n, ParamPtr& arg)
+{
+	write(n.ident);
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(UnaryExpr& n, ParamPtr& arg)
+{
+
+	//prefix
+
+	switch(n.op)
+	{
+	case UnaryOperator::LNot: std::cout << "!"; break;
+	case UnaryOperator::Pos: std::cout << "+"; break;
+	case UnaryOperator::Neg: std::cout << "-"; break;
+	}
+
+	n.expr->accept(*this, arg);
+
+	//postfix
+
+
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(BinaryExpr& n, ParamPtr& arg)
+{
+
+	n.left->accept(*this, arg);
+
+	switch(n.op)
+	{
+	case BinaryOperator::Assign: std::cout << "="; break;
+	case BinaryOperator::Plus: std::cout << "+"; break;
+	}
+
+	n.right->accept(*this, arg);
+
+	return n;
+}
+
+NodePtr PrettyPrinter::visit(CallExpr& n, ParamPtr& arg)
+{
+	return n;
+}
+
+void PrettyPrinter::write(plf::BufferPtr& buf)
+{
+	std::cout.write(buf->ptr(), buf->size());
+}
+
+void PrettyPrinter::write(DeclFlags& flags)
 {
 	if((flags & DeclFlags::Private) == DeclFlags::Private)
 		std::cout << "priv ";

@@ -521,7 +521,17 @@ StmtPtr Parser::parseStatement()
 	}
 	
 	//try expression parsing
-	//parseExprStmt
+	auto expr = parseExpression();
+	if(expr)
+	{
+		assert(tok_.id == TokenId::Semicolon);
+		next();
+
+
+		auto exprStmt = Node::create<ExprStmt>();
+		exprStmt->expr = expr;
+		return exprStmt;
+	}
 		
 		
 	//if nothing matched error:
@@ -597,9 +607,8 @@ ExprPtr Parser::parseExpression()
 			return parseMatchExpr();
 			
 		default:
-			return parseExprBinary(1); //TODO right start prec
+			return parseExprBinary(0); //TODO right start prec
 	}
-	return expr;
 }
 
 /**
@@ -608,103 +617,139 @@ ExprPtr Parser::parseExpression()
  */
 ExprPtr Parser::parseExprAtom()
 {
-	//special '('
 
 	ExprPtr expr;
 
 	switch(tok_.id)
 	{
+		//special '(', <expr>, ')'
+		case TokenId::ROBracket:
+		{
+			next();
+			expr =  parseExprBinary(0); //TODO right start prec
+			if(tok_.id != TokenId::RCBracket)
+				throw FormatException("Missing )");
+			next();
+			return expr;
+			break;
+		}
 
-	case TokenId::ROBracket:
+		//Prefix Unary Expr==================================
+
+		case TokenId::Plus:
+		{
+			next();
+			auto uexp = Node::create<UnaryExpr>();
+			uexp->op = UnaryOperator::Pos;
+			uexp->expr = parseExprAtom();
+			return uexp;
+		}
+
+		case TokenId::Minus:
+		{
+			next();
+			auto uexp = Node::create<UnaryExpr>();
+			uexp->op = UnaryOperator::Neg;
+			uexp->expr = parseExprAtom();
+			return uexp;
+		}
+
+		case TokenId::EPoint:
+		{
+			next();
+			auto uexp = Node::create<UnaryExpr>();
+			uexp->op = UnaryOperator::LNot;
+			uexp->expr = parseExprAtom();
+			return uexp;
+		}
+
+			//-
+			//+
+			//--
+			//++
+			//&
+
+		//MAIN====================================
+
+		case TokenId::IntLiteral:
+		{
+			auto l = Node::create<IntegerLiteral>();
+			l->rawValue = transfer(tok_.buffer);
+			expr = l;
+			next();
+			break;
+		}
+
+		case TokenId::FloatLiteral:
+		{
+			auto l = Node::create<FloatLiteral>();
+			l->rawValue = transfer(tok_.buffer);
+			expr = l;
+			next();
+			break;
+		}
+
+		case TokenId::HexLiteral:
+		{
+			auto l = Node::create<HexLiteral>();
+			l->rawValue = transfer(tok_.buffer);
+			expr = l;
+			next();
+			break;
+		}
+
+		case TokenId::BinaryLiteral:
+		{
+			auto l = Node::create<BinaryLiteral>();
+			l->rawValue = transfer(tok_.buffer);
+			expr = l;
+			next();
+			break;
+		}
+
+		case TokenId::StringLiteral:
+		{
+			auto l = Node::create<StringLiteral>();
+			l->rawValue = transfer(tok_.buffer);
+			expr = l;
+			next();
+			break;
+		}
+
+		case TokenId::Ident:
+		{
+			auto id = Node::create<IdentExpr>();
+			id->ident = transfer(tok_.buffer);
+			expr = id;
+			next();
+			break;
+		}
+
+		default: break;
+	}
+
+	//no expression at this stage == error
+	if(!expr)
+		throw FormatException("Not an expression [token: %s ]", toString(tok_.id));
+
+	//Postfix UnArtehmetcary Expr =======================================================
+
+	switch(tok_.id)
 	{
-		next();
-		expr =  parseExprBinary(1); //TODO right start prec
-		if(tok_.id != TokenId::RCBracket)
-			throw FormatException("Missing )");
-		next();
-		return expr;
-		break;
+		//- UnaryOpPostfix
+		//  expr--
+		//  expr++
+
+		case TokenId::ROBracket:
+			throw Exception("Call Expr not yet implemented");
+
+		case TokenId::SOBracket:
+			throw Exception("Array Index Expr not yet implemented");
+
+		default: return expr;
 	}
 
-	//Prefix==================================
-		//-
-		//+
-		//--
-		//++
-		//&
-
-	//MAIN====================================
-
-	case TokenId::IntLiteral:
-	{
-		auto l = Node::create<IntegerLiteral>();
-		l->rawValue = tok_.buffer;
-		tok_.buffer = std::make_shared<Buffer>();
-		expr = l;
-		next();
-		break;
-	}
-
-	case TokenId::FloatLiteral:
-	{
-		auto l = Node::create<FloatLiteral>();
-		l->rawValue = tok_.buffer;
-		tok_.buffer = std::make_shared<Buffer>();
-		expr = l;
-		next();
-		break;
-	}
-
-	case TokenId::HexLiteral:
-	{
-		auto l = Node::create<HexLiteral>();
-		l->rawValue = tok_.buffer;
-		tok_.buffer = std::make_shared<Buffer>();
-		expr = l;
-		next();
-		break;
-	}
-
-	case TokenId::BinaryLiteral:
-	{
-		auto l = Node::create<BinaryLiteral>();
-		l->rawValue = tok_.buffer;
-		tok_.buffer = std::make_shared<Buffer>();
-		expr = l;
-		next();
-		break;
-	}
-
-	case TokenId::StringLiteral:
-	{
-		auto l = Node::create<StringLiteral>();
-		l->rawValue = tok_.buffer;
-		tok_.buffer = std::make_shared<Buffer>();
-		expr = l;
-		next();
-		break;
-	}
-
-
-	case TokenId::Ident:
-		throw Exception("Ident Expr not yet implemented");
-
-
-	//Postfix=======================================================
-
-	//- UnaryOpPostfix
-	//- ArrayAccess
-	//- Call
-
-
-	//not a token for expressions
-	default:
-		throw FormatException("Not expected token: ", toString(tok_.id));
-	}
-
-	return expr;
-
-	throw Exception("Not yet implemented");
+	throw FormatException("Not expected token: ", toString(tok_.id));
 }
 
 /**
@@ -732,6 +777,10 @@ ExprPtr Parser::parseExprBinary(int min_prec)
 		int next_min_prec = (assoc == OpAssociativity::Left) ? op_prec(op) + 1 : op_prec(op);
 
 		next(); //skip binop token
+
+		//TODO look for as operator
+		if(op == BinaryOperator::As)
+			throw Exception("Cast operator 'as' not implemented");
 
 		//look at right
 		ExprPtr right = parseExprBinary(next_min_prec);

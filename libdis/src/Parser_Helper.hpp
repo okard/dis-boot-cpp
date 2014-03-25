@@ -25,20 +25,40 @@ THE SOFTWARE.
 
 namespace {
 
-#include <dis/Token.hpp>
+#include <plf/base/Buffer.hpp>
 #include <plf/ast/Expression.hpp>
-using namespace dis;
+
+#include <dis/Token.hpp>
 using namespace plf;
+using namespace dis;
 
 //get unary operator for Token
-UnaryOperator op_unary(TokenId id)
+UnaryOperator op_unary(TokenId id, bool prefix)
 {
+	//Prefix
+	if(prefix)
 	switch(id)
 	{
+	case TokenId::Plus: return UnaryOperator::Pos;
+	case TokenId::Minus: return UnaryOperator::Neg;
+	case TokenId::Tilde: return UnaryOperator::OwnedPtr;
+	case TokenId::PlusPlus: return UnaryOperator::PreIncr;
+	case TokenId::MinusMinus: return UnaryOperator::PreDecr;
+	case TokenId::And: return UnaryOperator::Ref;
+	case TokenId::EPoint: return UnaryOperator::LNot;
 	default: return UnaryOperator::NOP;
 	}
 
-	throw Exception("not yet implemented");
+	//Postfix
+	if(!prefix)
+	switch(id)
+	{
+	case TokenId::PlusPlus: return UnaryOperator::PostIncr;
+	case TokenId::MinusMinus: return UnaryOperator::PostDecr;
+	default: return UnaryOperator::NOP;
+	}
+
+	throw Exception("Not reachable");
 }
 
 //get binary operator for Token
@@ -46,17 +66,39 @@ BinaryOperator op_binary(TokenId id)
 {
 	switch(id)
 	{
+	case TokenId::Assign: return BinaryOperator::Assign;
+	//single
+	case TokenId::Plus: return BinaryOperator::Plus;
+	case TokenId::Minus: return BinaryOperator::Minus;
+	case TokenId::Mul: return BinaryOperator::Mul;
+	case TokenId::Div: return BinaryOperator::Div;
+	case TokenId::Mod: return BinaryOperator::Mod;
+
+	//case TokenId::Tilde: return BinaryOperator::Concat;
+
+	//combound
+
+	case TokenId::Dot: return BinaryOperator::Access;
+
+	case TokenId::KwAs: return BinaryOperator::As;
+
 	default: return BinaryOperator::NOP;
 	}
-
-	throw Exception("not yet implemented");
 }
 
 //get assocs OpAssociativity
-
 OpAssociativity op_assoc(BinaryOperator op)
 {
-	throw Exception("not yet implemented");
+	switch(op)
+	{
+	case BinaryOperator::Access: return OpAssociativity::Left;
+
+	case BinaryOperator::Plus: return OpAssociativity::Left;
+
+	case BinaryOperator::Assign: return OpAssociativity::Right;
+
+	default: throw Exception("op_assoc: not yet implemented");
+	}
 }
 
 /// return unary operator precedence
@@ -64,11 +106,12 @@ int op_prec(plf::UnaryOperator& op)
 {
 	switch(op)
 	{
-	case UnaryOperator::NOP:
-		throw Exception("Not an operator");
-	default: throw Exception("not yet implemented");
+	case UnaryOperator::Neg:
+	case UnaryOperator::Pos:
+		return 3;
+	case UnaryOperator::NOP: throw Exception("Not an operator");
+	default: throw Exception("op_prec: not yet implemented");
 	}
-	throw Exception("not yet implemented");
 }
 
 /// return bin operator precedence
@@ -76,13 +119,49 @@ int op_prec(plf::BinaryOperator& op)
 {
 	switch(op)
 	{
-	case BinaryOperator::NOP:
-		throw Exception("Not an operator");
-	default: throw Exception("not yet implemented");
+	case BinaryOperator::Access:
+		return 2;
+
+	case BinaryOperator::Mul:
+	case BinaryOperator::Div:
+	case BinaryOperator::Mod:
+		return 5;
+
+	case BinaryOperator::Plus:
+	case BinaryOperator::Minus:
+		return 6;
+
+	case BinaryOperator::Gt:
+	case BinaryOperator::Gte:
+	case BinaryOperator::Lt:
+	case BinaryOperator::Lte:
+		return 8;
+	case BinaryOperator::Equal:
+	case BinaryOperator::NotEqual:
+		return 9;
+
+	case BinaryOperator::LAnd:
+		return 10;
+	case BinaryOperator::LOr:
+		return 11;
+
+	case BinaryOperator::Assign:
+	case BinaryOperator::PlusAssign:
+		return 12;
+
+	//logical:
+
+	case BinaryOperator::NOP:  throw Exception("Not an operator");
+	default: throw Exception("op_prec: not yet implemented");
 	}
-	throw Exception("not yet implemented");
 }
 
-
+//transfer a buffer ptr
+BufferPtr transfer(BufferPtr& bufptr)
+{
+	auto p = bufptr;
+	bufptr = std::make_shared<Buffer>();
+	return p;
+}
 
 }
