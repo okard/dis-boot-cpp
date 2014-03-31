@@ -77,6 +77,10 @@ BinaryOperator op_binary(TokenId id)
 
 	//arithmetic combound
 	case TokenId::PlusAssign: return BinaryOperator::PlusAssign;
+	case TokenId::MinusAssign: return BinaryOperator::MinusAssign;
+	case TokenId::MulAssign: return BinaryOperator::MulAssign;
+	case TokenId::DivAssign: return BinaryOperator::DivAssign;
+	case TokenId::ModAssign: return BinaryOperator::ModAssign;
 
 	//bitwise
 
@@ -104,13 +108,28 @@ OpAssociativity op_assoc(BinaryOperator op)
 {
 	switch(op)
 	{
-	case BinaryOperator::Access: return OpAssociativity::Left;
-
-	case BinaryOperator::Plus: return OpAssociativity::Left;
-
 	case BinaryOperator::Assign: return OpAssociativity::Right;
 
-	default: throw Exception("op_assoc: not yet implemented");
+	//Arithmetic
+	case BinaryOperator::Plus: return OpAssociativity::Left;
+	case BinaryOperator::Minus: return OpAssociativity::Left;
+	case BinaryOperator::Mul: return OpAssociativity::Left;
+	case BinaryOperator::Div: return OpAssociativity::Left;
+	case BinaryOperator::Mod: return OpAssociativity::Left;
+	case BinaryOperator::Pow: return OpAssociativity::Left;
+
+	//Arithmetic Compound Assign
+	case BinaryOperator::PlusAssign: return OpAssociativity::Right;
+	case BinaryOperator::MinusAssign: return OpAssociativity::Right;
+	case BinaryOperator::MulAssign: return OpAssociativity::Right;
+	case BinaryOperator::DivAssign: return OpAssociativity::Right;
+	case BinaryOperator::ModAssign: return OpAssociativity::Right;
+	case BinaryOperator::PowAssign: return OpAssociativity::Right;
+
+	//Other:
+	case BinaryOperator::Access: return OpAssociativity::Left;
+
+	default: throw Exception("op_assoc(binary): not yet implemented");
 	}
 }
 
@@ -123,7 +142,7 @@ int op_prec(plf::UnaryOperator& op)
 	case UnaryOperator::Pos:
 		return 3;
 	case UnaryOperator::NOP: throw Exception("Not an operator");
-	default: throw Exception("op_prec: not yet implemented");
+	default: throw Exception("op_prec(unary): not yet implemented");
 	}
 }
 
@@ -160,12 +179,16 @@ int op_prec(plf::BinaryOperator& op)
 
 	case BinaryOperator::Assign:
 	case BinaryOperator::PlusAssign:
+	case BinaryOperator::MinusAssign:
+	case BinaryOperator::MulAssign:
+	case BinaryOperator::DivAssign:
+	case BinaryOperator::ModAssign:
 		return 12;
 
 	//logical:
 
 	case BinaryOperator::NOP:  throw Exception("Not an operator");
-	default: throw Exception("op_prec: not yet implemented");
+	default: throw Exception("op_prec(binary): not yet implemented");
 	}
 }
 

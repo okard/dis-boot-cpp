@@ -174,6 +174,22 @@ public:
 };
 
 /**
+* @brief The StructField struct
+*/
+struct StructField
+{
+public:
+	BufferPtr name;
+	TypePtr type;
+	//Flags?
+
+	StructField(const BufferPtr& id, const TypePtr& type)
+		: name(id), type(type)
+	{
+	}
+};
+
+/**
 * Struct Declaration
 */
 class StructDecl : public TypeDecl
@@ -182,6 +198,10 @@ public:
 	static const NodeKind Kind = NodeKind::StructDecl;
 	StructDecl() : TypeDecl(NodeKind::StructDecl) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+
+	BufferPtr name;
+
+	List<StructField> fields;
 
 	//TODO template parameters
 

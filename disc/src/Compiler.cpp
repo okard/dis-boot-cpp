@@ -44,7 +44,10 @@ using namespace dis;
  rest
 
 
- Command Line Options:
+Command Line Options:
+
+	-compilation_unit <jsonfile> // use a file for all configuration
+
 
 Generic Target Information
 	-arch		arm, x32, x64
@@ -121,12 +124,15 @@ int Compiler::run(int argc, char *argv[])
 
 		//TODO all files using only one central crate?
 
+
 		//not an option so it is a source file
-		CompilationUnit unit;
+
 		//TODO flag steps (lex,parse,semantic,compile,link)
-		unit.sourcePtr = SourceManager::getInstance().loadFile(argv[i]);
-		units_.push_back(unit);
+		auto sourcePtr = SourceManager::getInstance().loadFile(argv[i]);
+		units_.push_back(CompilationUnit(sourcePtr));
+		//std::cout << "File: " << argv[i] << " id: "<< sourcePtr->getId() << " src: " << sourcePtr->identifier()  << std::endl;
 	}
+
 
 	bool result = false;
 
@@ -154,10 +160,19 @@ int Compiler::run(int argc, char *argv[])
 
 bool Compiler::parse()
 {
-	for(CompilationUnit& unit: units_)
+	//std::cout << "CompilationUnits: " << units_.size() << std::endl;
+	for(unsigned int i = 0; i < units_.size(); i++)
 	{
+		CompilationUnit& unit =  units_[i];
+
+		if(!unit.sourcePtr)
+			std::cout << "invalid source" << std::endl;
+
+		std::cout << "->parse[" << unit.sourcePtr->identifier() << "]" << std::endl;
+
 		//lexer
 		lexer_.open(unit.sourcePtr);
+		parser_.reset();
 
 		//parse it complete
 		NodePtr n;

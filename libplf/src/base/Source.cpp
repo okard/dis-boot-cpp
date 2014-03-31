@@ -25,3 +25,6 @@ THE SOFTWARE.
 
 using namespace plf;
 
+
+
+const char*Source::identifier() const { return "<no identifier>"; }

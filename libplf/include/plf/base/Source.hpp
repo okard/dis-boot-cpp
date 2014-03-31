@@ -77,7 +77,7 @@ public:
 	/**
 	* get an identifier for the source file
 	*/
-	virtual const char* identifier() { return nullptr; }
+	virtual const char* identifier() const;
 	
 	/**
 	* get source size

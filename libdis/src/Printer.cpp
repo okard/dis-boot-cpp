@@ -45,31 +45,38 @@ void PrettyPrinter::visit(const Node& n)
 
 void PrettyPrinter::visit(const Declaration& n)
 {
+	//never called?
 }
 
 void PrettyPrinter::visit(const Statement& n)
 {
+	//never called?
 }
 
 void PrettyPrinter::visit(const Expression& n)
 {
+	//never called?
 }
 
 
 void PrettyPrinter::visit(const TraitDecl& n)
 {
+	std::cout << "trait [not yet implemented]" << std::endl;
 }
 
 void PrettyPrinter::visit(const StructDecl& n)
 {
+	std::cout << "struct [not yet implemented]" << std::endl;
 }
 
 void PrettyPrinter::visit(const EnumDecl& n)
 {
+	std::cout << "enum [not yet implemented]" << std::endl;
 }
 
 void PrettyPrinter::visit(const AliasDecl& n)
 {
+	std::cout << "alias [not yet implemented]" << std::endl;
 }
 
 
@@ -77,21 +84,29 @@ void PrettyPrinter::visit(const ModDecl& n)
 {
 	std::cout << "mod ";
 	write(n.name);
-	std::cout << std::endl << "{" << std::endl;
-	
-	//Iterate through declarations
-	for(DeclPtr decl: n.decls)
-		dispatch(decl);
 
-	std::cout << "}" << std::endl;
+	if(n.decls.size() > 0)
+	{
+		std::cout << std::endl << "{" << std::endl;
+
+		//Iterate through declarations
+		for(DeclPtr decl: n.decls)
+			dispatch(decl);
+
+		std::cout << "}" << std::endl;
+	}
+	else
+		std::cout << ";" << std::endl;
 }
 
 void PrettyPrinter::visit(const UseDecl& n)
 {
+	std::cout << "use [not yet implemented]" << std::endl;
 }
 
 void PrettyPrinter::visit(const ClassDecl& n)
 {
+	std::cout << "class [not yet implemented]" << std::endl;
 }
 
 void PrettyPrinter::visit(const plf::FunctionDecl& n)
@@ -170,10 +185,12 @@ void PrettyPrinter::visit(const ReturnStmt& n)
 
 void PrettyPrinter::visit(const ForStmt& n)
 {
+	std::cout << "for [not yet implemented]" << std::endl;
 }
 
 void PrettyPrinter::visit(const WhileStmt& n)
 {
+	std::cout << "while [not yet implemented]" << std::endl;
 }
 
 void PrettyPrinter::visit(const DeclStmt& n)
@@ -199,17 +216,21 @@ void PrettyPrinter::visit(const FloatLiteral& n)
 
 void PrettyPrinter::visit(const HexLiteral& n)
 {
+	write("0x");
 	write(n.rawValue);
 }
 
 void PrettyPrinter::visit(const BinaryLiteral& n)
 {
+	write("0b");
 	write(n.rawValue);
 }
 
 void PrettyPrinter::visit(const StringLiteral& n)
 {
+	write("\"");
 	write(n.rawValue);
+	write("\"");
 }
 
 void PrettyPrinter::visit(const IdentExpr& n)
@@ -228,11 +249,20 @@ void PrettyPrinter::visit(const UnaryExpr& n)
 	case UnaryOperator::Pos: std::cout << "+"; break;
 	case UnaryOperator::Neg: std::cout << "-"; break;
 	case UnaryOperator::Ref: std::cout << "&"; break;
+	case UnaryOperator::PreIncr: std::cout << "++"; break;
+	case UnaryOperator::PreDecr: std::cout << "--"; break;
+	default: break;
 	}
 
 	dispatch(n.expr);
 
 	//postfix
+	switch(n.op)
+	{
+	case UnaryOperator::PostIncr: std::cout << "++"; break;
+	case UnaryOperator::PostDecr: std::cout << "--"; break;
+	default: break;
+	}
 
 }
 
@@ -243,8 +273,25 @@ void PrettyPrinter::visit(const BinaryExpr& n)
 
 	switch(n.op)
 	{
-	case BinaryOperator::Assign: std::cout << "="; break;
-	case BinaryOperator::Plus: std::cout << "+"; break;
+	case BinaryOperator::Assign: std::cout << " = "; break;
+	//Arithmetic
+	case BinaryOperator::Plus: std::cout << " + "; break;
+	case BinaryOperator::Minus: std::cout << " - "; break;
+	case BinaryOperator::Mul: std::cout << " * "; break;
+	case BinaryOperator::Div: std::cout << " / "; break;
+	case BinaryOperator::Mod: std::cout << " % "; break;
+	case BinaryOperator::Pow: std::cout << " ^^ "; break;
+
+	//Arithmetic Compound Assign
+	case BinaryOperator::PlusAssign: std::cout << " += "; break;
+	case BinaryOperator::MinusAssign: std::cout << " -= "; break;
+	case BinaryOperator::MulAssign: std::cout << " *= "; break;
+	case BinaryOperator::DivAssign: std::cout << " /= "; break;
+	case BinaryOperator::ModAssign: std::cout << " %= "; break;
+	case BinaryOperator::PowAssign: std::cout << " ^^= "; break;
+
+	default:
+		std::cout << " [?] ";
 	}
 
 	dispatch(n.right);

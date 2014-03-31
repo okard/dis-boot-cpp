@@ -57,6 +57,11 @@ struct CompilationUnit
 	bool do_parse = false;
 
 	//status -> error, parsed, semantic(1..N),...
+
+	CompilationUnit(const plf::SourcePtr& src)
+		: sourcePtr(src)
+	{
+	}
 };
 
 

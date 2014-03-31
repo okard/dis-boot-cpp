@@ -38,6 +38,7 @@ private:
 	std::ifstream filestream_;
 	size_t size_;
 	
+	const char* filename_;
 	
 	//Buffer filename_;
 	//string filename
@@ -50,7 +51,7 @@ public:
 	size_t readComplete(Buffer&);
 	
 	///return file name
-    const char* identifier() const;
+	virtual const char* identifier() const;
 	
 	///return file size
 	size_t size() const { return size_; }

@@ -63,6 +63,8 @@ public:
 	//parse into crate
 	plf::NodePtr parse();
 
+	void reset();
+
 	//TODO template parse function?
 
 private:

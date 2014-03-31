@@ -26,11 +26,15 @@ THE SOFTWARE.
 #include <plf/base/Buffer.hpp>
 #include <plf/base/FormatException.hpp>
 
+//#include <iostream>
+
 using namespace plf;
 
 
 void SourceFile::open(const char* filename)
 {
+	//std::cout << "file opened: " << filename << std::endl;
+
 	size_ = 0;
 	filestream_.open(filename, std::ifstream::in);
 	
@@ -40,6 +44,8 @@ void SourceFile::open(const char* filename)
 		filestream_.seekg (0, filestream_.end);
 		size_ = filestream_.tellg();
 		filestream_.seekg (0, filestream_.beg);
+
+		filename_ = filename;
 	}
 	else
 	{
@@ -71,5 +77,5 @@ size_t SourceFile::readComplete(Buffer& buf)
 
 const char* SourceFile::identifier() const
 {
-	return nullptr;
+	return filename_;
 }

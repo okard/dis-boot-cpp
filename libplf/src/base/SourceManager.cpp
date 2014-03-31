@@ -38,10 +38,11 @@ SourcePtr SourceManager::loadFile(const char* filename)
 {
 	auto src = std::make_shared<SourceFile>();
 	src->open(filename);
+	//add to list and set source id
 	auto id = sources_.size();
 	sources_.push_back(src);
 	src->id_ = id;
-	
+
 	return src;
 }
 	

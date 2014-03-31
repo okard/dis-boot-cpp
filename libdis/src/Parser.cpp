@@ -88,6 +88,11 @@ NodePtr Parser::parse()
 	throw FormatException("parse(): No valid stuff to parse [Token: %s]", toString(tok_.id));
 }
 
+void Parser::reset()
+{
+	tok_.id = TokenId::NotInitialized;
+}
+
 ////////////////////////////////////////////////////////////////////////
 // Declaration
 ////////////////////////////////////////////////////////////////////////
@@ -202,7 +207,37 @@ DeclPtr Parser::parseModDecl()
 	assert(tok_.id == TokenId::KwMod);
 	next();
 
-	throw Exception("Not yet implemented");
+	auto modDecl = Node::create<ModDecl>();
+
+	check(TokenId::Ident);
+	modDecl->name = transfer(tok_.buffer);
+	next();
+
+	//only mod decl
+	if(tok_.id == TokenId::Semicolon)
+	{
+		next(); //skip semicolon
+		return modDecl;
+	}
+
+	//module with content
+	if(tok_.id == TokenId::COBracket)
+	{
+		next();
+		while(tok_.id != TokenId::CCBracket)
+		{
+			auto decl = parseDeclaration();
+
+			//only add non error nodes
+			if(decl->kind != NodeKind::Error)
+				modDecl->decls.push_back(decl);
+		}
+		assert(tok_.id == TokenId::CCBracket);
+		next(); //skip '}'
+		return modDecl;
+	}
+
+	throw Exception("Invalid token");
 }
 
 /**
@@ -419,7 +454,50 @@ DeclPtr Parser::parseStructDecl()
 {
 	assert(tok_.id == TokenId::KwStruct);
 
-	throw plf::FormatException("Parsing structs not yet implemented");
+	checkNext(TokenId::Ident);
+	auto structDecl = Node::create<StructDecl>();
+	structDecl->name = transfer(tok_.buffer);
+	next();
+
+	//empty struct
+	if(tok_.id == TokenId::Semicolon)
+	{
+		next();
+		return structDecl;
+	}
+
+	if(tok_.id == TokenId::Colon)
+	{
+		throw Exception("Struct inheritance parsing not yet implemented");
+	}
+
+	if(tok_.id == TokenId::ROBracket)
+	{
+		throw Exception("Parser::parseStructDecl: Parsing struct templates not yet implemetnted");
+	}
+	check(TokenId::COBracket);
+
+	next();
+
+	while(tok_.id != TokenId::CCBracket)
+	{
+		//add a struct decl
+
+		check(TokenId::Ident);
+		auto name = transfer(tok_.buffer);
+		checkNext(TokenId::Colon);
+		next(); //skip ':'
+		auto type = parseDataType();
+
+		structDecl->fields.push_back(StructField(name, type));
+
+		if(tok_.id == TokenId::Comma)
+			next();
+	}
+
+	assert(tok_.id == TokenId::CCBracket);
+	next();
+	return structDecl;
 }
 
 DeclPtr Parser::parseEnumDecl()
@@ -529,7 +607,9 @@ StmtPtr Parser::parseStatement()
 	auto expr = parseExpression();
 	if(expr)
 	{
+		//std::cout << toString(tok_.id) << std::endl;
 		assert(tok_.id == TokenId::Semicolon);
+
 		next();
 
 
@@ -730,11 +810,17 @@ ExprPtr Parser::parseExprAtom()
 	//Call/ArrayAccess Operator
 	switch(tok_.id)
 	{
+		// abc(i, 1, u)
 		case TokenId::ROBracket:
 			throw Exception("Call Expr not yet implemented");
 
+		// abc[i]
 		case TokenId::SOBracket:
 			throw Exception("Array Index Expr not yet implemented");
+
+		//! postfix for stuff like abc!i8(), abc!(i8)()
+		case TokenId::EPoint:
+			throw Exception("Template type instance expression not yet implemented");
 
 		default: return expr;
 	}
