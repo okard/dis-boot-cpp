@@ -168,6 +168,8 @@ public:
 	static const NodeKind Kind = NodeKind::TraitDecl;
 	TraitDecl() : TypeDecl(NodeKind::TraitDecl) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+
+	//TODO template parameters
 	
 };
 
@@ -181,6 +183,8 @@ public:
 	StructDecl() : TypeDecl(NodeKind::StructDecl) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
+	//TODO template parameters
+
 };
 
 /**
@@ -192,6 +196,8 @@ public:
 	static const NodeKind Kind = NodeKind::EnumDecl;
 	EnumDecl() : TypeDecl(NodeKind::EnumDecl) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+
+	//TODO template parameters
 
 	//how?
 	//name -> expr?
@@ -232,6 +238,7 @@ public:
 	FunctionDecl() : Declaration(NodeKind::FunctionDecl) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
+
 	BufferPtr name;
 	List<FunctionParameter> params;
 	StmtPtr body;
@@ -240,6 +247,7 @@ public:
 	bool classFunc = false; //means parent is classdecl
 	bool tplFunc = false;	//means is template function
 	bool extFunc = false;	//extension function
+	bool unsafeFunc = false; //unsafe function
 	
 	//ctf - compile time function
 	

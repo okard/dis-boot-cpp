@@ -39,6 +39,8 @@ class Type : public Node
 {
 public:
 	Type(const NodeKind kind) : Node(kind) {}
+
+	virtual NodePtr accept(Visitor&, ParamPtr&);
 	
 };
 
@@ -59,6 +61,7 @@ public:
 class PrimaryType : public Type
 {
 public:
+	static const NodeKind Kind = NodeKind::PrimaryType;
 	const size_t size;
 	const char* name;
 	const bool signedT;
@@ -68,8 +71,18 @@ public:
 	PrimaryType(size_t size, const char* name, bool signedT);
 };
 
+
+//Primary Types
+
+extern PrimaryType typeInt8;
+extern PrimaryType typeUInt8;
+extern PrimaryType typeInt16;
+extern PrimaryType typeUInt16;
 extern PrimaryType typeInt32;
 extern PrimaryType typeUInt32;
+extern PrimaryType typeInt64;
+extern PrimaryType typeUInt64;
+
 
 
 //cpp: PrimaryType typeInt32(4, "Int32");

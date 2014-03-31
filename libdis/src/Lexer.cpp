@@ -69,6 +69,7 @@ inline static void checkKeyword(Token& tok)
 		{ const_hash("pub"), TokenId::KwPub },
 		{ const_hash("priv"), TokenId::KwPriv},
 		{ const_hash("prot"), TokenId::KwProt },
+		{ const_hash("unsafe"), TokenId::KwUnsafe },
 
 		{ const_hash("as"), TokenId::KwAs }
 	};
@@ -173,6 +174,7 @@ void  Lexer::lexToken(Token& tok)
 		case '%': tok.id = TokenId::Mod; nextChar(); break;
 		case '<': tok.id = TokenId::Less; nextChar(); break;
 		case '>': tok.id = TokenId::Greater; nextChar(); break;
+		case '$': tok.id = TokenId::Dollar; nextChar(); break;
 		
 
 		//TODO FIXIT
@@ -224,6 +226,7 @@ void  Lexer::lexToken(Token& tok)
 		case TokenId::Greater: checkForChar(tok, '=', TokenId::GTE); break;
 		case TokenId::And: checkForChar(tok, '&', TokenId::LAnd); break;
 		case TokenId::Or: checkForChar(tok, '|', TokenId::LOr); break;
+		case TokenId::Dollar: checkForChar(tok, '$', TokenId::DollarDollar); break;
 		default:break;
 	}
 	

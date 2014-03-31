@@ -32,6 +32,11 @@ THE SOFTWARE.
 using namespace plf;
 
 
+namespace plf {
+	template class DispatchVisitor<void, ConstRef>;
+}
+
+
 /*
 example usage:
 

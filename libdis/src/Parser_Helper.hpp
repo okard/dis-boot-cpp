@@ -23,14 +23,14 @@ THE SOFTWARE.
 */
 
 
-namespace {
-
 #include <plf/base/Buffer.hpp>
 #include <plf/ast/Expression.hpp>
 
 #include <dis/Token.hpp>
 using namespace plf;
 using namespace dis;
+
+namespace {
 
 //get unary operator for Token
 UnaryOperator op_unary(TokenId id, bool prefix)
@@ -67,21 +67,34 @@ BinaryOperator op_binary(TokenId id)
 	switch(id)
 	{
 	case TokenId::Assign: return BinaryOperator::Assign;
-	//single
+
+	//arithmetic single
 	case TokenId::Plus: return BinaryOperator::Plus;
 	case TokenId::Minus: return BinaryOperator::Minus;
 	case TokenId::Mul: return BinaryOperator::Mul;
 	case TokenId::Div: return BinaryOperator::Div;
 	case TokenId::Mod: return BinaryOperator::Mod;
 
-	//case TokenId::Tilde: return BinaryOperator::Concat;
+	//arithmetic combound
+	case TokenId::PlusAssign: return BinaryOperator::PlusAssign;
 
-	//combound
+	//bitwise
 
+	//Logical
+	case TokenId::Equal: return BinaryOperator::Equal;
+	case TokenId::NEqual: return BinaryOperator::NotEqual;
+	case TokenId::Greater: return BinaryOperator::Gt;
+	case TokenId::GTE:	return BinaryOperator::Gte;
+	case TokenId::Less: return BinaryOperator::Lt;
+	case TokenId::LTE: return BinaryOperator::Lte;
+
+	//case TokenId::?????: return BinaryOperator::Concat;
+
+	//Special
 	case TokenId::Dot: return BinaryOperator::Access;
-
 	case TokenId::KwAs: return BinaryOperator::As;
 
+	// Non operator
 	default: return BinaryOperator::NOP;
 	}
 }

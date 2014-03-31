@@ -23,4 +23,16 @@ THE SOFTWARE.
 */
 #include <plf/sem/TypeResolver.hpp>
 
+#include <plf/ast/Declaration.hpp>
+
 using namespace plf;
+
+
+void TypeResolver::run(Crate& crate)
+{
+	ParamPtr pp;
+	for(DeclPtr decl: crate.decls)
+	{
+		decl->accept(*this, pp);
+	}
+}

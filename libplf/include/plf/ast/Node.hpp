@@ -146,7 +146,7 @@ public:
 	/**
 	* The Visitor Function
 	*/
-	virtual NodePtr accept(Visitor& v, ParamPtr& arg);
+	virtual NodePtr accept(Visitor& v, ParamPtr& arg) = 0;
 	
 	/**
 	* using for visitor return?

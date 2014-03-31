@@ -38,6 +38,9 @@ public:
 	//symbol table
 	SymbolTable symTab;
 
+	//flag a pseudo crate for single source object generation
+	bool partial;
+
 	//path information for mangeling
 		//-crate id
 		//-name

@@ -39,7 +39,7 @@ namespace dis {
 * Source Printer Visitor
 * Pretty Printer
 */ 
-class PrettyPrinter : public plf::Visitor
+class PrettyPrinter : public plf::ReadVisitor
 {
 private:
 	//print to out buffer
@@ -49,49 +49,51 @@ private:
 public:
 
 	//basic case
-	virtual plf::NodePtr visit(plf::Node& n, plf::ParamPtr& arg);
+	virtual void visit(const plf::Node& n);
 
 	//basic node types
-	virtual plf::NodePtr visit(plf::Declaration& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::Statement& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::Expression& n, plf::ParamPtr& arg);
+	virtual void visit(const plf::Declaration& n);
+	virtual void visit(const plf::Statement& n);
+	virtual void visit(const plf::Expression& n);
 
 	//Declarations------------------------------------------------------
-	virtual plf::NodePtr visit(plf::ModDecl& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::UseDecl& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::ClassDecl& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::TraitDecl& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::StructDecl& n, plf::ParamPtr& arg);
+	virtual void visit(const plf::ModDecl& n);
+	virtual void visit(const plf::UseDecl& n);
+	virtual void visit(const plf::ClassDecl& n);
+	virtual void visit(const plf::TraitDecl& n);
+	virtual void visit(const plf::StructDecl& n);
 
-	virtual plf::NodePtr visit(plf::EnumDecl& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::AliasDecl& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::FunctionDecl& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::InstanceDecl& n, plf::ParamPtr& arg);
+	virtual void visit(const plf::EnumDecl& n);
+	virtual void visit(const plf::AliasDecl& n);
+	virtual void visit(const plf::FunctionDecl& n);
+	virtual void visit(const plf::InstanceDecl& n);
 
 
 	//Statements--------------------------------------------------------
-	virtual plf::NodePtr visit(plf::BlockStmt& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::ReturnStmt& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::ForStmt& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::WhileStmt& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::DeclStmt& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::ExprStmt& n, plf::ParamPtr& arg);
+	virtual void visit(const plf::BlockStmt& n);
+	virtual void visit(const plf::ReturnStmt& n);
+	virtual void visit(const plf::ForStmt& n);
+	virtual void visit(const plf::WhileStmt& n);
+	virtual void visit(const plf::DeclStmt& n);
+	virtual void visit(const plf::ExprStmt& n);
 
 	//Expressions-------------------------------------------------------
-	virtual plf::NodePtr visit(plf::IntegerLiteral& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::FloatLiteral& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::HexLiteral& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::BinaryLiteral& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::StringLiteral& n, plf::ParamPtr& arg);
+	virtual void visit(const plf::IntegerLiteral& n);
+	virtual void visit(const plf::FloatLiteral& n);
+	virtual void visit(const plf::HexLiteral& n);
+	virtual void visit(const plf::BinaryLiteral& n);
+	virtual void visit(const plf::StringLiteral& n);
 
-	virtual plf::NodePtr visit(plf::IdentExpr& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::UnaryExpr& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::BinaryExpr& n, plf::ParamPtr& arg);
-	virtual plf::NodePtr visit(plf::CallExpr& n, plf::ParamPtr& arg);
+	virtual void visit(const plf::IdentExpr& n);
+	virtual void visit(const plf::UnaryExpr& n);
+	virtual void visit(const plf::BinaryExpr& n);
+	virtual void visit(const plf::CallExpr& n);
 
 private:
-	void write(plf::BufferPtr& buf);
-	void write(plf::DeclFlags& flags);
+	void write(const char* str);
+	void writeln(const char* str);
+	void write(const plf::BufferPtr& buf);
+	void write(const plf::DeclFlags& flags);
 
 	//write functions for formatted strings/buffer
 	//write(const char* msg, ...)

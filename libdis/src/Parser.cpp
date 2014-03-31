@@ -28,6 +28,7 @@ THE SOFTWARE.
 
 #include <plf/base/Exception.hpp>
 #include <plf/base/FormatException.hpp>
+
 #include <plf/ast/Declaration.hpp>
 #include <plf/ast/Statement.hpp>
 #include <plf/ast/Expression.hpp>
@@ -77,15 +78,12 @@ NodePtr Parser::parse()
 	if(n && n->kind != NodeKind::Error)
 		return n;
 
-	//try_parse Stmt
+	//try_parse Stmt (returns also an expression statement)
 	n = parseStatement();
 	if(n && n->kind != NodeKind::Error)
 		return n;
 
-	//try_parse Expr
-	//will returned as ExprStmt
-
-	//throw FormatException("parse(): [%s] Not yet implemented", toString(tok_.id));
+	//try_parse Expr -> will returned as ExprStmt
 
 	throw FormatException("parse(): No valid stuff to parse [Token: %s]", toString(tok_.id));
 }
@@ -104,6 +102,10 @@ DeclPtr Parser::parseDeclaration()
 	//flags (public,private,protected) pub priv prot
 	DeclFlags flags = DeclFlags::None;
 	parseDeclFlags(flags); //parseDeclFlags(DeclFlags&);
+
+	//parse unsafe?
+	if(tok_.id == TokenId::KwUnsafe)
+		throw Exception("unsafe not yet implemented");
 	
 	//assign flags before
 	DeclPtr decl;
@@ -197,6 +199,9 @@ void Parser::parseDeclFlags(DeclFlags& flags)
  */
 DeclPtr Parser::parseModDecl()
 {
+	assert(tok_.id == TokenId::KwMod);
+	next();
+
 	throw Exception("Not yet implemented");
 }
 
@@ -620,6 +625,18 @@ ExprPtr Parser::parseExprAtom()
 
 	ExprPtr expr;
 
+	//prefix unary op
+	auto prefix_op = op_unary(tok_.id, true);
+	if(prefix_op != UnaryOperator::NOP)
+	{
+		next();
+		auto uexp = Node::create<UnaryExpr>();
+		uexp->op = prefix_op;
+		uexp->expr = parseExprAtom();
+		return uexp;
+	}
+
+	//main stuff and other prefix stuff
 	switch(tok_.id)
 	{
 		//special '(', <expr>, ')'
@@ -633,41 +650,6 @@ ExprPtr Parser::parseExprAtom()
 			return expr;
 			break;
 		}
-
-		//Prefix Unary Expr==================================
-
-		case TokenId::Plus:
-		{
-			next();
-			auto uexp = Node::create<UnaryExpr>();
-			uexp->op = UnaryOperator::Pos;
-			uexp->expr = parseExprAtom();
-			return uexp;
-		}
-
-		case TokenId::Minus:
-		{
-			next();
-			auto uexp = Node::create<UnaryExpr>();
-			uexp->op = UnaryOperator::Neg;
-			uexp->expr = parseExprAtom();
-			return uexp;
-		}
-
-		case TokenId::EPoint:
-		{
-			next();
-			auto uexp = Node::create<UnaryExpr>();
-			uexp->op = UnaryOperator::LNot;
-			uexp->expr = parseExprAtom();
-			return uexp;
-		}
-
-			//-
-			//+
-			//--
-			//++
-			//&
 
 		//MAIN====================================
 
@@ -728,18 +710,26 @@ ExprPtr Parser::parseExprAtom()
 		default: break;
 	}
 
+
 	//no expression at this stage == error
 	if(!expr)
 		throw FormatException("Not an expression [token: %s ]", toString(tok_.id));
 
-	//Postfix UnArtehmetcary Expr =======================================================
+	//Postfix Unary Expr =======================================================
+	auto postfix_op = op_unary(tok_.id, false);
+	if(postfix_op != UnaryOperator::NOP)
+	{
+		next();
+		auto uexp = Node::create<UnaryExpr>();
+		uexp->op = postfix_op;
+		uexp->expr = expr;
+		return uexp;
+	}
 
+
+	//Call/ArrayAccess Operator
 	switch(tok_.id)
 	{
-		//- UnaryOpPostfix
-		//  expr--
-		//  expr++
-
 		case TokenId::ROBracket:
 			throw Exception("Call Expr not yet implemented");
 
@@ -749,6 +739,7 @@ ExprPtr Parser::parseExprAtom()
 		default: return expr;
 	}
 
+	//can not be reached
 	throw FormatException("Not expected token: ", toString(tok_.id));
 }
 
@@ -780,7 +771,9 @@ ExprPtr Parser::parseExprBinary(int min_prec)
 
 		//TODO look for as operator
 		if(op == BinaryOperator::As)
+		{
 			throw Exception("Cast operator 'as' not implemented");
+		}
 
 		//look at right
 		ExprPtr right = parseExprBinary(next_min_prec);
@@ -850,6 +843,7 @@ TypePtr Parser::parseDataType()
 			tok_.buffer = std::make_shared<Buffer>();
 			next();
 			t = type;
+			//quicksolve builtin types?
 			break;
 		}
 		

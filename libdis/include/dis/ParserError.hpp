@@ -54,9 +54,11 @@ class EofNode : public plf::Node
 public:
 	static const plf::NodeKind Kind = plf::NodeKind::Error;
 	EofNode()
-		: plf::Node(plf::NodeKind::Error)
+		: plf::Node(Kind)
 	{
 	}
+
+	virtual plf::NodePtr accept(plf::Visitor&, plf::ParamPtr&) { throw "Not visitable";}
 };
 
 
@@ -70,17 +72,20 @@ public:
 	static const plf::NodeKind Kind = plf::NodeKind::Error;
 
 	ErrorDecl()
-		: plf::Declaration(plf::NodeKind::Error)
+		: plf::Declaration(Kind)
 	{}
 
 	ErrorDecl(bool eof)
-		: plf::Declaration(plf::NodeKind::Error), eof(eof)
+		: plf::Declaration(Kind), eof(eof)
 	{}
+
+	virtual plf::NodePtr accept(plf::Visitor&, plf::ParamPtr&) {throw "Not visitable";}
 
 	bool eof = false;
 	unsigned int col;
 	unsigned int line;
 	TokenId id;
+
 	//EOF
 	//Location
 	//Message

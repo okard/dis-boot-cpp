@@ -98,13 +98,15 @@ private:
 	plf::StmtPtr parseStatement();
 	
 	plf::StmtPtr parseBlockStmt();
+
+	//parse unsafe statement
 	
-	//parseForStmt
-	//parseWhileStmt
+	//plf::StmtPtr parseForStmt();
+	//plf::StmtPtr parseWhileStmt();
 	//parseDoWhileStmt?
 
-	//parseIfStmt
-	//parseSwitchStmt
+	//plf::StmtPtr parseIfStmt();
+	//plf::StmtPtr parseSwitchStmt();
 	
 	
 	////////////////////////////////////////////////////////////////////
@@ -117,7 +119,6 @@ private:
 	plf::ExprPtr parseIfExpr();
 	plf::ExprPtr parseMatchExpr();
 
-	
 	////////////////////////////////////////////////////////////////////
 	// DataType
 	plf::TypePtr parseDataType();
@@ -132,6 +133,7 @@ private:
 	void check(TokenId id);
 	void checkNext(TokenId id);
 
+	//create error nodes?
 
 	//TODO create error, warning signals and callbacks
 };

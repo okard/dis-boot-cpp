@@ -29,12 +29,35 @@ THE SOFTWARE.
 #include <plf/base/SourceFile.hpp>
 #include <plf/base/SourceManager.hpp>
 
+#include <plf/ast/Crate.hpp>
+
 #include <plf/gen/CodeGen.hpp>
 #include <plf/gen/Linker.hpp>
 #include <plf/gen/Target.hpp>
 
 #include <dis/Lexer.hpp>
 #include <dis/Parser.hpp>
+
+//TODO split into a base compiler class as example for lib usage of libdis and libplf
+
+
+//Only one CompilationUnit with multiple source files?
+struct CompilationUnit
+{
+	//FileName
+	plf::SourcePtr sourcePtr;
+	plf::Crate crate;
+
+	//ObjectFile obj;
+
+	//Info
+
+	//flags? -> lex/parse/semantic/compile/link
+	bool do_lex = false;
+	bool do_parse = false;
+
+	//status -> error, parsed, semantic(1..N),...
+};
 
 
 /**
@@ -46,8 +69,7 @@ private:
 	dis::Lexer lexer_;
 	dis::Parser parser_;
 
-
-	plf::List<plf::BufferPtr> _parsed_sourcefiles;
+	plf::List<CompilationUnit> units_;
 
 	//custom source manager?
 	
@@ -71,11 +93,10 @@ public:
 	int run(int argc, char *argv[]);
 	
 
-	void parse();
-	void semantic(); //CompilationUnit&
-	
-	//void compile(); //requires process call
-	//void link();	  //requires process call
+	bool parse();
+	bool semantic();
+	bool compile();		//requires process call
+	bool link();	  //requires process call
 	
 	//import search file handling
 	//TODO requires directory/path

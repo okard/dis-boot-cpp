@@ -72,6 +72,12 @@ struct Ref
 	using type = T&;
 };
 
+template<typename T>
+struct ConstRef
+{
+	using type = const T&;
+};
+
 /**
  * Visitor Base
  */
@@ -130,18 +136,105 @@ public:
 //=======================================================================================
 //Dispatch instead of visiting keep idea here
 
-//class DispatchingVisitor : public VisitorBase
+template<typename R = void,
+		 template<typename> class Wrapper = Ref,
+		 typename... Args>
+class DispatchVisitor : public VisitorBase<R, Wrapper, Args...>
+{
+private:
 
-//	//cast helper for debug switch between casts
-//	template<typename O>
-//	static inline O cast(TypeDef<Node> in)
-//	{
+	//retrieve selected type for nodes
+	template<typename T>
+	using Type = typename Wrapper<T>::type;
+
+	//cast helper for debug switch between casts
+	template<typename Out>
+	static inline Out cast(Type<Node> in)
+	{
+		return reinterpret_cast<Out>(in);
+		//not working?
 //		#ifndef NDEBUG
-//			return dynamic_cast<O>(in);
+//			return dynamic_cast<Out>(in);
 //		#else
-//			return static_cast<O>(in);
+//			return static_cast<Out>(in);
 //		#endif
-//	}
+	}
+
+public:
+
+	//Options for dispatch
+	// 1. switch
+	// 2. dispatch table
+
+	inline R dispatch(Type<Node> n, Args&... args)
+	{
+		switch(n.kind)
+		{
+		//Declarations
+		case NodeKind::ModDecl: return this->visit(cast<Type<ModDecl>>(n), args...);
+		case NodeKind::UseDecl: return this->visit(cast<Type<UseDecl>>(n), args...);
+		case NodeKind::ClassDecl: return this->visit(cast<Type<ClassDecl>>(n), args...);
+		case NodeKind::TraitDecl: return this->visit(cast<Type<TraitDecl>>(n), args...);
+		case NodeKind::StructDecl: return this->visit(cast<Type<StructDecl>>(n), args...);
+		case NodeKind::EnumDecl: return this->visit(cast<Type<EnumDecl>>(n), args...);
+		case NodeKind::AliasDecl: return this->visit(cast<Type<AliasDecl>>(n), args...);
+		case NodeKind::FunctionDecl: return this->visit(cast<Type<FunctionDecl>>(n), args...);
+		case NodeKind::InstanceDecl: return this->visit(cast<Type<InstanceDecl>>(n), args...);
+		//Statements
+		case NodeKind::BlockStmt: return this->visit(cast<Type<BlockStmt>>(n), args...);
+		case NodeKind::ReturnStmt: return this->visit(cast<Type<ReturnStmt>>(n), args...);
+		case NodeKind::ForStmt: return this->visit(cast<Type<ForStmt>>(n), args...);
+		case NodeKind::WhileStmt: return this->visit(cast<Type<WhileStmt>>(n), args...);
+		case NodeKind::DeclStmt: return this->visit(cast<Type<DeclStmt>>(n), args...);
+		case NodeKind::ExprStmt: return this->visit(cast<Type<ExprStmt>>(n), args...);
+		//Expressions
+		case NodeKind::IntegerLiteral: return this->visit(cast<Type<IntegerLiteral>>(n), args...);
+		case NodeKind::FloatLiteral: return this->visit(cast<Type<FloatLiteral>>(n), args...);
+		case NodeKind::HexLiteral: return this->visit(cast<Type<HexLiteral>>(n), args...);
+		case NodeKind::BinaryLiteral: return this->visit(cast<Type<BinaryLiteral>>(n), args...);
+		case NodeKind::StringLiteral: return this->visit(cast<Type<StringLiteral>>(n), args...);
+
+		case NodeKind::IdentExpr: return this->visit(cast<Type<IdentExpr>>(n), args...);
+		case NodeKind::UnaryExpr: return this->visit(cast<Type<UnaryExpr>>(n), args...);
+		case NodeKind::BinaryExpr: return this->visit(cast<Type<BinaryExpr>>(n), args...);
+		case NodeKind::CallExpr: return this->visit(cast<Type<CallExpr>>(n), args...);
+
+
+		default:
+			this->visit(n, args...);
+			throw "error";
+		}
+	}
+
+
+	//for template deduction a const and non-const variant
+	template<typename T>
+	inline R dispatch(std::shared_ptr<T>& n, Args&... args)
+	{
+		if(!n)
+			throw "error";
+		Node& nn = *n.get();
+		return dispatch(nn, args...);
+	}
+
+
+	template<typename T>
+	inline R dispatch(const std::shared_ptr<T>& n, Args&... args)
+	{
+		if(!n)
+			throw "error";
+		const Node& nn = *n.get();
+		return dispatch(nn, args...);
+	}
+
+};
+
+//default visitor types:
+extern template class DispatchVisitor<void, ConstRef>;
+typedef DispatchVisitor<void, ConstRef> ReadVisitor;
+
+
+
 
 
 //for table dispatch
@@ -174,48 +267,6 @@ public:
 //		return dispatch_table[to_integral(n.Kind)](this, n, args...);
 //		*/
 
-//		//return visit(cast<TypeDef<typename NodeTypeMap<n.Kind>::Type>>(n), args...);
-
-//		//TODO use dynamic cast in debug
-//		//create static function table to call with this? -> lambdas?
-//		//can compiler optimise this?
-//		switch(n.Kind)
-//		{
-//		case NodeKind::ModDecl:
-//			return visit(cast<TypeDef<ModDecl>>(n), args...);
-//		case NodeKind::UseDecl:
-//			return visit(cast<TypeDef<UseDecl>>(n), args...);
-
-//		default:
-//			throw "error";
-//		}
-
-//	}
-
-
-//	//implement twice for template parameter deduction
-
-//	template<typename T>
-//	inline R dispatch(std::shared_ptr<T>& n
-//					 , Args&... args)
-//	{
-//		if(!n)
-//		{
-//			throw "error";
-//		}
-//		return dispatch(*(n.get()), args...);
-//	}
-
-
-//	template<typename T>
-//	inline R dispatch(const std::shared_ptr<T>& n
-//					 , Args&... args)
-//	{
-//		if(!n)
-//		{
-//			throw "error";
-//		}
-//		return dispatch(*(n.get()), args...);
 //	}
 
 

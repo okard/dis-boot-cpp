@@ -23,25 +23,31 @@ THE SOFTWARE.
 */
 #include <plf/ast/Type.hpp>
 
+#include <plf/base/Exception.hpp>
+
 using namespace plf;
 
+NodePtr Type::accept(Visitor&, ParamPtr&)
+{
+	throw Exception("Types are not visitable");
+}
 
 
 PrimaryType::PrimaryType(size_t size, const char* name, bool signedT)
-	: Type(NodeKind::PrimaryType), size(size), name(name), signedT(signedT)
+	: Type(Kind), size(size), name(name), signedT(signedT)
 {
 }
 
 namespace plf {
 
-PrimaryType typeInt8(1, "int8", true);
-PrimaryType typeUInt8(1, "uint8", false);
-PrimaryType typeInt16(2, "int16", true);
-PrimaryType typeUInt16(2, "uint16", false);
-PrimaryType typeInt32(4, "int32", true);
-PrimaryType typeUInt32(4, "uint32", false);
-PrimaryType typeInt64(8, "int64", true);
-PrimaryType typeUInt64(8, "uint64", false);
+PrimaryType typeInt8(1, "i8", true);
+PrimaryType typeUInt8(1, "u8", false);
+PrimaryType typeInt16(2, "i16", true);
+PrimaryType typeUInt16(2, "u16", false);
+PrimaryType typeInt32(4, "i32", true);
+PrimaryType typeUInt32(4, "u32", false);
+PrimaryType typeInt64(8, "i64", true);
+PrimaryType typeUInt64(8, "u64", false);
 
 }
 

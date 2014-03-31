@@ -28,23 +28,16 @@ THE SOFTWARE.
 #include <iostream>
 
 
-
-#include <plf/ast/Crate.hpp>
 #include <plf/ast/Declaration.hpp>
+
+#include <plf/sem/TypeResolver.hpp>
+#include <plf/sem/Interpreter.hpp>
 
 #include <dis/Printer.hpp>
 
 using namespace plf;
 using namespace dis;
 
-
-struct CompilationUnit
-{
-	SourceId sourceId;
-	plf::Crate crate;
-	//SymbolTable? -> in crate
-	//ObjectFile obj;
-};
 
 /*
  { "-parse", 1, std::function<void(argc, argv)> } 
@@ -96,12 +89,12 @@ int Compiler::run(int argc, char *argv[])
 {
 	std::cout << "Running dis compiler" << std::endl;
 
+	//when -lex, -parse, etc is used remove default flags
 
-
-	
 	//- parse arguments
 	for(int i=1; i < argc; i++)
 	{
+		//add flags
 		if(strcmp(argv[i], "-lex") == 0 && ((i+1) < argc))
 		{
 			std::cout << "Lexer Dump:" << std::endl;
@@ -126,73 +119,107 @@ int Compiler::run(int argc, char *argv[])
 		//when -c compile each file in a own crate (append path)
 
 
+		//TODO all files using only one central crate?
+
 		//not an option so it is a source file
-		_parsed_sourcefiles.push_back(std::make_shared<Buffer>(argv[i]));
+		CompilationUnit unit;
+		//TODO flag steps (lex,parse,semantic,compile,link)
+		unit.sourcePtr = SourceManager::getInstance().loadFile(argv[i]);
+		units_.push_back(unit);
 	}
 
+	bool result = false;
 
+	//1. first parse ( Lex->Parse->AST )
+	std::cout << "->parse" << std::endl;
+	result = parse();
 
+	if(!result)
+		return -2;
 
-
-	//semantic runs
-
-
-	
-	//auto src = std::make_shared<SourceFile>();
-	//src->open(argv[1]);
-	//lexer_.open(src);
-	
-	
-	//0. auto crate = new plf::Crate();
-
-	//1. open files
-	//2. parse input files (Lex->Parse->Ast)
-		// for(src: sources)
-			 //parse; crate->add(decl Node);
-
-	//3. resolve imports (Ast)
-		//resolve imports (&crate)
-			// root crate "exports" module structure
-			// resolve the modules defined by root crate and add sources/asts for modules
-
-	//4. semantic run (Ast -> DAst)
-		//semantic(&crate)
+	//2. semantic stuff (AST->DAST)
+	std::cout << "->semantic" << std::endl;
+	result = semantic();
 
 	//5. codegen ( Ast -> ObjectFile)
-		//codegen(&crate)
+	std::cout << "->compile" << std::endl;
+	result = compile();
 
 	//6. link ( ObjectFile -> Binary)
-		//link(&crate);
+	std::cout << "->link" << std::endl;
+	result = link();
 	
 	return 0;
 }
 
-void Compiler::parse()
+bool Compiler::parse()
 {
-	plf::Crate crate;
-	for(auto src_file: _parsed_sourcefiles)
+	for(CompilationUnit& unit: units_)
 	{
-		auto src = SourceManager::getInstance().loadFile(src_file->ptr());
-		lexer_.open(src);
+		//lexer
+		lexer_.open(unit.sourcePtr);
 
-		auto n = parser_.parse();
-		auto decl = n->to<Declaration>(); //Declaration.hpp required because of knowing inheritance
-		//add to crate
-		crate.decls.push_back(decl);
+		//parse it complete
+		NodePtr n;
+		do
+		{
+			n = parser_.parse();
+
+			if(n->kind != NodeKind::Error)
+			{
+				auto decl = n->to<Declaration>(); //Declaration.hpp required because of knowing inheritance
+				//add to crate
+				unit.crate.decls.push_back(decl);
+			}
+		}
+		while(n && n->kind != NodeKind::Error);
 	}
+
+	return true;
 }
 
-void Compiler::semantic()
+bool Compiler::semantic()
 {
-	//semantic steps
+	//instances the semantic visitor stuff
 
-	//-> import solving for mods, use decls
+	plf::TypeResolver typeResolver;
+	plf::Interpreter interpreter;
 
-	//-> type solving?
+	for(CompilationUnit& unit: units_)
+	{
+		//semantic steps
 
-	//-> Run Interpreter for compile time execution
+		//-> import solving for mods, use decls
+		//-> resolve imports (Ast)
+			//resolve imports (&crate)
+				// root crate "exports" module structure
+				// resolve the modules defined by root crate and add sources/asts for modules
 
-	//-> Optimizer stuff (constant folding?)
+		//-> type solving?
+		typeResolver.run(unit.crate);
+
+		//-> Run Interpreter for compile time execution
+
+		//-> Optimizer stuff (constant folding?)
+
+		//-> Create symbol table?
+	}
+
+	return true;
+}
+
+bool Compiler::compile()
+{
+	//Instanciate the right codegen backend
+
+	return true;
+}
+
+bool Compiler::link()
+{
+	//Instanciate the right link backend
+
+	return true;
 }
 
 
@@ -241,8 +268,10 @@ void Compiler::testParse(const char* filename)
 	do
 	{
 		n = parser.parse();
+
 		//print:
-		n->accept(p, pp);
+		if(n->kind != NodeKind::Error)
+			p.dispatch(n);
 	}
 	while(n && n->kind != NodeKind::Error);
 

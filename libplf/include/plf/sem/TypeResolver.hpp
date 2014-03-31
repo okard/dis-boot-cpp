@@ -26,6 +26,7 @@ THE SOFTWARE.
 #define __PLF_TYPERESOLVER_HPP__
 
 #include <plf/ast/Visitor.hpp>
+#include <plf/ast/Crate.hpp>
 
 namespace plf {
 
@@ -34,6 +35,11 @@ namespace plf {
 */
 class TypeResolver : public Visitor
 {
+public:
+
+	void run(Crate& crate);
+
+
 	//call expressions
 	//variable
 	//const

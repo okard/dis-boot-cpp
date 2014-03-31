@@ -36,8 +36,10 @@ class Interpreter : public Visitor
 {
 
 public:
+
+	//void run(Crate& crate);
+
 	//struct Context& ctx as AnyPtr
-	
 	//use libffi for native calls? 
 	//symbol resolving in own process?
 };	

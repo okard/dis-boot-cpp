@@ -35,73 +35,66 @@ using namespace dis;
 using namespace plf;
 
 
-NodePtr PrettyPrinter::visit(Node& n, ParamPtr& arg)
+void PrettyPrinter::visit(const Node& n)
 {
-	return n;
+	if(n.kind == NodeKind::Error)
+		std::cerr << "Error Node" << std::endl;
+	else
+		std::cerr << "Unkown Node" << std::endl;
 }
 
-NodePtr PrettyPrinter::visit(Declaration& n, ParamPtr& arg)
+void PrettyPrinter::visit(const Declaration& n)
 {
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(Statement& n, ParamPtr& arg)
+void PrettyPrinter::visit(const Statement& n)
 {
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(Expression& n, ParamPtr& arg)
+void PrettyPrinter::visit(const Expression& n)
 {
-	return n;
-}
-
-
-NodePtr PrettyPrinter::visit(TraitDecl& n, ParamPtr& arg)
-{
-	return n;
-}
-
-NodePtr PrettyPrinter::visit(StructDecl& n, ParamPtr& arg)
-{
-	return n;
-}
-
-NodePtr PrettyPrinter::visit(EnumDecl& n, ParamPtr& arg)
-{
-	return n;
-}
-
-NodePtr PrettyPrinter::visit(AliasDecl& n, ParamPtr& arg)
-{
-	return n;
 }
 
 
-NodePtr PrettyPrinter::visit(ModDecl& n, ParamPtr& arg)
+void PrettyPrinter::visit(const TraitDecl& n)
+{
+}
+
+void PrettyPrinter::visit(const StructDecl& n)
+{
+}
+
+void PrettyPrinter::visit(const EnumDecl& n)
+{
+}
+
+void PrettyPrinter::visit(const AliasDecl& n)
+{
+}
+
+
+void PrettyPrinter::visit(const ModDecl& n)
 {
 	std::cout << "mod ";
 	write(n.name);
 	std::cout << std::endl << "{" << std::endl;
 	
 	//Iterate through declarations
-	visitList<Declaration>(n.decls, arg);
+	for(DeclPtr decl: n.decls)
+		dispatch(decl);
 
 	std::cout << "}" << std::endl;
-	
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(UseDecl& n, ParamPtr& arg)
+void PrettyPrinter::visit(const UseDecl& n)
 {
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(ClassDecl& n, ParamPtr& arg)
+void PrettyPrinter::visit(const ClassDecl& n)
 {
-	return n;
 }
 
-plf::NodePtr PrettyPrinter::visit(plf::FunctionDecl& n, plf::ParamPtr& arg)
+void PrettyPrinter::visit(const plf::FunctionDecl& n)
 {
 	//decl flags
 
@@ -111,21 +104,28 @@ plf::NodePtr PrettyPrinter::visit(plf::FunctionDecl& n, plf::ParamPtr& arg)
 	write(n.name);
 	
 	std::cout << "(";
-	for(FunctionParameter& p: n.params)
+	for(const FunctionParameter& p: n.params)
 	{
 		write(p.ident);
 		std::cout << ", ";
 	}
 	std::cout << ")";
-	std::cout << std::endl;
-	
+
+	//look for body and type
 	if(n.body)
-		n.body->accept(*this, arg);
-	
-	return n;
+	{
+		if(n.body->kind == NodeKind::ExprStmt)
+			std::cout << " = " ;
+		else
+			std::cout << std::endl;
+
+		dispatch(n.body);
+	}
+	else
+		std::cout << std::endl;
 }
 
-NodePtr PrettyPrinter::visit(InstanceDecl& n, ParamPtr& arg)
+void PrettyPrinter::visit(const InstanceDecl& n)
 {
 	switch(n.itype)
 	{
@@ -142,93 +142,82 @@ NodePtr PrettyPrinter::visit(InstanceDecl& n, ParamPtr& arg)
 
 	write(n.name);
 
+	//TODO type
+
+
 	//if has initializer write it
 	if(n.init)
 	{
 		std::cout << " = ";
-		n.init->accept(*this, arg);
+		dispatch(n.init);
 	}
 
 	std::cout << ";" << std::endl;
-
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(BlockStmt& n, ParamPtr& arg)
+void PrettyPrinter::visit(const BlockStmt& n)
 {
-	for(auto stmt: n.statements)
-		stmt->accept(*this, arg);
-	return n;
+	for(StmtPtr stmt: n.statements)
+		dispatch(stmt);
 }
 
-NodePtr PrettyPrinter::visit(ReturnStmt& n, ParamPtr& arg)
+void PrettyPrinter::visit(const ReturnStmt& n)
 {
 	std::cout << "return ";
-	n.expr->accept(*this, arg);
+	dispatch(n.expr);
 	std::cout << ";" << std::endl;
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(ForStmt& n, ParamPtr& arg)
+void PrettyPrinter::visit(const ForStmt& n)
 {
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(WhileStmt& n, ParamPtr& arg)
+void PrettyPrinter::visit(const WhileStmt& n)
 {
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(DeclStmt& n, ParamPtr& arg)
+void PrettyPrinter::visit(const DeclStmt& n)
 {
-	n.decl->accept(*this, arg);
-	return n;
+	dispatch(n.decl);
 }
 
-NodePtr PrettyPrinter::visit(ExprStmt& n, ParamPtr& arg)
+void PrettyPrinter::visit(const ExprStmt& n)
 {
-	n.expr->accept(*this, arg);
-	std::cout << std::endl;
-	return n;
+	dispatch(n.expr);
+	std::cout << ";" << std::endl;
 }
 
-NodePtr PrettyPrinter::visit(IntegerLiteral& n, ParamPtr& arg)
+void PrettyPrinter::visit(const IntegerLiteral& n)
 {
 	write(n.rawValue);
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(FloatLiteral& n, ParamPtr& arg)
+void PrettyPrinter::visit(const FloatLiteral& n)
 {
 	write(n.rawValue);
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(HexLiteral& n, ParamPtr& arg)
+void PrettyPrinter::visit(const HexLiteral& n)
 {
 	write(n.rawValue);
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(BinaryLiteral& n, ParamPtr& arg)
+void PrettyPrinter::visit(const BinaryLiteral& n)
 {
 	write(n.rawValue);
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(StringLiteral& n, ParamPtr& arg)
+void PrettyPrinter::visit(const StringLiteral& n)
 {
 	write(n.rawValue);
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(IdentExpr& n, ParamPtr& arg)
+void PrettyPrinter::visit(const IdentExpr& n)
 {
 	write(n.ident);
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(UnaryExpr& n, ParamPtr& arg)
+void PrettyPrinter::visit(const UnaryExpr& n)
 {
 
 	//prefix
@@ -238,20 +227,19 @@ NodePtr PrettyPrinter::visit(UnaryExpr& n, ParamPtr& arg)
 	case UnaryOperator::LNot: std::cout << "!"; break;
 	case UnaryOperator::Pos: std::cout << "+"; break;
 	case UnaryOperator::Neg: std::cout << "-"; break;
+	case UnaryOperator::Ref: std::cout << "&"; break;
 	}
 
-	n.expr->accept(*this, arg);
+	dispatch(n.expr);
 
 	//postfix
 
-
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(BinaryExpr& n, ParamPtr& arg)
+void PrettyPrinter::visit(const BinaryExpr& n)
 {
 
-	n.left->accept(*this, arg);
+	dispatch(n.left);
 
 	switch(n.op)
 	{
@@ -259,25 +247,34 @@ NodePtr PrettyPrinter::visit(BinaryExpr& n, ParamPtr& arg)
 	case BinaryOperator::Plus: std::cout << "+"; break;
 	}
 
-	n.right->accept(*this, arg);
+	dispatch(n.right);
 
-	return n;
 }
 
-NodePtr PrettyPrinter::visit(CallExpr& n, ParamPtr& arg)
+void PrettyPrinter::visit(const CallExpr& n)
 {
-	return n;
 }
 
-void PrettyPrinter::write(plf::BufferPtr& buf)
+void PrettyPrinter::write(const char* str)
+{
+	std::cout << str;
+}
+void PrettyPrinter::writeln(const char* str)
+{
+	std::cout << str << std::endl;
+}
+
+
+void PrettyPrinter::write(const plf::BufferPtr& buf)
 {
 	std::cout.write(buf->ptr(), buf->size());
 }
 
-void PrettyPrinter::write(DeclFlags& flags)
+
+void PrettyPrinter::write(const DeclFlags& flags)
 {
 	if((flags & DeclFlags::Private) == DeclFlags::Private)
-		std::cout << "priv ";
+		write("priv ");
 	if((flags & DeclFlags::Public) == DeclFlags::Public)
 		std::cout << "pub ";
 	if((flags & DeclFlags::Protected) == DeclFlags::Protected)
