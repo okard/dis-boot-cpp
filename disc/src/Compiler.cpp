@@ -198,7 +198,7 @@ bool Compiler::semantic()
 	//instances the semantic visitor stuff
 
 	plf::TypeResolver typeResolver;
-	plf::Interpreter interpreter;
+	//plf::Interpreter interpreter;
 
 	for(CompilationUnit& unit: units_)
 	{

@@ -924,9 +924,7 @@ TypePtr Parser::parseDataType()
 	{
 		case TokenId::Ident:
 		{
-			auto type = Node::create<UnsolvedType>();
-			type->idents.push_back(tok_.buffer);
-			tok_.buffer = std::make_shared<Buffer>();
+			auto type = checkForBuiltinType(tok_.buffer);
 			next();
 			t = type;
 			//quicksolve builtin types?

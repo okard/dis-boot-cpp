@@ -27,8 +27,14 @@ THE SOFTWARE.
 #include <plf/ast/Expression.hpp>
 
 #include <dis/Token.hpp>
+
+#include <unordered_map>
+
 using namespace plf;
 using namespace dis;
+
+
+#include "Helper.hpp"
 
 namespace {
 
@@ -199,5 +205,41 @@ BufferPtr transfer(BufferPtr& bufptr)
 	bufptr = std::make_shared<Buffer>();
 	return p;
 }
+
+
+//quickly resolve builtin types
+inline static TypePtr checkForBuiltinType(BufferPtr& buf)
+{
+	static std::unordered_map<std::size_t, TypePtr, hash_dummy> keywordMap =
+	{
+		{ const_hash("i8"), PrimaryType::TypeI8() },
+
+		//u8
+		//i16
+		//u16
+		//i32
+		//u32
+		//i64
+		//u64
+		//f32
+		//f64
+	};
+
+	auto it = keywordMap.find(hash(buf->ptr(), buf->size()));
+	if(it != keywordMap.end())
+	{
+		return it->second;
+	}
+	else
+	{
+		auto type = Node::create<UnsolvedType>();
+		type->idents.push_back(transfer(buf));
+		return type;
+	}
+}
+
+
+
+
 
 }

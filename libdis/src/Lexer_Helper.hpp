@@ -75,52 +75,6 @@ inline static bool isHex(char c)
 //readable ascii: 0x21-0x7E
 
 
-
-/**
- * @brief return for size_t the value as hash
- * (hashes nothing)
- */
-struct hash_dummy
-{
-  std::size_t operator()(std::size_t t) const
-  {
-	return t;
-  }
-};
-
-/*
-djb2 hash algo
-
- hash = ((hash << 5) + hash) + c;
-		 hash * 33           + c;
-*/
-
-/**
- * @brief const_hash a compile time hashing function for string literals
- * @param input
- */
-unsigned constexpr const_hash(char const *input)
-{
-	return *input ?
-		static_cast<unsigned int>(*input) + 33 * const_hash(input + 1) :
-		5381;
-}
-
-/**
- * @brief hash implement same algorithmus as const_hash for runtime and with size info
- * @param input
- * @param size
- */
-unsigned hash(char const *input, std::size_t size)
-{
-	unsigned hash = 5381;
-	for (std::size_t pos = size -1; pos != -1; pos-- ) //warning is ok here
-	{
-		hash = static_cast<unsigned int>(input[pos]) + ((hash << 5) + hash); /* hash * 33+ c*/
-	}
-	return hash;
-}
-
 }
 
 #endif //DIS_LEXER_HELPER_HPP

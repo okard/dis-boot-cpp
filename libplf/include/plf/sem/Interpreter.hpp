@@ -29,10 +29,12 @@ THE SOFTWARE.
 
 namespace plf {
 
+struct InterpreterContext;
+
 /**
 * CTFE Interpreter
 */
-class Interpreter : public Visitor
+class Interpreter : public DispatchVisitor<NodePtr, Ref, InterpreterContext&>
 {
 
 public:

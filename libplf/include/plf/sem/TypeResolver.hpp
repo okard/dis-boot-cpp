@@ -33,10 +33,49 @@ namespace plf {
 /**
 * Semantic Pass to resolve types
 */
-class TypeResolver : public Visitor
+class TypeResolver : public DispatchVisitor<NodePtr, Ref>
 {
 public:
 
+	//missed dispatch
+	virtual NodePtr visit(Node& n);
+
+	//Declarations------------------------------------------------------
+	virtual NodePtr visit(ModDecl& n);
+	virtual NodePtr visit(UseDecl& n);
+	virtual NodePtr visit(ClassDecl& n);
+	virtual NodePtr visit(TraitDecl& n);
+	virtual NodePtr visit(StructDecl& n);
+
+	virtual NodePtr visit(EnumDecl& n);
+	virtual NodePtr visit(AliasDecl& n);
+	virtual NodePtr visit(FunctionDecl& n);
+	virtual NodePtr visit(InstanceDecl& n);
+
+
+	//Statements--------------------------------------------------------
+	virtual NodePtr visit(BlockStmt& n);
+	virtual NodePtr visit(ReturnStmt& n);
+	virtual NodePtr visit(ForStmt& n);
+	virtual NodePtr visit(WhileStmt& n);
+	virtual NodePtr visit(DeclStmt& n);
+	virtual NodePtr visit(ExprStmt& n);
+
+	//Expressions-------------------------------------------------------
+	virtual NodePtr visit(IntegerLiteral& n);
+	virtual NodePtr visit(FloatLiteral& n);
+	virtual NodePtr visit(HexLiteral& n);
+	virtual NodePtr visit(BinaryLiteral& n);
+	virtual NodePtr visit(StringLiteral& n);
+
+
+	virtual NodePtr visit(IdentExpr& n);
+	virtual NodePtr visit(UnaryExpr& n);
+	virtual NodePtr visit(BinaryExpr& n);
+	virtual NodePtr visit(CallExpr& n);
+
+
+	//run type solver
 	void run(Crate& crate);
 
 

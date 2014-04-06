@@ -94,6 +94,8 @@ private:
 	plf::DeclPtr parseInstanceDecl();
 	
 	//parse a Ident : Type
+
+	//parseAttribute
 	
 	////////////////////////////////////////////////////////////////////
 	// Statements

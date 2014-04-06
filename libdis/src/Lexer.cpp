@@ -37,6 +37,7 @@ using namespace plf;
 
 ////////////////////////
 // Helper
+#include "Helper.hpp"
 #include "Lexer_Helper.hpp"
 
 namespace {

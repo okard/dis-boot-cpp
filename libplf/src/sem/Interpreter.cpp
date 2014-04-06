@@ -26,4 +26,10 @@ THE SOFTWARE.
 
 using namespace plf;
 
+struct InterpreterContext
+{
+};
+
+
+
 

@@ -1,7 +1,7 @@
 /*
-Programming Language Framework (PLF)
+Dis Programming Language Frontend Library
 
-Copyright (c) 2013 okard
+Copyright (c) 2014 okard
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,46 +21,59 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <plf/ast/Type.hpp>
+#pragma once
+#ifndef DIS_HELPER_HPP
+#define DIS_HELPER_HPP
 
-#include <plf/base/Exception.hpp>
+namespace {
 
-using namespace plf;
-
-NodePtr Type::accept(Visitor&, ParamPtr&)
+/**
+ * @brief return for size_t the value as hash
+ * (hashes nothing)
+ */
+struct hash_dummy
 {
-	throw Exception("Types are not visitable");
-}
+  std::size_t operator()(std::size_t t) const
+  {
+	return t;
+  }
+};
 
+/*
+djb2 hash algo
 
-PrimaryType::PrimaryType(size_t size, const char* name, bool signedT)
-	: Type(Kind), size(size), name(name), signedT(signedT)
+ hash = ((hash << 5) + hash) + c;
+		 hash * 33           + c;
+*/
+
+/**
+ * @brief const_hash a compile time hashing function for string literals
+ * @param input
+ */
+unsigned constexpr const_hash(char const *input)
 {
+	return *input ?
+		static_cast<unsigned int>(*input) + 33 * const_hash(input + 1) :
+		5381;
 }
 
-TypePtr PrimaryType::TypeI8()
+/**
+ * @brief hash implement same algorithmus as const_hash for runtime and with size info
+ * @param input
+ * @param size
+ */
+unsigned hash(char const *input, std::size_t size)
 {
-	static TypePtr instance(new PrimaryType(1, "i8", true));
-	return instance;
+	unsigned hash = 5381;
+	for (std::size_t pos = size -1; pos != -1; pos-- ) //warning is ok here
+	{
+		hash = static_cast<unsigned int>(input[pos]) + ((hash << 5) + hash); /* hash * 33+ c*/
+	}
+	return hash;
 }
-
-namespace plf {
-
-PrimaryType typeInt8(1, "i8", true);
-PrimaryType typeUInt8(1, "u8", false);
-PrimaryType typeInt16(2, "i16", true);
-PrimaryType typeUInt16(2, "u16", false);
-PrimaryType typeInt32(4, "i32", true);
-PrimaryType typeUInt32(4, "u32", false);
-PrimaryType typeInt64(8, "i64", true);
-PrimaryType typeUInt64(8, "u64", false);
 
 }
 
 
-TypePtr UnkownType::getInstance()
-{
-	static TypePtr instance(new UnkownType());
-	return instance;
-}
 
+#endif // DIS_HELPER_HPP

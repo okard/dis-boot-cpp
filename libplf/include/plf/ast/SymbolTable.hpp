@@ -26,12 +26,22 @@ THE SOFTWARE.
 #define PLF_SYMBOLTABLE_HPP
 
 namespace plf {
+
+enum class SymbolType
+{
+	Function,
+	Data
+};
 	
 /**
 * A single (native) symbol
 */
 class Symbol
 {
+
+	//global variables
+	//functions
+
 	//name(mangled?) BufferPtr (mangled name)
 	//DeclPtr
 	//extern elsewhere declared resolved by linking
@@ -40,12 +50,20 @@ class Symbol
 	//external type? (RTTI relevant)
 };
 
+
+//inherit from symbol
+//class FunctionSymbol : public Symbol { FunctionDecl& decl; pointer? }
+//class DataSymbol : public Symbol { }
+
+
 /**
 * Complete (native) SymbolTable
 */
 class SymbolTable
 {
 	//symbol list
+	//map<mangled name, symbol>
+	//list <symbol>
 	
 };
 	

@@ -30,6 +30,16 @@ THE SOFTWARE.
 
 namespace plf {
 
+
+enum class TypeKind
+{
+	Primary,
+	Function,
+	Structure,
+	Placeholder
+};
+
+
 //TODO necessary to inherit from Node?
 
 /**
@@ -69,6 +79,10 @@ public:
 	//floating point?
 	
 	PrimaryType(size_t size, const char* name, bool signedT);
+
+
+	//static const TypePtr
+	static TypePtr TypeI8();
 };
 
 
@@ -97,6 +111,7 @@ public:
 	
 	//bool ref/ptr
 };
+
 
 /**
 * Parsed Type to has solved

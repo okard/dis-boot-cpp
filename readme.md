@@ -16,6 +16,7 @@ License: MIT
 	
 * libplf-c - C Code Generation/Compiling
 * libplf-llvm -  LLVM Code Generation/Compiling
+* libplf-js	- Javascript Code Generation
 	
 * libdis - dis programming language library
 	- Handle all syntax stuff
