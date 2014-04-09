@@ -140,6 +140,9 @@ private:
 	//create error nodes?
 
 	//TODO create error, warning signals and callbacks
+
+	void warning(const char* msg, ...);
+	void error(const char* msg, ...);
 };
 
 

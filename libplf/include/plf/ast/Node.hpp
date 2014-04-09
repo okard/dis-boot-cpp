@@ -68,6 +68,7 @@ typedef SharedPtr<Type> TypePtr;
 enum class NodeKind : unsigned short
 {
 	Unknown,
+
 	//Declarations------------------------------------------------------
 	ModDecl,
 	UseDecl,
@@ -80,22 +81,6 @@ enum class NodeKind : unsigned short
 	EnumDecl,
 	//-Instance Decl
 	InstanceDecl,
-
-	//Type--------------------------------------------------------------
-	PrimaryType,
-	UnkownType,
-	DeclType,
-	UnsolvedType,
-	//-Pointer Types
-	OwnedPtrType,
-	BorrowedPtrType,
-	RawPtrType,
-	//PtrType,
-	//RefType,
-	
-	//-RT Types:
-	ArrayType,
-	MapType,
 	
 	//Statement---------------------------------------------------------
 	BlockStmt,
@@ -118,6 +103,22 @@ enum class NodeKind : unsigned short
 	TernaryExpr,
 	CallExpr,
 	CastExpr,
+
+	//Type--------------------------------------------------------------
+	PrimaryType,
+	UnkownType,
+	DeclType,
+	UnsolvedType,
+	//-Pointer Types
+	OwnedPtrType,
+	BorrowedPtrType,
+	RawPtrType,
+	//PtrType,
+	//RefType,
+
+	//-RT Types:
+	ArrayType,
+	MapType,
 	
 	//Special-----------------------------------------------------------
 	
@@ -181,7 +182,8 @@ public:
 	template<class T, typename... Args>
 	static SharedPtr<T> create(Args... args)
 	{
-		//NodeKind k = T::Kind; //make shure each node has it?
+		NodeKind k = T::Kind; //make shure each node has it?
+		k=k; //avoid warning
 		return std::make_shared<T>(args...);
 	}	
 };

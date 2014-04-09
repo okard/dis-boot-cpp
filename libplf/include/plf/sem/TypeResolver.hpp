@@ -35,6 +35,12 @@ namespace plf {
 */
 class TypeResolver : public DispatchVisitor<NodePtr, Ref>
 {
+private:
+	//private statistics
+	//unresolved stuff (queue?)
+	//etc
+	//status of interpreter requirement?
+
 public:
 
 	//missed dispatch

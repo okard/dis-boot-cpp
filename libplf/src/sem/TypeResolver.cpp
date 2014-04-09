@@ -23,6 +23,8 @@ THE SOFTWARE.
 */
 #include <plf/sem/TypeResolver.hpp>
 
+#include <plf/base/FormatException.hpp>
+
 #include <plf/ast/Declaration.hpp>
 #include <plf/ast/Statement.hpp>
 #include <plf/ast/Expression.hpp>
@@ -107,15 +109,23 @@ NodePtr TypeResolver::visit(WhileStmt& n)
 
 NodePtr TypeResolver::visit(DeclStmt& n)
 {
-	//check for unresolved or templated type
-		// -> DeclType
-		//
+	//dispatch(n.decl);
+
 	return n;
 }
 
 NodePtr TypeResolver::visit(ExprStmt& n)
 {
 	//require return type
+	n.expr = dispatch(n.expr)->to<Expression>();
+
+	if(n.expr->returnType
+	|| n.expr->returnType->kind == TypeKind::UnsolvedType
+	|| n.expr->returnType->kind == TypeKind::UnkownType)
+	{
+		throw FormatException("Expr in ExprStmt has not a valid type");
+	}
+
 	return n;
 }
 
@@ -123,6 +133,7 @@ NodePtr TypeResolver::visit(ExprStmt& n)
 
 NodePtr TypeResolver::visit(IntegerLiteral& n)
 {
+	//check for overflows? format?
 	return n;
 }
 
@@ -148,21 +159,37 @@ NodePtr TypeResolver::visit(StringLiteral& n)
 
 NodePtr TypeResolver::visit(IdentExpr& n)
 {
+	//type resolving
+	//pay attention to subtyping
+
+	//current scope
+
 	return n;
 }
 
 NodePtr TypeResolver::visit(UnaryExpr& n)
 {
+	//dispatch(n.expr)
 	return n;
 }
 
 NodePtr TypeResolver::visit(BinaryExpr& n)
 {
+	//take care of access operator
+	// split out when access operator
+	// require a right side step down
+
+	//dispatch(n.left);
+	//dispatch(n.right);
+
 	return n;
 }
 
 NodePtr TypeResolver::visit(CallExpr& n)
 {
+	//has declaration?
+	//n.params
+
 	return n;
 }
 

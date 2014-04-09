@@ -44,7 +44,7 @@ namespace {
 
 inline static void checkKeyword(Token& tok)
 {
-	static std::unordered_map<std::size_t, TokenId, hash_dummy> keywordMap =
+	static const std::unordered_map<std::size_t, TokenId, hash_dummy> keywordMap =
 	{
 		{ const_hash("mod"), TokenId::KwMod },
 		{ const_hash("use"), TokenId::KwUse },
@@ -57,6 +57,7 @@ inline static void checkKeyword(Token& tok)
 		{ const_hash("var"), TokenId::KwVar },
 		{ const_hash("let"), TokenId::KwLet },
 		{ const_hash("const"), TokenId::KwConst },
+		{ const_hash("static"), TokenId::KwStatic},
 
 		{ const_hash("if"), TokenId::KwIf },
 		{ const_hash("else"), TokenId::KwElse },
@@ -181,6 +182,7 @@ void  Lexer::lexToken(Token& tok)
 		//TODO FIXIT
 		case 0x00:
 			//throw plf::FormatException("Nullchar");
+			std::cout << "Found null l: " << line_ << std::endl;
 			tok.id = TokenId::Eof;
 			return;
 		
@@ -223,8 +225,13 @@ void  Lexer::lexToken(Token& tok)
 		case TokenId::Div: checkForChar(tok, '=', TokenId::DivAssign); break;
 		case TokenId::Mod: checkForChar(tok, '=', TokenId::ModAssign); break;
 		case TokenId::Tilde: checkForChar(tok, '=', TokenId::TildeAssign); break;
-		case TokenId::Less: checkForChar(tok, '=', TokenId::LTE); break;
-		case TokenId::Greater: checkForChar(tok, '=', TokenId::GTE); break;
+		case TokenId::Less: checkForChar(tok, '=', TokenId::LTE);
+							checkForChar(tok, '<', TokenId::ShiftL);
+							break;
+		case TokenId::Greater:
+							checkForChar(tok, '=', TokenId::GTE);
+							checkForChar(tok, '>', TokenId::ShiftR);
+							break;
 		case TokenId::And: checkForChar(tok, '&', TokenId::LAnd); break;
 		case TokenId::Or: checkForChar(tok, '|', TokenId::LOr); break;
 		case TokenId::Dollar: checkForChar(tok, '$', TokenId::DollarDollar); break;

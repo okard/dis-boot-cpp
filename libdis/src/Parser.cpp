@@ -24,6 +24,8 @@ THE SOFTWARE.
 #include <dis/Parser.hpp>
 
 #include <cassert>
+#include <cstdarg>
+#include <cstdio>
 #include <iostream>
 
 #include <plf/base/Exception.hpp>
@@ -66,6 +68,7 @@ NodePtr Parser::parse()
 
 	//std::cout << "DEBUG: parse() TOK: " << toString(tok_.id) << std::endl;
 
+	//end of file no more token
 	if(tok_.id == TokenId::Eof)
 	{
 		return Node::create<EofNode>();
@@ -84,6 +87,8 @@ NodePtr Parser::parse()
 		return n;
 
 	//try_parse Expr -> will returned as ExprStmt
+	if(n && n->kind == NodeKind::ExprStmt)
+		return n->to<ExprStmt>()->expr;
 
 	throw FormatException("parse(): No valid stuff to parse [Token: %s]", toString(tok_.id));
 }
@@ -503,8 +508,70 @@ DeclPtr Parser::parseStructDecl()
 DeclPtr Parser::parseEnumDecl()
 {
 	assert(tok_.id == TokenId::KwEnum);
+	checkNext(TokenId::Ident);
 
-	throw plf::FormatException("Parsing enums not yet implemented");
+	auto enm = Node::create<EnumDecl>();
+	enm->name = transfer(tok_.buffer);
+	next(); //skip name ident
+
+	//basic underlying data type
+	if(tok_.id == TokenId::Colon)
+	{
+		next(); //skip colon
+		enm->basic_type = parseDataType();
+	}
+
+	//TODO allow empty enums?
+
+	check(TokenId::COBracket);
+	next();
+
+	//parse fields
+		//A
+		//A = Expr
+		//A(name: type,type)
+	while(true)
+	{
+		if(tok_.id == TokenId::CCBracket)
+			break;
+
+		//field name
+		check(TokenId::Ident);
+		auto field_name = transfer(tok_.buffer);
+		next();
+
+		if(tok_.id == TokenId::ROBracket)
+		{
+			next();
+			//look for ident
+			// followed by :
+
+			//else type
+
+			//comma etc
+
+			throw plf::FormatException("parse enums(xxx) not yet implemented");
+		}
+
+		ExprPtr value;
+		if(tok_.id == TokenId::Assign)
+		{
+			next();
+			value = parseExpression();
+		}
+
+		//add field
+
+		//check for other
+		if(tok_.id == TokenId::Comma)
+			next();
+		else
+			break;
+	}
+	check(TokenId::CCBracket);
+	next(); //skip closing }
+
+	return enm;
 }
 
 DeclPtr Parser::parseTypeDecl()
@@ -578,6 +645,9 @@ StmtPtr Parser::parseStatement()
 		case TokenId::KwIf:
 			throw plf::Exception("parsing 'IfStmt' not implemented");
 			break;
+		case TokenId::KwMatch:
+			throw plf::Exception("parsing 'MatchStmt' not implemented");
+			break;
 		case TokenId::KwFor:
 			throw plf::Exception("parsing 'ForStmt' not implemented");
 			break;
@@ -587,6 +657,10 @@ StmtPtr Parser::parseStatement()
 		case TokenId::COBracket:
 			return parseBlockStmt();
 			break;
+		case TokenId::KwUnsafe:
+			throw plf::Exception("parsing 'UnsafeBlockStmt' not implemented");
+			break;
+
 		default:
 			break;
 	}
@@ -787,6 +861,11 @@ ExprPtr Parser::parseExprAtom()
 			break;
 		}
 
+		case TokenId::KwDef:
+		{
+			throw Exception("Lambda-Expression parsing not yet implemented");
+		}
+
 		default: break;
 	}
 
@@ -935,7 +1014,7 @@ TypePtr Parser::parseDataType()
 		case TokenId::Tilde:
 		{
 			next();
-			auto opt = Node::create<OwnedPtrType>();
+			auto opt = Type::create<OwnedPtrType>();
 			opt->targetType = parseDataType();
 			return opt;
 		}
@@ -944,7 +1023,7 @@ TypePtr Parser::parseDataType()
 		case TokenId::And:
 		{
 			next();
-			auto bpt = Node::create<BorrowedPtrType>();
+			auto bpt = Type::create<BorrowedPtrType>();
 			bpt->targetType = parseDataType();
 			return bpt;
 		}
@@ -953,24 +1032,76 @@ TypePtr Parser::parseDataType()
 		case TokenId::Mul:
 		{
 			next();
-			auto rpt = Node::create<RawPtrType>();
+			auto rpt = Type::create<RawPtrType>();
 			rpt->targetType = parseDataType();
 			return rpt;
 		}
 		
 		case TokenId::SOBracket:
-			throw FormatException("parseDataType: parsing of array and map types not implemented");
+		{
+			next();
+			auto type = Type::create<ArrayType>();
+
+			if(tok_.id == TokenId::IntLiteral)
+			{
+				//size hint
+				type->size = 0;
+				next();
+			}
+
+			check(TokenId::SCBracket);
+			next();
+
+			auto datatype = parseDataType();
+
+			type->targetType = datatype;
+			return type;
+		}
 
 		case TokenId::ConstraintStart:
 			throw FormatException("parseDataType: parsing of type constraints not yet implemented");
 
+		case TokenId::KwDef: // def(type, type, ...) : type
+		{
+			checkNext(TokenId::ROBracket);
+			next();
+
+			auto func_type = Type::create<FunctionType>();
+
+			//parse parameter
+			while(true)
+			{
+				if(tok_.id == TokenId::RCBracket)
+					break;
+
+				auto type = parseDataType();
+				func_type->params.push_back(type);
+
+				if(tok_.id != TokenId::Comma)
+					break;
+				else
+					next(); //skip comma
+			}
+			check(TokenId::RCBracket);
+			next();
+
+			//parse return type
+			if(tok_.id == TokenId::Colon)
+			{
+				next();
+				auto rettype = parseDataType();
+				func_type->returnType = rettype;
+			}
+			return func_type;
+		}
 		default:
-			throw FormatException("parseDataType: not yet implemented or invalid type");
+			throw FormatException("parseDataType: not yet implemented or invalid type (%s)", toString(tok_.id));
 	}
 	
 	//follow up
 	switch(tok_.id)
 	{
+		//double colon?
 		case TokenId::Dot:	//.
 		case TokenId::EPoint: //!
 			throw FormatException("parseDataType: not yet implemented");
@@ -1014,4 +1145,42 @@ void Parser::checkNext(TokenId id)
 {
 	next();
 	check(id);
+}
+
+void Parser::warning(const char* msg, ...)
+{
+	static const int BUFSIZE=1024;
+	char buffer[BUFSIZE];
+	va_list argument_list;
+	va_start(argument_list, msg);
+
+	int len = vsnprintf(buffer, BUFSIZE - 2, msg, argument_list);
+	if(len < 0 || len > BUFSIZE - 2)
+	{
+		len = BUFSIZE - 2;
+	}
+	buffer[len] = '\0';
+
+	va_end(argument_list);
+
+	std::cerr.write(buffer, len);
+}
+
+void Parser::error(const char* msg, ...)
+{
+	static const int BUFSIZE=1024;
+	char buffer[BUFSIZE];
+	va_list argument_list;
+	va_start(argument_list, msg);
+
+	int len = vsnprintf(buffer, BUFSIZE - 2, msg, argument_list);
+	if(len < 0 || len > BUFSIZE - 2)
+	{
+		len = BUFSIZE - 2;
+	}
+	buffer[len] = '\0';
+
+	va_end(argument_list);
+
+	std::cerr.write(buffer, len);
 }

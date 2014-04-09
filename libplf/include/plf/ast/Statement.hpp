@@ -49,6 +49,7 @@ public:
 	BlockStmt() : Statement(NodeKind::BlockStmt) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
+	bool unsafe;
 	StmtList statements;
 };
 

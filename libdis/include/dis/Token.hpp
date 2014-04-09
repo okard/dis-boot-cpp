@@ -83,6 +83,8 @@ THE SOFTWARE.
 		TOKEN(ModAssign)			   /* %= */ \
 		TOKEN(GTE)					   /* >= */ \
 		TOKEN(LTE)					   /* <= */ \
+		TOKEN(ShiftL)				   /* << */ \
+		TOKEN(ShiftR)				   /* >> */ \
 		TOKEN(LAnd)					   /* && */ \
 		TOKEN(LOr)					   /* || */ \
 		TOKEN(PlusPlus)				   /* ++ */ \
@@ -104,6 +106,7 @@ THE SOFTWARE.
 		TOKEN(KwVar) 							\
 		TOKEN(KwLet) 							\
 		TOKEN(KwConst)							\
+		TOKEN(KwStatic)							\
 		TOKEN(KwIf)								\
 		TOKEN(KwElse)							\
 		TOKEN(KwMatch)							\

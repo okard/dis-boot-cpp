@@ -207,6 +207,19 @@ public:
 
 };
 
+
+struct EnumField
+{
+	//basic implementation
+	BufferPtr name;
+	ExprPtr value; //underlying type also id
+
+	List<BufferPtr> content_names; //push empty buffers for without names
+	List<TypePtr> content_types;
+	//map<Name, TypePtr> //additional fields
+};
+
+
 /**
 * Enum Declaration
 */
@@ -217,8 +230,11 @@ public:
 	EnumDecl() : TypeDecl(NodeKind::EnumDecl) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
-	//TODO template parameters
+	BufferPtr name;
+	TypePtr basic_type;
+	//basic type
 
+	//TODO template parameters
 	//how?
 	//name -> expr?
 };

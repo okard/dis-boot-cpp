@@ -39,6 +39,7 @@ public:
 	typedef char byte;
 private:
 	size_t size_;
+	//TODO safe a used_ size ?
 	byte* buffer_; //TODO std::unique_ptr???
 	
 public:
@@ -50,15 +51,21 @@ public:
 	Buffer(const Buffer& buf);
 	virtual ~Buffer();
 	
-	//TODO set to 0
-	//clear();
-	//empty();
 
 	//allocates the buffer with a new size, old buffer data is freed
 	void alloc(size_t size);
 
-	//realloc
-	//append
+	//resizes the buffer
+	inline void resize(size_t size);
+
+	//frees the buffer (make it a null buffer)
+	inline void free();
+
+	//append(char)
+	//append(
+
+	//create null termination?
+
 
 	//assign other buffer/ 0-terminated strings
 	Buffer& operator=(const Buffer& buf);
@@ -67,7 +74,10 @@ public:
 	//compare
 	bool operator==(const Buffer& buf) const;
 	bool operator==(const char* str) const;
-	
+
+	//buffer is empty
+	inline bool is_empty() const { return size_==0; }
+
 	//size of buffer memory
 	inline size_t size() const { return size_; }
 

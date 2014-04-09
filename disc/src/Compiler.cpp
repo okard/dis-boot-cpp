@@ -210,6 +210,8 @@ bool Compiler::semantic()
 				// root crate "exports" module structure
 				// resolve the modules defined by root crate and add sources/asts for modules
 
+		//-> StructureTest? -> require main, enum fields, ....
+
 		//-> type solving?
 		typeResolver.run(unit.crate);
 

@@ -27,11 +27,6 @@ THE SOFTWARE.
 
 using namespace plf;
 
-NodePtr Type::accept(Visitor&, ParamPtr&)
-{
-	throw Exception("Types are not visitable");
-}
-
 
 PrimaryType::PrimaryType(size_t size, const char* name, bool signedT)
 	: Type(Kind), size(size), name(name), signedT(signedT)
@@ -44,18 +39,66 @@ TypePtr PrimaryType::TypeI8()
 	return instance;
 }
 
-namespace plf {
+TypePtr PrimaryType::TypeU8()
+{
+	static TypePtr instance(new PrimaryType(1, "u8", false));
+	return instance;
+}
 
-PrimaryType typeInt8(1, "i8", true);
-PrimaryType typeUInt8(1, "u8", false);
+TypePtr PrimaryType::TypeI16()
+{
+	static TypePtr instance(new PrimaryType(2, "i16", true));
+	return instance;
+}
+
+TypePtr PrimaryType::TypeU16()
+{
+	static TypePtr instance(new PrimaryType(2, "u16", false));
+	return instance;
+}
+
+TypePtr PrimaryType::TypeI32()
+{
+	static TypePtr instance(new PrimaryType(4, "i32", true));
+	return instance;
+}
+
+TypePtr PrimaryType::TypeU32()
+{
+	static TypePtr instance(new PrimaryType(4, "u32", false));
+	return instance;
+}
+
+TypePtr PrimaryType::TypeI64()
+{
+	static TypePtr instance(new PrimaryType(8, "i64", true));
+	return instance;
+}
+
+TypePtr PrimaryType::TypeU64()
+{
+	static TypePtr instance(new PrimaryType(8, "u64", false));
+	return instance;
+}
+
+TypePtr PrimaryType::TypeF32()
+{
+	throw Exception("Not implemented");
+}
+
+TypePtr PrimaryType::TypeF64()
+{
+	throw Exception("Not implemented");
+}
+
+/*
 PrimaryType typeInt16(2, "i16", true);
 PrimaryType typeUInt16(2, "u16", false);
 PrimaryType typeInt32(4, "i32", true);
 PrimaryType typeUInt32(4, "u32", false);
 PrimaryType typeInt64(8, "i64", true);
 PrimaryType typeUInt64(8, "u64", false);
-
-}
+*/
 
 
 TypePtr UnkownType::getInstance()

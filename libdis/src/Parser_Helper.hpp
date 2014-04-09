@@ -89,6 +89,8 @@ BinaryOperator op_binary(TokenId id)
 	case TokenId::ModAssign: return BinaryOperator::ModAssign;
 
 	//bitwise
+	case TokenId::ShiftL: return BinaryOperator::ShiftL;
+	case TokenId::ShiftR: return BinaryOperator::ShiftR;
 
 	//Logical
 	case TokenId::Equal: return BinaryOperator::Equal;
@@ -132,6 +134,10 @@ OpAssociativity op_assoc(BinaryOperator op)
 	case BinaryOperator::ModAssign: return OpAssociativity::Right;
 	case BinaryOperator::PowAssign: return OpAssociativity::Right;
 
+	//bitwise
+	case BinaryOperator::ShiftL: return OpAssociativity::Left;
+	case BinaryOperator::ShiftR: return OpAssociativity::Left;
+
 	//Other:
 	case BinaryOperator::Access: return OpAssociativity::Left;
 
@@ -168,6 +174,10 @@ int op_prec(plf::BinaryOperator& op)
 	case BinaryOperator::Plus:
 	case BinaryOperator::Minus:
 		return 6;
+
+	case BinaryOperator::ShiftL:
+	case BinaryOperator::ShiftR:
+		return 7;
 
 	case BinaryOperator::Gt:
 	case BinaryOperator::Gte:
@@ -210,17 +220,16 @@ BufferPtr transfer(BufferPtr& bufptr)
 //quickly resolve builtin types
 inline static TypePtr checkForBuiltinType(BufferPtr& buf)
 {
-	static std::unordered_map<std::size_t, TypePtr, hash_dummy> keywordMap =
+	static const std::unordered_map<std::size_t, TypePtr, hash_dummy> keywordMap =
 	{
 		{ const_hash("i8"), PrimaryType::TypeI8() },
-
-		//u8
-		//i16
-		//u16
-		//i32
-		//u32
-		//i64
-		//u64
+		{ const_hash("u8"), PrimaryType::TypeU8() },
+		{ const_hash("i16"), PrimaryType::TypeI16() },
+		{ const_hash("u16"), PrimaryType::TypeU16() },
+		{ const_hash("i32"), PrimaryType::TypeI32() },
+		{ const_hash("u32"), PrimaryType::TypeU32() },
+		{ const_hash("i64"), PrimaryType::TypeI64() },
+		{ const_hash("u64"), PrimaryType::TypeU64() }
 		//f32
 		//f64
 	};
@@ -232,7 +241,7 @@ inline static TypePtr checkForBuiltinType(BufferPtr& buf)
 	}
 	else
 	{
-		auto type = Node::create<UnsolvedType>();
+		auto type = Type::create<UnsolvedType>();
 		type->idents.push_back(transfer(buf));
 		return type;
 	}

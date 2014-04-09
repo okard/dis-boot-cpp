@@ -113,13 +113,7 @@ bool Buffer::operator==(const char* str) const
 
 void Buffer::alloc(size_t size)
 {
-	//delete old buffer
-	if(buffer_)
-	{
-		delete[] buffer_;
-		buffer_ = nullptr;
-		size_ = 0;
-	}
+	free();
 	
 	//no allocation required
 	if(size == 0)
@@ -131,6 +125,31 @@ void Buffer::alloc(size_t size)
 	memset (buffer_,'\0',size);
 }
 
+void Buffer::resize(size_t size)
+{
+	//new buffer, copy old content
+	auto new_buf = new byte[size];
+	memset (new_buf,'\0',size);
+	memcpy(new_buf, buffer_, size < size_ ? size : size_);
+	free(); //free old buffer
+
+	//set actual buffer and size
+	buffer_ = new_buf;
+	size_ = size;
+}
+
+void Buffer::free()
+{
+	//delete old buffer
+	if(buffer_)
+	{
+		delete[] buffer_;
+		buffer_ = nullptr;
+		size_ = 0;
+	}
+}
+
+//debug
 #include<iostream>
 void Buffer::dump()
 {

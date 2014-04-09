@@ -33,10 +33,15 @@ namespace plf {
 
 enum class TypeKind
 {
-	Primary,
-	Function,
-	Structure,
-	Placeholder
+	UnkownType, //no type information
+	PrimaryType,
+	DeclType,
+	UnsolvedType, //unsolved type
+	OwnedPtrType,
+	BorrowedPtrType,
+	RawPtrType,
+	ArrayType,
+	FunctionType
 };
 
 
@@ -45,13 +50,30 @@ enum class TypeKind
 /**
 * Represents a Datatype
 */
-class Type : public Node
+class Type
 {
 public:
-	Type(const NodeKind kind) : Node(kind) {}
 
-	virtual NodePtr accept(Visitor&, ParamPtr&);
-	
+	const TypeKind kind;
+
+	Type(const TypeKind kind) : kind(kind) {}
+
+	//bool validType = false;
+
+	//compare operator?
+	//implicit casting?
+
+
+	/**
+	* Create helper
+	*/
+	template<class T, typename... Args>
+	static SharedPtr<T> create(Args... args)
+	{
+		TypeKind k = T::Kind; //make shure each node has it?
+		k=k; //avoid warning
+		return std::make_shared<T>(args...);
+	}
 };
 
 /**
@@ -59,9 +81,13 @@ public:
 */
 class UnkownType : public Type
 {
-private:
-	UnkownType() : Type(NodeKind::UnkownType) {}
 public:
+	static const TypeKind Kind = TypeKind::UnkownType;
+private:
+	UnkownType() : Type(Kind) {}
+public:
+
+
 	static TypePtr getInstance(); //get sharedptr
 };
 
@@ -71,10 +97,11 @@ public:
 class PrimaryType : public Type
 {
 public:
-	static const NodeKind Kind = NodeKind::PrimaryType;
+	static const TypeKind Kind = TypeKind::PrimaryType;
 	const size_t size;
 	const char* name;
 	const bool signedT;
+
 	
 	//floating point?
 	
@@ -83,19 +110,17 @@ public:
 
 	//static const TypePtr
 	static TypePtr TypeI8();
+	static TypePtr TypeU8();
+	static TypePtr TypeI16();
+	static TypePtr TypeU16();
+	static TypePtr TypeI32();
+	static TypePtr TypeU32();
+	static TypePtr TypeI64();
+	static TypePtr TypeU64();
+	static TypePtr TypeF32();
+	static TypePtr TypeF64();
+
 };
-
-
-//Primary Types
-
-extern PrimaryType typeInt8;
-extern PrimaryType typeUInt8;
-extern PrimaryType typeInt16;
-extern PrimaryType typeUInt16;
-extern PrimaryType typeInt32;
-extern PrimaryType typeUInt32;
-extern PrimaryType typeInt64;
-extern PrimaryType typeUInt64;
 
 
 
@@ -104,7 +129,8 @@ extern PrimaryType typeUInt64;
 class DeclType : public Type
 {
 public:
-	DeclType() : Type(NodeKind::DeclType) {}
+	static const TypeKind Kind = TypeKind::DeclType;
+	DeclType() : Type(Kind) {}
 
 	DeclPtr decl;
 	//symbol& sym?
@@ -120,7 +146,9 @@ public:
 class UnsolvedType : public Type
 {
 public:
-	UnsolvedType() : Type(NodeKind::UnsolvedType) {}
+	static const TypeKind Kind = TypeKind::UnsolvedType;
+	UnsolvedType() : Type(Kind)
+	{}
 	
 	List<BufferPtr> idents;
 };
@@ -131,7 +159,8 @@ public:
 class OwnedPtrType : public Type
 {
 public:
-	OwnedPtrType() : Type(NodeKind::OwnedPtrType) {}
+	static const TypeKind Kind = TypeKind::OwnedPtrType;
+	OwnedPtrType() : Type(Kind) {}
 	TypePtr targetType;
 };
 
@@ -141,7 +170,8 @@ public:
 class BorrowedPtrType : public Type
 {
 public:
-	BorrowedPtrType() : Type(NodeKind::BorrowedPtrType) {}
+	static const TypeKind Kind = TypeKind::BorrowedPtrType;
+	BorrowedPtrType() : Type(Kind) {}
 	TypePtr targetType;
 };
 
@@ -151,14 +181,45 @@ public:
 class RawPtrType : public Type
 {
 public:
-	RawPtrType() : Type(NodeKind::RawPtrType) {}
+	static const TypeKind Kind = TypeKind::RawPtrType;
+	RawPtrType() : Type(Kind) {}
 	TypePtr targetType;
 };
 
-//array types
-//path type
-//constraint type
+/**
+* @brief The ArrayType class
+*/
+class ArrayType : public Type
+{
+public:
+	static const TypeKind Kind = TypeKind::ArrayType;
+	ArrayType() : Type(Kind)
+	{}
 
+	TypePtr targetType;
+
+	int size = 0;
+
+};
+
+
+/**
+* @brief The ArrayType class
+*/
+class FunctionType : public Type
+{
+public:
+	static const TypeKind Kind = TypeKind::FunctionType;
+	FunctionType() : Type(Kind)
+	{}
+
+	List<TypePtr> params;
+	TypePtr returnType;
+};
+
+
+//seperate path type?
+//constraint type
 
 } //end namespace plf
 
