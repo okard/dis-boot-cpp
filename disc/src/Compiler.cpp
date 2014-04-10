@@ -180,6 +180,7 @@ bool Compiler::parse()
 		{
 			n = parser_.parse();
 
+
 			if(n->kind != NodeKind::Error)
 			{
 				auto decl = n->to<Declaration>(); //Declaration.hpp required because of knowing inheritance

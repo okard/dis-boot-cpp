@@ -79,6 +79,7 @@ enum class NodeKind : unsigned short
 	StructDecl,
 	AliasDecl,
 	EnumDecl,
+	TupleDecl,
 	//-Instance Decl
 	InstanceDecl,
 	
@@ -103,22 +104,6 @@ enum class NodeKind : unsigned short
 	TernaryExpr,
 	CallExpr,
 	CastExpr,
-
-	//Type--------------------------------------------------------------
-	PrimaryType,
-	UnkownType,
-	DeclType,
-	UnsolvedType,
-	//-Pointer Types
-	OwnedPtrType,
-	BorrowedPtrType,
-	RawPtrType,
-	//PtrType,
-	//RefType,
-
-	//-RT Types:
-	ArrayType,
-	MapType,
 	
 	//Special-----------------------------------------------------------
 	
@@ -166,7 +151,7 @@ public:
 	* Cast helper
 	*/
 	template<class T>
-	SharedPtr<T> to()
+	inline SharedPtr<T> to()
 	{
 		//debug dynamic cast
 		#ifndef NDEBUG
@@ -175,6 +160,8 @@ public:
 			return std::static_pointer_cast<T>(shared_from_this());
 		#endif
 	}
+
+	// as for T& access?
 	
 	/**
 	* Create helper

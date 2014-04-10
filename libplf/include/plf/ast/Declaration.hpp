@@ -37,6 +37,7 @@ namespace plf {
 
 //Forward Declarations
 class FunctionDecl;
+class FunctionType;
 
 	
 /**
@@ -207,16 +208,19 @@ public:
 
 };
 
-
+/**
+* @brief A field of an enum declaration
+*/
 struct EnumField
 {
 	//basic implementation
 	BufferPtr name;
 	ExprPtr value; //underlying type also id
 
-	List<BufferPtr> content_names; //push empty buffers for without names
-	List<TypePtr> content_types;
-	//map<Name, TypePtr> //additional fields
+	DeclPtr decl; //underlying declaration
+		//can be a struct or tuple type
+
+	//requires move?
 };
 
 
@@ -227,12 +231,13 @@ class EnumDecl : public TypeDecl
 {
 public:
 	static const NodeKind Kind = NodeKind::EnumDecl;
-	EnumDecl() : TypeDecl(NodeKind::EnumDecl) {}
+	EnumDecl() : TypeDecl(Kind) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
 	BufferPtr name;
-	TypePtr basic_type;
-	//basic type
+	TypePtr basic_type; //basic type
+
+	List<EnumField> fields;
 
 	//TODO template parameters
 	//how?
@@ -271,7 +276,7 @@ class FunctionDecl final : public Declaration
 {
 public:
 	static const NodeKind Kind = NodeKind::FunctionDecl;
-	FunctionDecl() : Declaration(NodeKind::FunctionDecl) {}
+	FunctionDecl() : Declaration(Kind) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
 
@@ -279,22 +284,44 @@ public:
 	List<FunctionParameter> params;
 	StmtPtr body;
 	TypePtr returnType; //leave unset for unkown?
-	
+
+	//the function type for declaration?
+	SharedPtr<FunctionType> func_type;
+
+	//instances of template functions?
+	PtrList<FunctionDecl> instances;
+
+	//functions overloads?
+	//List<FunctionDecl> overloads
+	//List<FunctionDecl> instances;
+
+	//flags
 	bool classFunc = false; //means parent is classdecl
 	bool tplFunc = false;	//means is template function
 	bool extFunc = false;	//extension function
 	bool unsafeFunc = false; //unsafe function
-	
-	//ctf - compile time function
+	//bool ctfFunc = false; // compile time function
+
 	
 	bool hasBody() const { return body ? true : false; }
-	//template 
+
 	//nested 
-	
-	//functions overloads?
-	//List<FunctionDecl> overloads
-	//List<FunctionDecl> instances;
 };
+
+/**
+ * @brief Declares a tuple type
+ */
+class TupleDecl final : public Declaration
+{
+public:
+	static const NodeKind Kind = NodeKind::TupleDecl;
+	TupleDecl() : Declaration(Kind) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+
+	List<TypePtr> fields;
+};
+
+
 
 /**
 * Instance Type

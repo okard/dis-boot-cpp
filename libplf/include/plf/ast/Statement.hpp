@@ -46,7 +46,7 @@ class BlockStmt : public Statement
 {
 public:
 	static const NodeKind Kind = NodeKind::BlockStmt;
-	BlockStmt() : Statement(NodeKind::BlockStmt) {}
+	BlockStmt() : Statement(Kind) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	bool unsafe;
@@ -60,7 +60,7 @@ class ReturnStmt : public Statement
 {
 public:
 	static const NodeKind Kind = NodeKind::ReturnStmt;
-	ReturnStmt() : Statement(NodeKind::ReturnStmt) {}
+	ReturnStmt() : Statement(Kind) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
 	ExprPtr expr;
@@ -74,7 +74,7 @@ class ForStmt : public Statement
 {
 public:
 	static const NodeKind Kind = NodeKind::ForStmt;
-	ForStmt() : Statement(NodeKind::ForStmt) {}
+	ForStmt() : Statement(Kind) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	StmtPtr init;
@@ -91,7 +91,7 @@ class WhileStmt : public Statement
 {
 public:
 	static const NodeKind Kind = NodeKind::WhileStmt;
-	WhileStmt() : Statement(NodeKind::WhileStmt) {}
+	WhileStmt() : Statement(Kind) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	ExprPtr cond;

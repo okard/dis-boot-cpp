@@ -112,6 +112,7 @@ THE SOFTWARE.
 		TOKEN(KwMatch)							\
 		TOKEN(KwFor)							\
 		TOKEN(KwWhile)							\
+		TOKEN(KwReturn)							\
 		TOKEN(KwTrue)							\
 		TOKEN(KwFalse)							\
 		TOKEN(KwPub)							\
@@ -135,7 +136,7 @@ enum class TokenId
 */
 struct Token
 {
-	TokenId id;
+	TokenId id = TokenId::NotInitialized;
 	//to share one extracted string in nodes token uses a BufferPtr instead of Buffer
 	plf::BufferPtr buffer = std::make_shared<plf::Buffer>();
 	plf::Location loc;

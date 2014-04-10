@@ -68,6 +68,11 @@ NodePtr Parser::parse()
 
 	//std::cout << "DEBUG: parse() TOK: " << toString(tok_.id) << std::endl;
 
+	if(tok_.id == TokenId::Unkown)
+	{
+		throw Exception("something is going wrong, lexer delivers unkown tokenid");
+	}
+
 	//end of file no more token
 	if(tok_.id == TokenId::Eof)
 	{
@@ -80,6 +85,8 @@ NodePtr Parser::parse()
 	n = parseDeclaration();
 	if(n && n->kind != NodeKind::Error)
 		return n;
+
+	//test for eof?
 
 	//try_parse Stmt (returns also an expression statement)
 	n = parseStatement();
@@ -95,6 +102,7 @@ NodePtr Parser::parse()
 
 void Parser::reset()
 {
+	tok_ = Token();
 	tok_.id = TokenId::NotInitialized;
 }
 
@@ -129,6 +137,7 @@ DeclPtr Parser::parseDeclaration()
 			decl = parseUseDecl();
 			break;
 		case TokenId::KwDef: 
+			//unsafe only here?
 			decl = parseFunctionDecl();
 			break;
 		case TokenId::KwTrait: 
@@ -236,6 +245,8 @@ DeclPtr Parser::parseModDecl()
 			//only add non error nodes
 			if(decl->kind != NodeKind::Error)
 				modDecl->decls.push_back(decl);
+
+			//check for error type?
 		}
 		assert(tok_.id == TokenId::CCBracket);
 		next(); //skip '}'
@@ -529,40 +540,94 @@ DeclPtr Parser::parseEnumDecl()
 	//parse fields
 		//A
 		//A = Expr
-		//A(name: type,type)
+		//A(type,type)
+		//A{name:type, .. }
 	while(true)
 	{
 		if(tok_.id == TokenId::CCBracket)
 			break;
 
+		EnumField ef; //enum item?
+
 		//field name
 		check(TokenId::Ident);
-		auto field_name = transfer(tok_.buffer);
+		ef.name = transfer(tok_.buffer);
 		next();
 
+		//parse tuple field
 		if(tok_.id == TokenId::ROBracket)
 		{
 			next();
-			//look for ident
-			// followed by :
+			auto tuple = Node::create<TupleDecl>();
 
-			//else type
+			//parse field contents
+			while(true)
+			{
+				if(tok_.id == TokenId::RCBracket)
+					break;
 
-			//comma etc
+				auto type = parseDataType();
+				tuple->fields.push_back(type);
 
-			throw plf::FormatException("parse enums(xxx) not yet implemented");
+				//check for other
+				if(tok_.id == TokenId::Comma)
+					next();
+				else
+					break;
+			}
+
+			ef.decl = tuple; //set decl to tuple decl
+
+			check(TokenId::RCBracket);
+			next();
 		}
 
-		ExprPtr value;
+		//parse struct field
+		if(tok_.id == TokenId::COBracket)
+		{
+			next();
+			auto st = Node::create<StructDecl>();
+
+			//parse struct contents
+			while(true)
+			{
+				if(tok_.id == TokenId::CCBracket)
+					break;
+
+				check(TokenId::Ident);
+				auto name = transfer(tok_.buffer);
+				next();
+
+				check(TokenId::Colon);
+				next();
+
+				auto type = parseDataType();
+
+				//struct field
+				st->fields.push_back(StructField(name, type));
+
+				//check for other
+				if(tok_.id == TokenId::Comma)
+					next();
+				else
+					break;
+			}
+			ef.decl = st;
+			check(TokenId::CCBracket);
+			next();
+		}
+
+		//the enum field has a direct expression assigment
 		if(tok_.id == TokenId::Assign)
 		{
 			next();
-			value = parseExpression();
+			ef.value = parseExpression();
 		}
 
-		//add field
+		//add final field
+		enm->fields.emplace_back(ef);
 
-		//check for other
+		//check for other fields
 		if(tok_.id == TokenId::Comma)
 			next();
 		else
@@ -626,7 +691,7 @@ plf::DeclPtr Parser::parseInstanceDecl()
 	}
 	
 	check(TokenId::Semicolon);
-	next();
+	next(); //TODO here required for checking semicolon?
 	
 	return inst;
 }
@@ -640,6 +705,10 @@ plf::DeclPtr Parser::parseInstanceDecl()
 */
 StmtPtr Parser::parseStatement()
 {
+	/*if(tok_.id == TokenId::Eof)
+		return;
+	*/
+
 	switch(tok_.id)
 	{
 		case TokenId::KwIf:
@@ -658,9 +727,14 @@ StmtPtr Parser::parseStatement()
 			return parseBlockStmt();
 			break;
 		case TokenId::KwUnsafe:
-			throw plf::Exception("parsing 'UnsafeBlockStmt' not implemented");
-			break;
-
+		{
+			next();
+			auto block = parseBlockStmt();
+			block->to<BlockStmt>()->unsafe = true;
+			return block;
+		}
+		case TokenId::KwReturn:
+			throw plf::Exception("parsing 'ReturnStmt' not implemented");
 		default:
 			break;
 	}
@@ -872,7 +946,7 @@ ExprPtr Parser::parseExprAtom()
 
 	//no expression at this stage == error
 	if(!expr)
-		throw FormatException("Not an expression [token: %s ]", toString(tok_.id));
+		throw FormatException("Not an expression [token: %s, line %d ]", toString(tok_.id), tok_.loc.line);
 
 	//Postfix Unary Expr =======================================================
 	auto postfix_op = op_unary(tok_.id, false);
@@ -1095,7 +1169,7 @@ TypePtr Parser::parseDataType()
 			return func_type;
 		}
 		default:
-			throw FormatException("parseDataType: not yet implemented or invalid type (%s)", toString(tok_.id));
+			throw FormatException("(%d, %d) parseDataType: not yet implemented or invalid type (%s)",tok_.loc.line, tok_.loc.column, toString(tok_.id));
 	}
 	
 	//follow up

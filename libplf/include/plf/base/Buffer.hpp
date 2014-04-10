@@ -49,6 +49,7 @@ public:
 	Buffer(const byte* ptr);
 	Buffer(const byte* ptr, size_t size);
 	Buffer(const Buffer& buf);
+	//move ctor?
 	virtual ~Buffer();
 	
 

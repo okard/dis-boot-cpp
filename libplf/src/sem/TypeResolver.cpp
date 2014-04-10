@@ -94,6 +94,11 @@ NodePtr TypeResolver::visit(BlockStmt& n)
 
 NodePtr TypeResolver::visit(ReturnStmt& n)
 {
+	//solve expr
+
+	//check for function return type
+	//parent seeking
+
 	return n;
 }
 

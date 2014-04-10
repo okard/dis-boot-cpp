@@ -31,6 +31,7 @@ THE SOFTWARE.
 #include <plf/base/FormatException.hpp>
 
 #include <iostream>
+#include <iomanip>
 
 using namespace dis;
 using namespace plf;
@@ -64,6 +65,7 @@ inline static void checkKeyword(Token& tok)
 		{ const_hash("for"), TokenId::KwFor },
 		{ const_hash("while"), TokenId::KwWhile },
 		{ const_hash("match"), TokenId::KwMatch },
+		{ const_hash("return"), TokenId::KwReturn },
 
 		{ const_hash("true"), TokenId::KwTrue },
 		{ const_hash("false"), TokenId::KwFalse },
@@ -107,13 +109,13 @@ void Lexer::open(plf::SourcePtr srcptr)
 void Lexer::next(Token& token)
 {
 	//token.buffer = std::make_shared<Buffer>();
-	token.buffer->alloc(0);
+	token.buffer->free();
 	lexToken(token);
 }
 
-
 void  Lexer::lexToken(Token& tok)
 {	
+	//eos is set after parsing the last valid token!
 	if(reader_.eos())
 	{
 		tok.id = TokenId::Eof;
@@ -123,8 +125,18 @@ void  Lexer::lexToken(Token& tok)
 	}
 	
 	while(isWhitespace(current()))
+	{
 		nextChar();
-		
+		//can go eos here
+		if(reader_.eos())
+		{
+			tok.id = TokenId::Eof;
+			tok.loc.column = column_;
+			tok.loc.line = line_;
+			return;
+		}
+	}
+
 	char c = current();
 	tok.loc.column = column_;
 	tok.loc.line = line_;
@@ -179,12 +191,13 @@ void  Lexer::lexToken(Token& tok)
 		case '$': tok.id = TokenId::Dollar; nextChar(); break;
 		
 
-		//TODO FIXIT
-		case 0x00:
+		//TODO FIXIT early eof
+		/*case 0x00:
 			//throw plf::FormatException("Nullchar");
 			std::cout << "Found null l: " << line_ << std::endl;
 			tok.id = TokenId::Eof;
 			return;
+		*/
 		
 		default: 
 			//error unkown char
@@ -192,10 +205,17 @@ void  Lexer::lexToken(Token& tok)
 	}
 	
 	//check for comments
-	if(tok.id == TokenId::Div && current() == '/')
+	if(tok.id == TokenId::Div
+	&& current() == '/')
 	{
-		while(!reader_.eos() && current() != '\n')
+		while(!reader_.eos())
+		{
 			nextChar();
+			if(current() == '\n')
+			{
+				break;
+			}
+		}
 		lexToken(tok);
 		return;
 	}
@@ -368,9 +388,9 @@ inline void Lexer::nextChar()
 		column_ = 1;
 		line_++;
 	}
-		
 	reader_.next<char>();
 	column_++;
+	//std::cout << "char: " << std::hex << reader_.current<char>() << std::endl;
 }
 
 inline char& Lexer::current()

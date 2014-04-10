@@ -30,7 +30,10 @@ THE SOFTWARE.
 
 namespace plf {
 
-
+/**
+ * @brief The TypeKind enum
+ * type kinds
+ */
 enum class TypeKind
 {
 	UnkownType, //no type information
