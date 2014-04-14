@@ -190,6 +190,18 @@ public:
 	}
 };
 
+struct StructTplType
+{
+public:
+	BufferPtr name;
+	TypePtr type;
+
+	StructTplType(const BufferPtr& name, const TypePtr& type)
+		: name(name), type(type)
+	{
+	}
+};
+
 /**
 * Struct Declaration
 */
@@ -197,14 +209,19 @@ class StructDecl : public TypeDecl
 {
 public:
 	static const NodeKind Kind = NodeKind::StructDecl;
-	StructDecl() : TypeDecl(NodeKind::StructDecl) {}
+	StructDecl() : TypeDecl(Kind) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
 	BufferPtr name;
 
+
+	TypePtr inheritType;
+	List<StructTplType> tplTypes;
+
 	List<StructField> fields;
 
-	//TODO template parameters
+
+	//instances for struct tpls
 
 };
 

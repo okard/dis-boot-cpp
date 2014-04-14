@@ -475,6 +475,29 @@ DeclPtr Parser::parseStructDecl()
 	structDecl->name = transfer(tok_.buffer);
 	next();
 
+	//parse (T,C,F,D) template arguments
+	if(tok_.id == TokenId::ROBracket)
+	{
+		next(); //skip '('
+
+		while(tok_.id != TokenId::RCBracket)
+		{
+			check(TokenId::Ident);
+			auto name = transfer(tok_.buffer);
+			next();
+
+			TypePtr type;
+			if(tok_.id == TokenId::Colon)
+			{
+				next();
+				type = parseDataType();
+			}
+			structDecl->tplTypes.push_back(StructTplType(name, type));
+		}
+		check(TokenId::RCBracket);
+		next();
+	}
+
 	//empty struct
 	if(tok_.id == TokenId::Semicolon)
 	{
@@ -482,15 +505,16 @@ DeclPtr Parser::parseStructDecl()
 		return structDecl;
 	}
 
+	//inherit
 	if(tok_.id == TokenId::Colon)
 	{
-		throw Exception("Struct inheritance parsing not yet implemented");
+		next(); //skip ':'
+		//parse pub/priv/prot flags?
+		auto type = parseDataType();
+		structDecl->inheritType = type;
 	}
 
-	if(tok_.id == TokenId::ROBracket)
-	{
-		throw Exception("Parser::parseStructDecl: Parsing struct templates not yet implemetnted");
-	}
+	//open { }
 	check(TokenId::COBracket);
 
 	next();
@@ -734,7 +758,17 @@ StmtPtr Parser::parseStatement()
 			return block;
 		}
 		case TokenId::KwReturn:
-			throw plf::Exception("parsing 'ReturnStmt' not implemented");
+		{
+			next();
+			auto retstmt = Node::create<ReturnStmt>();
+			if(tok_.id != TokenId::Semicolon)
+			{
+				retstmt->expr = parseExpression();
+			}
+			check(TokenId::Semicolon);
+			next();
+			return retstmt;
+		}
 		default:
 			break;
 	}
@@ -755,21 +789,18 @@ StmtPtr Parser::parseStatement()
 	auto expr = parseExpression();
 	if(expr)
 	{
-		//std::cout << toString(tok_.id) << std::endl;
-		assert(tok_.id == TokenId::Semicolon);
-
-		next();
-
+		//after valid expression in statement scope semicolon is required
+		//	to end the expr statement
+		check(TokenId::Semicolon);
+		next(); //skip ';'
 
 		auto exprStmt = Node::create<ExprStmt>();
 		exprStmt->expr = expr;
 		return exprStmt;
 	}
 		
-		
 	//if nothing matched error:
-	throw Exception("parseStatement: Not yet fully implemented");
-	//if ; parseStatment if no error return block stmt?
+	throw FormatException("parseStatement: Not yet fully implemented or invalid token [%s]", toString(tok_.id));
 }
 
 /**
@@ -937,6 +968,8 @@ ExprPtr Parser::parseExprAtom()
 
 		case TokenId::KwDef:
 		{
+			//TODO move to parseExpression? a + def(a) = a doesnt make much sense?
+			// but (def(a)=a+1)(5) is okay?
 			throw Exception("Lambda-Expression parsing not yet implemented");
 		}
 
@@ -965,7 +998,24 @@ ExprPtr Parser::parseExprAtom()
 	{
 		// abc(i, 1, u)
 		case TokenId::ROBracket:
-			throw Exception("Call Expr not yet implemented");
+		{
+			next();
+			auto callexpr = Node::create<CallExpr>();
+
+			callexpr->decl_expr = expr;
+
+			while(tok_.id != TokenId::RCBracket)
+			{
+				auto expr = parseExpression();
+				callexpr->params.push_back(expr);
+				if(tok_.id == TokenId::Comma)
+					next();
+			}
+			check(TokenId::RCBracket);
+			next(); //skip ')'
+
+			return callexpr;
+		}
 
 		// abc[i]
 		case TokenId::SOBracket:

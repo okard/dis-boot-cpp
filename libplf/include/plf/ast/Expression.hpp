@@ -252,9 +252,9 @@ public:
 	CallExpr() : Expression(NodeKind::CallExpr) {}
 	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
-	DeclPtr func;		//funcdecl
-	ExprPtr klass; 		//instance expr
-	ExprList params;	//instance expr
+	DeclPtr func;		//func decl / callable declaration
+	ExprPtr decl_expr;	//expr to find decl
+	ExprList params;	//call parameter
 	
 	//is ctcall 		//compile time call
 

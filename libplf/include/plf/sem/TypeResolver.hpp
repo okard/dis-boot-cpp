@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef __PLF_TYPERESOLVER_HPP__
-#define __PLF_TYPERESOLVER_HPP__
+#ifndef PLF_TYPERESOLVER_HPP
+#define PLF_TYPERESOLVER_HPP
 
 #include <plf/ast/Visitor.hpp>
 #include <plf/ast/Crate.hpp>
@@ -91,5 +91,6 @@ public:
 	//values
 };	
 	
-}
-#endif 
+} //end namespace plf
+
+#endif //PLF_TYPERESOLVER_HPP
