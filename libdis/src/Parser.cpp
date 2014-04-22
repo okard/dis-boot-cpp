@@ -138,7 +138,7 @@ DeclPtr Parser::parseDeclaration()
 			break;
 		case TokenId::KwDef: 
 			//unsafe only here?
-			decl = parseFunctionDecl();
+			decl = parseFunctionDecl(false);
 			break;
 		case TokenId::KwTrait: 
 			decl = parseTraitDecl();
@@ -285,17 +285,23 @@ DeclPtr Parser::parseUseDecl()
 /*
 * def name [(params)] [: rettype] body
 */
-plf::DeclPtr Parser::parseFunctionDecl()
+plf::DeclPtr Parser::parseFunctionDecl(bool skipIdent)
 {
 	assert(tok_.id == TokenId::KwDef);
 	
 	auto func = Node::create<FunctionDecl>();
 	
 	//function name
-	checkNext(TokenId::Ident);
-	func->name = tok_.buffer;
-	tok_.buffer = std::make_shared<Buffer>();
-	next();
+	if(skipIdent)
+	{
+		next(); //skip kw def
+	}
+	else
+	{
+		checkNext(TokenId::Ident);
+		func->name = transfer(tok_.buffer);
+		next();
+	}
 	
 	//parameter
 	if(tok_.id == TokenId::ROBracket)
@@ -321,8 +327,13 @@ plf::DeclPtr Parser::parseFunctionDecl()
 		//parse expression
 		next();
 		auto expr = parseExpression();
-		check(TokenId::Semicolon);
-		next();
+
+		//Optional ; at end (for lambda reusage)
+		//check(TokenId::Semicolon);
+		if(tok_.id == TokenId::Semicolon)
+		{
+			next();
+		}
 		
 		//setup returnq
 		auto exprStmt = Node::create<ExprStmt>();
@@ -957,6 +968,24 @@ ExprPtr Parser::parseExprAtom()
 			break;
 		}
 
+		case TokenId::KwFalse:
+		{
+			auto l = Node::create<BoolLiteral>();
+			l->value = false;
+			expr = l;
+			next();
+			break;
+		}
+
+		case TokenId::KwTrue:
+		{
+			auto l = Node::create<BoolLiteral>();
+			l->value = true;
+			expr = l;
+			next();
+			break;
+		}
+
 		case TokenId::Ident:
 		{
 			auto id = Node::create<IdentExpr>();
@@ -968,9 +997,14 @@ ExprPtr Parser::parseExprAtom()
 
 		case TokenId::KwDef:
 		{
-			//TODO move to parseExpression? a + def(a) = a doesnt make much sense?
-			// but (def(a)=a+1)(5) is okay?
-			throw Exception("Lambda-Expression parsing not yet implemented");
+			//TODO can be clojure
+			// def ( params ) = expr
+			// def ( params ) { }
+
+			auto func = parseFunctionDecl(true);
+			auto expr = Node::create<LambdaExpr>();
+			expr->func = func->to<FunctionDecl>();
+			return expr;
 		}
 
 		default: break;

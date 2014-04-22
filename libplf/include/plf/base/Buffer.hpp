@@ -57,10 +57,10 @@ public:
 	void alloc(size_t size);
 
 	//resizes the buffer
-	inline void resize(size_t size);
+	void resize(size_t size);
 
 	//frees the buffer (make it a null buffer)
-	inline void free();
+	void free();
 
 	//append(char)
 	//append(

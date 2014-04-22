@@ -109,6 +109,19 @@ public:
 	//Encoding?
 };
 
+/**
+ * @brief The BoolLiteral class
+ */
+class BoolLiteral final : public Expression
+{
+public:
+	static const NodeKind Kind = NodeKind::BoolLiteral;
+	BoolLiteral() : Expression(Kind) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+
+	bool value;
+};
+
 
 ///Ident Expression
 class IdentExpr : public Expression
@@ -120,6 +133,7 @@ public:
 
 	BufferPtr ident;
 };
+
 
 
 //op assoc
@@ -274,6 +288,21 @@ public:
 	ExprPtr left;
 	TypePtr type;
 };
+
+/**
+ * @brief The LambdaExpr class
+ */
+class LambdaExpr final : public Expression
+{
+public:
+	static const NodeKind Kind = NodeKind::LambdaExpr;
+	LambdaExpr() : Expression(Kind) {}
+	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+
+	SharedPtr<FunctionDecl> func;
+
+};
+
 
 //pathexpression
 

@@ -97,6 +97,7 @@ enum class NodeKind : unsigned short
 	HexLiteral,
 	BinaryLiteral,
 	StringLiteral,
+	BoolLiteral,
 
 	IdentExpr,
 	UnaryExpr,
@@ -104,6 +105,7 @@ enum class NodeKind : unsigned short
 	TernaryExpr,
 	CallExpr,
 	CastExpr,
+	LambdaExpr,
 	
 	//Special-----------------------------------------------------------
 	

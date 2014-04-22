@@ -39,7 +39,10 @@ private:
 
 public:
 
-	void generate(Crate&, const char* filename);
+	void generate(Crate& crate, const char* filename);
+
+
+
 
 };
 

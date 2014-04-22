@@ -42,11 +42,15 @@ NodePtr TypeResolver::visit(Node& n)
 
 NodePtr TypeResolver::visit(ModDecl& n)
 {
+	//loop through
+
+
 	return n;
 }
 
 NodePtr TypeResolver::visit(UseDecl& n)
 {
+	//imports check?
 	return n;
 }
 
@@ -77,11 +81,17 @@ NodePtr TypeResolver::visit(AliasDecl& n)
 
 NodePtr TypeResolver::visit(FunctionDecl& n)
 {
+	//instances?
+
 	return n;
 }
 
 NodePtr TypeResolver::visit(InstanceDecl& n)
 {
+	//n.name
+	//n.type
+	//n.init
+
 	return n;
 }
 
@@ -89,12 +99,17 @@ NodePtr TypeResolver::visit(InstanceDecl& n)
 
 NodePtr TypeResolver::visit(BlockStmt& n)
 {
+	for(unsigned int i=0; i < n.statements.size(); i++)
+	{
+		n.statements[i] = dispatch(n.statements[i])->to<Statement>();
+	}
 	return n;
 }
 
 NodePtr TypeResolver::visit(ReturnStmt& n)
 {
 	//solve expr
+	n.expr = dispatch(n.expr)->to<Expression>();
 
 	//check for function return type
 	//parent seeking
@@ -114,7 +129,7 @@ NodePtr TypeResolver::visit(WhileStmt& n)
 
 NodePtr TypeResolver::visit(DeclStmt& n)
 {
-	//dispatch(n.decl);
+	n.decl = dispatch(n.decl)->to<Declaration>();
 
 	return n;
 }
@@ -144,6 +159,10 @@ NodePtr TypeResolver::visit(IntegerLiteral& n)
 
 NodePtr TypeResolver::visit(FloatLiteral& n)
 {
+	// istrstream str(data,20)
+	// str >> fnum;
+	// if(str.fail())  { cout << "input fail\n"; exit(1); }
+
 	return n;
 }
 
@@ -169,12 +188,15 @@ NodePtr TypeResolver::visit(IdentExpr& n)
 
 	//current scope
 
+	//check parent
+
 	return n;
 }
 
 NodePtr TypeResolver::visit(UnaryExpr& n)
 {
-	//dispatch(n.expr)
+	n.expr = dispatch(n.expr)->to<Expression>();
+
 	return n;
 }
 
@@ -184,8 +206,15 @@ NodePtr TypeResolver::visit(BinaryExpr& n)
 	// split out when access operator
 	// require a right side step down
 
-	//dispatch(n.left);
-	//dispatch(n.right);
+	n.left = dispatch(n.left)->to<Expression>();
+	n.right = dispatch(n.right)->to<Expression>();
+
+	//check ops
+	//check left and right result
+
+	//if(n.left->returnType->kind == TypeKind::PrimaryType)
+
+	//rewrite to operator calls?
 
 	return n;
 }
@@ -194,6 +223,8 @@ NodePtr TypeResolver::visit(CallExpr& n)
 {
 	//has declaration?
 	//n.params
+
+	//n.decl_expr
 
 	return n;
 }
@@ -206,7 +237,7 @@ void TypeResolver::run(Crate& crate)
 	//first run
 	for(DeclPtr decl: crate.decls)
 	{
-		dispatch(decl);
+		decl = dispatch(decl)->to<Declaration>();
 	}
 
 	//required multiple runs?

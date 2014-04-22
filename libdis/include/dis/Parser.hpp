@@ -78,7 +78,7 @@ private:
 	plf::DeclPtr parseModDecl();
 	plf::DeclPtr parseUseDecl();
 
-	plf::DeclPtr parseFunctionDecl();
+	plf::DeclPtr parseFunctionDecl(bool skipIdent);
 	void parseFuncParameter(plf::FunctionDecl& func);
 	
 	plf::DeclPtr parseTraitDecl();
