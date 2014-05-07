@@ -33,6 +33,8 @@ THE SOFTWARE.
 #include <plf/sem/TypeResolver.hpp>
 #include <plf/sem/Interpreter.hpp>
 
+#include <plf/utils/DotPrinter.hpp>
+
 #include <dis/Printer.hpp>
 
 using namespace plf;

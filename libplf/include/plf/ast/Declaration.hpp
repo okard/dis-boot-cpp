@@ -92,7 +92,6 @@ class ModDecl final : public Declaration
 public:
 	static const NodeKind Kind = NodeKind::ModDecl;
 	ModDecl() : Declaration(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	AttrList attribs;
 	DeclList decls;	
@@ -111,7 +110,6 @@ class UseDecl final : public Declaration
 public:
 	static const NodeKind Kind = NodeKind::UseDecl;
 	UseDecl() : Declaration(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	BufferPtr ident;
 	List<BufferPtr> importPath;
@@ -142,8 +140,7 @@ class ClassDecl final : public TypeDecl
 {
 public:
 	static const NodeKind Kind = NodeKind::ClassDecl;
-	ClassDecl() : TypeDecl(NodeKind::ClassDecl) {}
-	NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	ClassDecl() : TypeDecl(Kind) {}
 	
 	BufferPtr name;
 	
@@ -168,7 +165,6 @@ class TraitDecl final : public TypeDecl
 public:
 	static const NodeKind Kind = NodeKind::TraitDecl;
 	TraitDecl() : TypeDecl(NodeKind::TraitDecl) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
 	//TODO template parameters
 	
@@ -210,16 +206,13 @@ class StructDecl : public TypeDecl
 public:
 	static const NodeKind Kind = NodeKind::StructDecl;
 	StructDecl() : TypeDecl(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
 	BufferPtr name;
-
 
 	TypePtr inheritType;
 	List<StructTplType> tplTypes;
 
 	List<StructField> fields;
-
 
 	//instances for struct tpls
 
@@ -249,7 +242,6 @@ class EnumDecl : public TypeDecl
 public:
 	static const NodeKind Kind = NodeKind::EnumDecl;
 	EnumDecl() : TypeDecl(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
 	BufferPtr name;
 	TypePtr basic_type; //basic type
@@ -294,7 +286,6 @@ class FunctionDecl final : public Declaration
 public:
 	static const NodeKind Kind = NodeKind::FunctionDecl;
 	FunctionDecl() : Declaration(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
 
 	BufferPtr name;
@@ -333,7 +324,6 @@ class TupleDecl final : public Declaration
 public:
 	static const NodeKind Kind = NodeKind::TupleDecl;
 	TupleDecl() : Declaration(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
 	List<TypePtr> fields;
 };
@@ -358,7 +348,6 @@ class InstanceDecl : public Declaration
 public:
 	static const NodeKind Kind = NodeKind::InstanceDecl;
 	InstanceDecl() : Declaration(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	//TODO only 3 types? var/let/const
 	

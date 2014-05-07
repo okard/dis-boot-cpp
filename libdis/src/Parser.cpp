@@ -467,7 +467,7 @@ void Parser::parseFuncParameter(plf::FunctionDecl& func)
 plf::DeclPtr Parser::parseTraitDecl()
 {
 	assert(tok_.id == TokenId::KwTrait);
-
+	next();	//skip kw trait
 
 	throw plf::FormatException("Parsing traits not yet implemented");
 }
@@ -747,16 +747,16 @@ StmtPtr Parser::parseStatement()
 	switch(tok_.id)
 	{
 		case TokenId::KwIf:
-			throw plf::Exception("parsing 'IfStmt' not implemented");
+			return parseIfStmt();
 			break;
 		case TokenId::KwMatch:
-			throw plf::Exception("parsing 'MatchStmt' not implemented");
+			return parseMatchStmt();
 			break;
 		case TokenId::KwFor:
-			throw plf::Exception("parsing 'ForStmt' not implemented");
+			return parseForStmt();
 			break;
 		case TokenId::KwWhile:
-			throw plf::Exception("parsing 'WhileStmt' not implemented");
+			return parseWhileStmt();
 			break;
 		case TokenId::COBracket:
 			return parseBlockStmt();
@@ -785,6 +785,7 @@ StmtPtr Parser::parseStatement()
 	}
 	
 	//try declaration parsing:
+	// -> all declarations starts with a keyword
 	auto decl = parseDeclaration();
 	if(decl && decl->kind != NodeKind::Error)
 	{
@@ -827,6 +828,13 @@ plf::StmtPtr Parser::parseBlockStmt()
 	while(tok_.id != TokenId::CCBracket)
 	{
 		auto stmt = parseStatement();
+
+		//TODO check error
+		if(stmt->kind == NodeKind::Error)
+		{
+			std::cerr << "found error " << std::endl;
+		}
+
 		blockStmt->statements.push_back(stmt);
 	}
 	
@@ -834,6 +842,34 @@ plf::StmtPtr Parser::parseBlockStmt()
 	next();
 	
 	return blockStmt;
+}
+
+StmtPtr Parser::parseForStmt()
+{
+	assert(tok_.id == TokenId::KwFor);
+
+	throw FormatException("parseForStmt: Not yet fully implemented or invalid token [%s]", toString(tok_.id));
+}
+
+StmtPtr Parser::parseWhileStmt()
+{
+	assert(tok_.id == TokenId::KwWhile);
+
+	throw FormatException("parseWhileStmt: Not yet fully implemented or invalid token [%s]", toString(tok_.id));
+}
+
+StmtPtr Parser::parseIfStmt()
+{
+	assert(tok_.id == TokenId::KwIf);
+
+	throw FormatException("parseIfStmt: Not yet fully implemented or invalid token [%s]", toString(tok_.id));
+}
+
+StmtPtr Parser::parseMatchStmt()
+{
+	assert(tok_.id == TokenId::KwMatch);
+
+	throw FormatException("parseSwitchStmt: Not yet fully implemented or invalid token [%s]", toString(tok_.id));
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -892,7 +928,6 @@ ExprPtr Parser::parseExpression()
  */
 ExprPtr Parser::parseExprAtom()
 {
-
 	ExprPtr expr;
 
 	//prefix unary op

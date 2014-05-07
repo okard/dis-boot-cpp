@@ -86,6 +86,8 @@ enum class NodeKind : unsigned short
 	//Statement---------------------------------------------------------
 	BlockStmt,
 	ReturnStmt,
+	IfStmt,
+	MatchStmt,
 	ForStmt,
 	WhileStmt,
 	ExprStmt,
@@ -106,11 +108,13 @@ enum class NodeKind : unsigned short
 	CallExpr,
 	CastExpr,
 	LambdaExpr,
+	IfExpr,
+	MatchExpr,
 	
 	//Special-----------------------------------------------------------
 	
 	Error		//custom type for handling errors
-	//ErrorDecl, ErrorStmt, ErrorExpr, 
+	//ErrorDecl, ErrorStmt, ErrorExpr, ErrorType
 };	
 
 /**
@@ -129,12 +133,6 @@ public:
 	//Node();
 	Node(const NodeKind kind);
 	virtual ~Node();
-	
-	
-	/**
-	* The Visitor Function
-	*/
-	virtual NodePtr accept(Visitor& v, ParamPtr& arg) = 0;
 	
 	/**
 	* using for visitor return?

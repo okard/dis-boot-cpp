@@ -103,14 +103,13 @@ private:
 	
 	plf::StmtPtr parseBlockStmt();
 
-	//parse unsafe statement
-	
-	//plf::StmtPtr parseForStmt();
-	//plf::StmtPtr parseWhileStmt();
+	plf::StmtPtr parseForStmt();
+	plf::StmtPtr parseWhileStmt();
+
 	//parseDoWhileStmt?
 
-	//plf::StmtPtr parseIfStmt();
-	//plf::StmtPtr parseSwitchStmt();
+	plf::StmtPtr parseIfStmt();
+	plf::StmtPtr parseMatchStmt();
 	
 	
 	////////////////////////////////////////////////////////////////////

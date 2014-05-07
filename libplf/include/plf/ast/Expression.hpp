@@ -55,7 +55,6 @@ class IntegerLiteral : public Expression
 public:
 	static const NodeKind Kind = NodeKind::IntegerLiteral;
 	IntegerLiteral() : Expression(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	BufferPtr rawValue;
 	
@@ -70,7 +69,6 @@ class FloatLiteral : public Expression
 public:
 	static const NodeKind Kind = NodeKind::FloatLiteral;
 	FloatLiteral() : Expression(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	BufferPtr rawValue;
 };
@@ -81,7 +79,6 @@ class HexLiteral : public Expression
 public:
 	static const NodeKind Kind = NodeKind::HexLiteral;
 	HexLiteral() : Expression(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	BufferPtr rawValue;
 };
@@ -92,7 +89,6 @@ class BinaryLiteral : public Expression
 public:
 	static const NodeKind Kind = NodeKind::BinaryLiteral;
 	BinaryLiteral() : Expression(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	BufferPtr rawValue;
 };
@@ -103,7 +99,6 @@ class StringLiteral final : public Expression
 public:
 	static const NodeKind Kind = NodeKind::StringLiteral;
 	StringLiteral() : Expression(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	BufferPtr rawValue;
 	//Encoding?
@@ -117,7 +112,6 @@ class BoolLiteral final : public Expression
 public:
 	static const NodeKind Kind = NodeKind::BoolLiteral;
 	BoolLiteral() : Expression(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
 	bool value;
 };
@@ -129,7 +123,6 @@ class IdentExpr : public Expression
 public:
 	static const NodeKind Kind = NodeKind::IdentExpr;
 	IdentExpr() : Expression(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
 	BufferPtr ident;
 };
@@ -177,7 +170,6 @@ class UnaryExpr : public Expression
 public:
 	static const NodeKind Kind = NodeKind::UnaryExpr;
 	UnaryExpr() : Expression(NodeKind::UnaryExpr) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	OpAssociativity assoc = OpAssociativity::Left;
 	UnaryOperator op;
@@ -248,13 +240,16 @@ class BinaryExpr : public Expression
 public:
 	static const NodeKind Kind = NodeKind::BinaryExpr;
 	BinaryExpr() : Expression(NodeKind::BinaryExpr) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	OpAssociativity assoc = OpAssociativity::Left;
 	BinaryOperator op;
 	ExprPtr left;
 	ExprPtr right;
 };
+
+
+//if
+//match expr
 
 /**
 * A call expression
@@ -263,8 +258,7 @@ class CallExpr final : public Expression
 {
 public:
 	static const NodeKind Kind = NodeKind::CallExpr;
-	CallExpr() : Expression(NodeKind::CallExpr) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	CallExpr() : Expression(Kind) {}
 	
 	DeclPtr func;		//func decl / callable declaration
 	ExprPtr decl_expr;	//expr to find decl
@@ -283,7 +277,6 @@ class CastExpr final : public Expression
 public:
 	static const NodeKind Kind = NodeKind::CastExpr;
 	CastExpr() : Expression(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	ExprPtr left;
 	TypePtr type;
@@ -297,10 +290,8 @@ class LambdaExpr final : public Expression
 public:
 	static const NodeKind Kind = NodeKind::LambdaExpr;
 	LambdaExpr() : Expression(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
 	SharedPtr<FunctionDecl> func;
-
 };
 
 

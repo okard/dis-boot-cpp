@@ -47,7 +47,6 @@ class BlockStmt : public Statement
 public:
 	static const NodeKind Kind = NodeKind::BlockStmt;
 	BlockStmt() : Statement(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	bool unsafe;
 	StmtList statements;
@@ -61,10 +60,38 @@ class ReturnStmt : public Statement
 public:
 	static const NodeKind Kind = NodeKind::ReturnStmt;
 	ReturnStmt() : Statement(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 
 	ExprPtr expr;
 };
+
+
+//if stmt
+class IfStmt final : public Statement
+{
+public:
+	static const NodeKind Kind = NodeKind::IfStmt;
+	IfStmt() : Statement(Kind) {}
+
+	ExprPtr condition;
+	StmtPtr stmt;
+
+	//else if
+	//list<pair<ExprPtr, StmtPtr>>
+
+	//else
+	StmtPtr elseStmt;
+};
+
+//match stmt
+class MatchStmt final : public Statement
+{
+public:
+	static const NodeKind Kind = NodeKind::MatchStmt;
+	MatchStmt() : Statement(Kind) {}
+
+	//format of conditions?
+};
+
 
 /**
 * Statement for 'for' loop
@@ -75,7 +102,6 @@ class ForStmt : public Statement
 public:
 	static const NodeKind Kind = NodeKind::ForStmt;
 	ForStmt() : Statement(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	StmtPtr init;
 	ExprPtr cond;
@@ -92,7 +118,6 @@ class WhileStmt : public Statement
 public:
 	static const NodeKind Kind = NodeKind::WhileStmt;
 	WhileStmt() : Statement(Kind) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
 	
 	ExprPtr cond;
 	StmtPtr body;
@@ -107,8 +132,7 @@ class DeclStmt : public Statement
 {
 public:
 	static const NodeKind Kind = NodeKind::DeclStmt;
-	DeclStmt() : Statement(NodeKind::DeclStmt) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	DeclStmt() : Statement(Kind) {}
 	
 	DeclPtr decl;
 };
@@ -120,8 +144,7 @@ class ExprStmt : public Statement
 {
 public:
 	static const NodeKind Kind = NodeKind::ExprStmt;
-	ExprStmt() : Statement(NodeKind::ExprStmt) {}
-	inline NodePtr accept(Visitor& v, ParamPtr& arg) final { return v.visit(*this, arg); }
+	ExprStmt() : Statement(Kind) {}
 	
 	ExprPtr expr;
 };
