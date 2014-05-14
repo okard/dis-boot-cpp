@@ -224,8 +224,9 @@ enum class BinaryOperator
 	ShiftRAssign,
 
 	//Other:
-	Concat,		// ~? '
-	Access, // ./: foo.a(asad)
+	Concat,			// ???? ~ ' #
+	Access,			// .  foo.a(asad)
+	AccessPath,		// ::
 
 	//Comma Operator?
 
@@ -294,6 +295,10 @@ public:
 	SharedPtr<FunctionDecl> func;
 };
 
+
+
+//IfExpr
+//MatchExpr
 
 //pathexpression
 

@@ -201,10 +201,14 @@ void Parser::parseDeclFlags(DeclFlags& flags)
 			next();
 			parseDeclFlags(flags);
 			break;
-		//static
-		//final
-		//abstract
-		//const
+
+		//TODO how to define following stuff:
+		//-static
+		//-final
+		//-abstract
+		//-const
+
+		//TODO unsafe also here?
 		default:
 			break;
 	}
@@ -253,7 +257,7 @@ DeclPtr Parser::parseModDecl()
 		return modDecl;
 	}
 
-	throw Exception("Invalid token");
+	throw FormatException("Invalid token in mod declaration: %s L %d C %d", toString(tok_.id), tok_.loc.line, tok_.loc.column);
 }
 
 /**
@@ -780,6 +784,11 @@ StmtPtr Parser::parseStatement()
 			next();
 			return retstmt;
 		}
+
+		//handle mixins or static execution
+		case TokenId::DollarDollar:
+			throw Exception("parseStatement: Compile Time Execution stuff not yet implemented");
+
 		default:
 			break;
 	}
@@ -838,15 +847,30 @@ plf::StmtPtr Parser::parseBlockStmt()
 		blockStmt->statements.push_back(stmt);
 	}
 	
+	//skip close '}'
 	assert(tok_.id == TokenId::CCBracket);
 	next();
 	
 	return blockStmt;
 }
 
+/**
+ * @brief Parser::parseForStmt
+ *	for (<decl>, <cond-expr>, <stmt>)
+ * @return for stmt
+ */
 StmtPtr Parser::parseForStmt()
 {
 	assert(tok_.id == TokenId::KwFor);
+	next();
+
+	check(TokenId::ROBracket);
+
+	//decl
+
+	//cond-expr
+
+	//stmt
 
 	throw FormatException("parseForStmt: Not yet fully implemented or invalid token [%s]", toString(tok_.id));
 }
@@ -854,13 +878,55 @@ StmtPtr Parser::parseForStmt()
 StmtPtr Parser::parseWhileStmt()
 {
 	assert(tok_.id == TokenId::KwWhile);
+	next();
+
 
 	throw FormatException("parseWhileStmt: Not yet fully implemented or invalid token [%s]", toString(tok_.id));
 }
 
+/**
+ * @brief Parser::parseIfStmt
+ *	parse if (<expr>) { } [ else ... ]
+ * @return a stmt
+ */
 StmtPtr Parser::parseIfStmt()
 {
 	assert(tok_.id == TokenId::KwIf);
+	next();
+
+	auto ifstmt = Node::create<IfStmt>();
+
+	check(TokenId::ROBracket);
+	next();
+	ifstmt->condition = parseExpression();
+	ifstmt->condition->parent = ifstmt;
+	check(TokenId::RCBracket);
+	next();
+
+	check(TokenId::COBracket);
+	ifstmt->stmt = parseBlockStmt();
+	ifstmt->stmt->parent = ifstmt;
+
+	if(tok_.id == TokenId::KwElse)
+	{
+		next(); //skip else
+
+		//else block
+		if(tok_.id == TokenId::COBracket)
+		{
+			ifstmt->tail = parseBlockStmt();
+			return ifstmt;
+		}
+
+		//else if
+		if(tok_.id == TokenId::KwIf)
+		{
+			ifstmt->tail = parseIfStmt();
+			return ifstmt;
+		}
+	}
+
+	return ifstmt;
 
 	throw FormatException("parseIfStmt: Not yet fully implemented or invalid token [%s]", toString(tok_.id));
 }
@@ -1041,6 +1107,15 @@ ExprPtr Parser::parseExprAtom()
 			expr->func = func->to<FunctionDecl>();
 			return expr;
 		}
+
+		case TokenId::Dollar:
+			//$Decl
+			//$Source
+			//$(expr).asdad
+			throw Exception("parseExprAtom: compile time expressions not yet implemented");
+
+		case TokenId::DollarDollar:
+			throw Exception("parseExprAtom: compile time expressions not yet implemented");
 
 		default: break;
 	}
@@ -1287,6 +1362,10 @@ TypePtr Parser::parseDataType()
 			}
 			return func_type;
 		}
+
+		case TokenId::Dollar:
+			throw Exception("parseDatatype: Compile Time Types not yet implemented");
+
 		default:
 			throw FormatException("(%d, %d) parseDataType: not yet implemented or invalid type (%s)",tok_.loc.line, tok_.loc.column, toString(tok_.id));
 	}

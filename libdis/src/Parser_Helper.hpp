@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 
 #include <plf/base/Buffer.hpp>
+#include <plf/base/Exception.hpp>
 #include <plf/ast/Expression.hpp>
 
 #include <dis/Token.hpp>

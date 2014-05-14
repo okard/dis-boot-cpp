@@ -27,6 +27,12 @@ THE SOFTWARE.
 
 #include <plf/ast/Node.hpp>
 
+#ifndef NDEBUG
+	#include <iostream>
+	#include <typeinfo>
+#endif
+
+
 namespace plf {
 	
 //Decl
@@ -116,6 +122,8 @@ public:
 	virtual R visit(Type<DeclStmt> n, Args&... args)=0;
 	virtual R visit(Type<ExprStmt> n, Args&... args)=0;
 
+
+
 	//Expressions-------------------------------------------------------
 	virtual R visit(Type<IntegerLiteral> n, Args&... args)=0;
 	virtual R visit(Type<FloatLiteral> n, Args&... args)=0;
@@ -201,6 +209,9 @@ public:
 
 
 		default:
+			#ifndef NDEBUG
+				 std::cerr << "missing node type dispatch for: " << typeid(n).name() << std::endl;
+			#endif
 			this->visit(n, args...);
 			throw "error";
 		}

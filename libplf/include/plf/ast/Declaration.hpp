@@ -186,7 +186,7 @@ public:
 	}
 };
 
-struct StructTplType
+struct StructTplType	//general template parameter
 {
 public:
 	BufferPtr name;
@@ -353,6 +353,10 @@ public:
 	
 	virtual inline bool isType() const final { return false; }
 	virtual inline bool isInstance() const final { return true; }
+
+	//is const
+	//is value
+	//is variable
 	
 	InstanceType itype;
 	

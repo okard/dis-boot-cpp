@@ -75,11 +75,7 @@ public:
 	ExprPtr condition;
 	StmtPtr stmt;
 
-	//else if
-	//list<pair<ExprPtr, StmtPtr>>
-
-	//else
-	StmtPtr elseStmt;
+	StmtPtr tail;
 };
 
 //match stmt
@@ -103,7 +99,7 @@ public:
 	static const NodeKind Kind = NodeKind::ForStmt;
 	ForStmt() : Statement(Kind) {}
 	
-	StmtPtr init;
+	StmtPtr init;		//multiple? with , seperated?
 	ExprPtr cond;
 	StmtPtr after;
 	StmtPtr body;
