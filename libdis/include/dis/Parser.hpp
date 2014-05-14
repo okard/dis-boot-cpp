@@ -40,6 +40,12 @@ namespace plf {
 
 namespace dis {
 
+
+enum class ParseOption {
+	CheckSemicolon,
+	NoSemicolonCheck
+};
+
 /**
 * Dis Lang Parser
 */
@@ -91,7 +97,7 @@ private:
 	plf::DeclPtr parseTypeDecl();
 	
 	//const, let, var
-	plf::DeclPtr parseInstanceDecl();
+	plf::DeclPtr parseInstanceDecl(ParseOption p);
 	
 	//parse a Ident : Type
 

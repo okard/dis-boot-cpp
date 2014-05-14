@@ -100,8 +100,8 @@ public:
 	ForStmt() : Statement(Kind) {}
 	
 	StmtPtr init;		//multiple? with , seperated?
-	ExprPtr cond;
-	StmtPtr after;
+	ExprPtr cond;		//condition
+	ExprPtr after;		//do something after loop
 	StmtPtr body;
 };
 

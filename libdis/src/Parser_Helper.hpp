@@ -139,6 +139,13 @@ OpAssociativity op_assoc(BinaryOperator op)
 	case BinaryOperator::ShiftL: return OpAssociativity::Left;
 	case BinaryOperator::ShiftR: return OpAssociativity::Left;
 
+	//greater, less comparison
+	case BinaryOperator::Gt: return OpAssociativity::Left;
+	case BinaryOperator::Gte: return OpAssociativity::Left;
+	case BinaryOperator::Lt: return OpAssociativity::Left;
+	case BinaryOperator::Lte: return OpAssociativity::Left;
+
+
 	//Other:
 	case BinaryOperator::Access: return OpAssociativity::Left;
 

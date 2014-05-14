@@ -86,10 +86,10 @@ public:
 	//return current position
 	inline size_t pos() const { return currentPos_; }
 	//status end of source
-	inline bool eos() const { return currentPos_ >= endPos_; }
+	inline bool eos() const { return buf_.is_empty() || (currentPos_ >= endPos_); }
 	
 private:
-	inline size_t leftSpace() const { return endPos_ - currentPos_; }
+	inline size_t leftSpace() const { return  endPos_ - currentPos_; }
 
 };
 	

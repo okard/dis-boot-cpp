@@ -156,7 +156,7 @@ DeclPtr Parser::parseDeclaration()
 		case TokenId::KwVar: 
 		case TokenId::KwLet:
 		case TokenId::KwConst:		
-			decl = parseInstanceDecl();
+			decl = parseInstanceDecl(ParseOption::CheckSemicolon);
 			break;
 
 		//TODO think over error node stuff
@@ -302,7 +302,16 @@ plf::DeclPtr Parser::parseFunctionDecl(bool skipIdent)
 	}
 	else
 	{
-		checkNext(TokenId::Ident);
+		next();
+
+		//pure compile time function
+		if(tok_.id == TokenId::Dollar)
+		{
+			next();
+			func->ctfFunc = true;
+		}
+
+		check(TokenId::Ident);
 		func->name = transfer(tok_.buffer);
 		next();
 	}
@@ -688,7 +697,7 @@ DeclPtr Parser::parseTypeDecl()
 /*
 * var/let/const name [: type] [= init];
 */
-plf::DeclPtr Parser::parseInstanceDecl()
+plf::DeclPtr Parser::parseInstanceDecl(ParseOption p)
 {
 	auto inst = Node::create<InstanceDecl>();
 	
@@ -729,8 +738,11 @@ plf::DeclPtr Parser::parseInstanceDecl()
 		inst->init = parseExpression();
 	}
 	
-	check(TokenId::Semicolon);
-	next(); //TODO here required for checking semicolon?
+	if(p == ParseOption::CheckSemicolon)
+	{
+		check(TokenId::Semicolon);
+		next(); //TODO here required for checking semicolon?
+	}
 	
 	return inst;
 }
@@ -800,7 +812,7 @@ StmtPtr Parser::parseStatement()
 	{
 		auto declStmt = Node::create<DeclStmt>();
 		
-		//check kinds for allowed DeclStmt
+		//TODO check kinds for allowed DeclStmt???
 		
 		declStmt->decl = decl;
 		return declStmt;
@@ -856,7 +868,7 @@ plf::StmtPtr Parser::parseBlockStmt()
 
 /**
  * @brief Parser::parseForStmt
- *	for (<decl>, <cond-expr>, <stmt>)
+ *	for (<decl-stmt>, <cond-expr>, <stmt>)
  * @return for stmt
  */
 StmtPtr Parser::parseForStmt()
@@ -864,24 +876,67 @@ StmtPtr Parser::parseForStmt()
 	assert(tok_.id == TokenId::KwFor);
 	next();
 
+	auto forstmt = Node::create<ForStmt>();
+
 	check(TokenId::ROBracket);
+	next();
 
 	//decl
+	//TODO empty ; and multiple with ,
+	//TODO pay attention for ; after global variable declaration O_o
+
+	auto declstmt = Node::create<DeclStmt>();
+	declstmt->decl = parseInstanceDecl(ParseOption::NoSemicolonCheck);
+	forstmt->init = declstmt;
+
+	check(TokenId::Semicolon);
+	next();
 
 	//cond-expr
+	forstmt->cond = parseExpression();
 
-	//stmt
+	check(TokenId::Semicolon);
+	next();
 
-	throw FormatException("parseForStmt: Not yet fully implemented or invalid token [%s]", toString(tok_.id));
+	//after loop stmt
+	//TODO -> all expr statements require ; after?
+	forstmt->after = parseExpression();
+
+	check(TokenId::RCBracket); // closing )
+	next();
+
+	check(TokenId::COBracket);
+	forstmt->body = parseBlockStmt();
+
+	return forstmt;
 }
 
+/**
+ * @brief Parser::parseWhileStmt
+ * while(<cond-expr>) { }
+ * @return a while stmt
+ */
 StmtPtr Parser::parseWhileStmt()
 {
 	assert(tok_.id == TokenId::KwWhile);
 	next();
 
+	auto whilestmt = Node::create<WhileStmt>();
 
-	throw FormatException("parseWhileStmt: Not yet fully implemented or invalid token [%s]", toString(tok_.id));
+	//condition
+	check(TokenId::ROBracket);
+	next();
+
+	whilestmt->cond = parseExpression();
+
+	check(TokenId::RCBracket);
+	next();
+
+	//body { }
+	check(TokenId::COBracket);
+	whilestmt->body = parseBlockStmt();
+
+	return whilestmt;
 }
 
 /**

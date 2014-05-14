@@ -308,7 +308,7 @@ public:
 	bool tplFunc = false;	//means is template function
 	bool extFunc = false;	//extension function
 	bool unsafeFunc = false; //unsafe function
-	//bool ctfFunc = false; // compile time function
+	bool ctfFunc = false; // compile time function
 
 	
 	bool hasBody() const { return body ? true : false; }
