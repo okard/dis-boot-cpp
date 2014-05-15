@@ -158,6 +158,21 @@ public:
 };
 
 /**
+* @brief defines a template parameter <tpl-name> : <tpl-type>
+*/
+struct TemplateParameter
+{
+	BufferPtr name;
+	TypePtr type;
+
+	TemplateParameter(const BufferPtr& name, const TypePtr& type)
+		: name(name), type(type)
+	{
+	}
+};
+
+
+/**
 * Trait Declaration
 */
 class TraitDecl final : public TypeDecl
@@ -166,8 +181,14 @@ public:
 	static const NodeKind Kind = NodeKind::TraitDecl;
 	TraitDecl() : TypeDecl(NodeKind::TraitDecl) {}
 
-	//TODO template parameters
-	
+	//trait name
+	BufferPtr name;
+
+	//template parameter
+	List<TemplateParameter> tpl_params;
+
+	//declaration list
+	DeclList decls;
 };
 
 /**
@@ -186,18 +207,6 @@ public:
 	}
 };
 
-struct StructTplType	//general template parameter
-{
-public:
-	BufferPtr name;
-	TypePtr type;
-
-	StructTplType(const BufferPtr& name, const TypePtr& type)
-		: name(name), type(type)
-	{
-	}
-};
-
 /**
 * Struct Declaration
 */
@@ -210,7 +219,7 @@ public:
 	BufferPtr name;
 
 	TypePtr inheritType;
-	List<StructTplType> tplTypes;
+	List<TemplateParameter> tpl_params;
 
 	List<StructField> fields;
 
@@ -287,6 +296,8 @@ public:
 	static const NodeKind Kind = NodeKind::FunctionDecl;
 	FunctionDecl() : Declaration(Kind) {}
 
+	//todo vararg handling
+		//differs tpl vararg and binary vararg
 
 	BufferPtr name;
 	List<FunctionParameter> params;
@@ -299,9 +310,8 @@ public:
 	//instances of template functions?
 	PtrList<FunctionDecl> instances;
 
-	//functions overloads?
-	//List<FunctionDecl> overloads
-	//List<FunctionDecl> instances;
+	//functions overloads or explicitly instanced template types?
+	List<FunctionDecl> overloads;
 
 	//flags
 	bool classFunc = false; //means parent is classdecl

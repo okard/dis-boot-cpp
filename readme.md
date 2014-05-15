@@ -1,6 +1,5 @@
 # Bootstrap Compiler for Dis
 
-
 Written in C++11
 License: MIT
 
@@ -14,9 +13,9 @@ License: MIT
 	- Code Gen (C/JS/LLVM)
 	- System/Platform Abstraction
 	
-* libplf-c - C Code Generation/Compiling
-* libplf-llvm -  LLVM Code Generation/Compiling
-* libplf-js	- Javascript Code Generation
+* libplf-c 		- C Code Generation/Compiling
+* libplf-llvm 	- LLVM Code Generation/Compiling
+* libplf-js		- Javascript Code Generation
 	
 * libdis - dis programming language library
 	- Handle all syntax stuff
@@ -34,6 +33,7 @@ License: MIT
 ## Dependencies
 
 * C++11 Compiler
+	- Including STL
 * CMake
 * make or ninja
 * CUL - C++ Utility Library (included as subrepository)
@@ -48,6 +48,8 @@ License: MIT
 	TODO
 
 # TODOs
+
+Only specific to cpp stuff other todos see dis/todo.md (dis repo)
 
 * Cleanup Buffers
 	* MutableBuffer

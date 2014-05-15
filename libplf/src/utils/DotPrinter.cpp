@@ -11,10 +11,10 @@ using namespace plf;
 
 
 /*
- ofstream myfile;
-  myfile.open ("example.txt");
-  myfile << "Writing this to a file.\n";
-  myfile.close();
+	ofstream myfile;
+	myfile.open ("example.txt");
+	myfile << "Writing this to a file.\n";
+	myfile.close();
 */
 
 void DotPrinter::generate(Crate& crate, const char* filename)
@@ -26,4 +26,17 @@ void DotPrinter::generate(Crate& crate, const char* filename)
 		dispatch(decl);
 	}
 	out_.close();
+}
+
+void DotPrinter::visit(const Node& n)
+{
+	//should not be called
+}
+
+void DotPrinter::visit(const ModDecl& n)
+{
+	//when parent
+	//mod loop through
+	//name -> ....
+
 }

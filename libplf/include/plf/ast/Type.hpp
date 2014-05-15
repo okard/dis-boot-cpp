@@ -44,7 +44,9 @@ enum class TypeKind
 	BorrowedPtrType,
 	RawPtrType,
 	ArrayType,
-	FunctionType
+	FunctionType,
+
+	CTType		//compile time type
 };
 
 
@@ -216,8 +218,22 @@ public:
 	FunctionType() : Type(Kind)
 	{}
 
+	//TODO vararg
 	List<TypePtr> params;
 	TypePtr returnType;
+};
+
+/**
+ * @brief A CompileTime Type
+ */
+class CTType : public Type
+{
+public:
+	static const TypeKind Kind = TypeKind::CTType;
+	CTType() : Type(Kind)
+	{}
+
+	TypePtr type;
 };
 
 

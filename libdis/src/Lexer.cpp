@@ -227,7 +227,7 @@ void  Lexer::lexToken(Token& tok)
 	//check double token
 	switch(tok.id)
 	{
-		case TokenId::DblColon: checkForChar(tok, ':', TokenId::DblColon); break;
+		case TokenId::ColonColon: checkForChar(tok, ':', TokenId::ColonColon); break;
 		case TokenId::Dot: checkForChar(tok, '.', TokenId::DotDot); break;
 		case TokenId::Sharp: checkForChar(tok, '!', TokenId::Shebang); 
 							 checkForChar(tok, '[', TokenId::AttrStart);
@@ -261,7 +261,7 @@ void  Lexer::lexToken(Token& tok)
 	//check triple token
 	switch(tok.id)
 	{
-		case TokenId::DotDot: checkForChar(tok, '.', TokenId::TripleDot); break;
+		case TokenId::DotDot: checkForChar(tok, '.', TokenId::DotDotDot); break;
 		default:break;
 	}
 }

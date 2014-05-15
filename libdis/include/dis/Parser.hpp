@@ -138,6 +138,8 @@ private:
 	
 	bool peek(int count, TokenId id);
 	//void sync(TokenId id); //for better error diagnostic?
+
+	bool current(TokenId id);
 	
 	void check(TokenId id);
 	void checkNext(TokenId id);

@@ -482,7 +482,42 @@ plf::DeclPtr Parser::parseTraitDecl()
 	assert(tok_.id == TokenId::KwTrait);
 	next();	//skip kw trait
 
-	throw plf::FormatException("Parsing traits not yet implemented");
+	auto traitdecl = Node::create<TraitDecl>();
+
+	//name
+	check(TokenId::Ident);
+	traitdecl->name = transfer(tok_.buffer);
+	next();
+
+	//tpl parameter
+	if(current(TokenId::ROBracket))
+	{
+		next();
+		throw plf::FormatException("Parsing template parameter of traits not yet implemented");
+	}
+
+	if(current(TokenId::Colon))
+	{
+		throw plf::FormatException("Parsing inheritance of traits not yet implemented");
+	}
+
+	check(TokenId::COBracket);
+	next();
+	//parse decl list
+	while(tok_.id != TokenId::CCBracket)
+	{
+		auto decl = parseDeclaration();
+
+		//only add non error nodes
+		if(decl->kind != NodeKind::Error)
+			traitdecl->decls.push_back(decl);
+
+		//check for error type?
+	}
+	assert(tok_.id == TokenId::CCBracket);
+	next(); //skip '}'
+
+	return traitdecl;
 }
 
 /**
@@ -516,7 +551,8 @@ DeclPtr Parser::parseStructDecl()
 				next();
 				type = parseDataType();
 			}
-			structDecl->tplTypes.push_back(StructTplType(name, type));
+			//structDecl->tpl_params.push_back(TemplateParameter(name, type));
+			structDecl->tpl_params.emplace_back(name, type);
 		}
 		check(TokenId::RCBracket);
 		next();
@@ -797,9 +833,11 @@ StmtPtr Parser::parseStatement()
 			return retstmt;
 		}
 
+		/* is an unary expression
 		//handle mixins or static execution
 		case TokenId::DollarDollar:
 			throw Exception("parseStatement: Compile Time Execution stuff not yet implemented");
+		*/
 
 		default:
 			break;
@@ -1163,6 +1201,7 @@ ExprPtr Parser::parseExprAtom()
 			return expr;
 		}
 
+		/* already handled -> prefix unary expr?
 		case TokenId::Dollar:
 			//$Decl
 			//$Source
@@ -1171,6 +1210,7 @@ ExprPtr Parser::parseExprAtom()
 
 		case TokenId::DollarDollar:
 			throw Exception("parseExprAtom: compile time expressions not yet implemented");
+		*/
 
 		default: break;
 	}
@@ -1242,7 +1282,7 @@ ExprPtr Parser::parseExprBinary(int min_prec)
 
 	while(true)
 	{
-		BinaryOperator op = op_binary(tok_.id);
+		const BinaryOperator op = op_binary(tok_.id);
 
 		if(tok_.id == TokenId::Eof		//end of file
 		|| op == BinaryOperator::NOP	//not a binary operator
@@ -1252,10 +1292,10 @@ ExprPtr Parser::parseExprBinary(int min_prec)
 		//assert(is_bin_op(tok_.id), "no binop");
 
 		//get associativity and min_prec
-		OpAssociativity assoc = op_assoc(op);
+		const OpAssociativity assoc = op_assoc(op);
 		int next_min_prec = (assoc == OpAssociativity::Left) ? op_prec(op) + 1 : op_prec(op);
 
-		next(); //skip binop token
+		next(); //skip binary operator token
 
 		//TODO look for as operator
 		if(op == BinaryOperator::As)
@@ -1270,6 +1310,7 @@ ExprPtr Parser::parseExprBinary(int min_prec)
 		auto bin_expr = Node::create<BinaryExpr>();
 		bin_expr->left = left;
 		bin_expr->op = op;
+		bin_expr->assoc = assoc;
 		bin_expr->right = right;
 
 		left = bin_expr;
@@ -1455,6 +1496,11 @@ void Parser::next()
 bool Parser::peek(int count, TokenId id)
 {
 	throw FormatException("Parser::peek: not yet implemented");
+}
+
+bool Parser::current(TokenId id)
+{
+	return tok_.id == id;
 }
 
 /// Check current token

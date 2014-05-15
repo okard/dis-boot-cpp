@@ -139,25 +139,28 @@ enum class OpAssociativity
 ///Operators for Unary Expressions
 enum class UnaryOperator
 {
-	NOP, // no operator
+	NOP,		// no operator
 
 	//Logical
-	LNot, 	  // ! logical negative
+	LNot,		// ! logical negative
 
 	//Bitwise Not
-	BNot,	  //
+	BNot,		//
 
 	//Arithmetic
-	Neg, 	  // Prefix -
-	Pos,	  // Prefix +
-	PostIncr, //expr++
-	PreIncr,  //++expr
-	PostDecr, //expr--
-	PreDecr,  //--expr
+	Neg,		// Prefix -expr
+	Pos,		// Prefix +expr
+	PostIncr,	//expr++
+	PreIncr,	//++expr
+	PostDecr,	//expr--
+	PreDecr,	//--expr
 	
 	//Memory
-	Ref,	  // &
-	OwnedPtr  // ~
+	Ref,		// &
+	OwnedPtr,	// ~
+
+	CTAccess,	//compile time access $Ast
+	CTCall,		//compile time call $$asdasd
 	
 	// ~, &, @ for memory types?
 };
@@ -217,11 +220,11 @@ enum class BinaryOperator
 	ShiftR,		// >>
 
 	//Bitwise Compound Assign
-	AndAssign,
-	OrAssign,
-	XorAssign,
-	ShiftLAssign,
-	ShiftRAssign,
+	AndAssign,		// &=
+	OrAssign,		// |=
+	XorAssign,		// ^=?
+	ShiftLAssign,	// <<=
+	ShiftRAssign,	// >>=
 
 	//Other:
 	Concat,			// ???? ~ ' #

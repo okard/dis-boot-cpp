@@ -40,6 +40,8 @@ class DotPrinter : public plf::ReadVisitor
 private:
 
 	std::ofstream out_;
+
+	//keep stack of nodes?/node strings
 public:
 
 	void generate(Crate& crate, const char* filename);

@@ -223,7 +223,7 @@ public:
 	inline R dispatch(std::shared_ptr<T>& n, Args&... args)
 	{
 		if(!n)
-			throw "error";
+			throw ("dispatch error: node has no value");
 		Node& nn = *n.get();
 		return dispatch(nn, args...);
 	}
@@ -233,7 +233,7 @@ public:
 	inline R dispatch(const std::shared_ptr<T>& n, Args&... args)
 	{
 		if(!n)
-			throw "error";
+			throw ("dispatch error: node has no value");
 		const Node& nn = *n.get();
 		return dispatch(nn, args...);
 	}

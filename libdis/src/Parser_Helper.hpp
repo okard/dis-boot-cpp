@@ -40,6 +40,7 @@ using namespace dis;
 namespace {
 
 //get unary operator for Token
+//TODO split to postfix/prefix functions?
 UnaryOperator op_unary(TokenId id, bool prefix)
 {
 	//Prefix
@@ -53,6 +54,10 @@ UnaryOperator op_unary(TokenId id, bool prefix)
 	case TokenId::MinusMinus: return UnaryOperator::PreDecr;
 	case TokenId::And: return UnaryOperator::Ref;
 	case TokenId::EPoint: return UnaryOperator::LNot;
+
+	case TokenId::Dollar: return UnaryOperator::CTAccess;
+	case TokenId::DollarDollar: return UnaryOperator::CTCall;
+
 	default: return UnaryOperator::NOP;
 	}
 
@@ -68,11 +73,30 @@ UnaryOperator op_unary(TokenId id, bool prefix)
 	throw Exception("Not reachable");
 }
 
+/*
+
+/// return unary operator precedence
+int op_prec(plf::UnaryOperator& op)
+{
+	switch(op)
+	{
+	case UnaryOperator::Neg:
+	case UnaryOperator::Pos:
+		return 3;
+	case UnaryOperator::NOP: throw Exception("Not an operator");
+	default: throw Exception("op_prec(unary): not yet implemented");
+	}
+}
+*/
+
+
+
 //get binary operator for Token
 BinaryOperator op_binary(TokenId id)
 {
 	switch(id)
 	{
+	case TokenId::ColonColon: return BinaryOperator::AccessPath;
 	case TokenId::Assign: return BinaryOperator::Assign;
 
 	//arithmetic single
@@ -117,6 +141,7 @@ OpAssociativity op_assoc(BinaryOperator op)
 {
 	switch(op)
 	{
+	//case BinaryOperator::AccessPath: return OpAssociativity::Right;
 	case BinaryOperator::Assign: return OpAssociativity::Right;
 
 	//Arithmetic
@@ -153,24 +178,14 @@ OpAssociativity op_assoc(BinaryOperator op)
 	}
 }
 
-/// return unary operator precedence
-int op_prec(plf::UnaryOperator& op)
-{
-	switch(op)
-	{
-	case UnaryOperator::Neg:
-	case UnaryOperator::Pos:
-		return 3;
-	case UnaryOperator::NOP: throw Exception("Not an operator");
-	default: throw Exception("op_prec(unary): not yet implemented");
-	}
-}
-
 /// return bin operator precedence
-int op_prec(plf::BinaryOperator& op)
+int op_prec(plf::BinaryOperator op)
 {
 	switch(op)
 	{
+	case BinaryOperator::AccessPath:
+		return 1;
+
 	case BinaryOperator::Access:
 		return 2;
 
@@ -254,9 +269,6 @@ inline static TypePtr checkForBuiltinType(BufferPtr& buf)
 		return type;
 	}
 }
-
-
-
 
 
 }

@@ -67,7 +67,7 @@ THE SOFTWARE.
 		TOKEN(And)						/* & */ \
 		TOKEN(Or)						/* | */ \
 		TOKEN(Dollar)					/* $ */ \
-		TOKEN(DblColon)				   /* :: */ \
+		TOKEN(ColonColon)				/* :: */ \
 		TOKEN(DotDot)				   /* .. */ \
 		TOKEN(Shebang)				   /* #! */ \
 		TOKEN(AttrStart)			   /* #[ */ \
@@ -91,7 +91,7 @@ THE SOFTWARE.
 		TOKEN(MinusMinus)			   /* -- */ \
 		TOKEN(Lambda)				   /* -> */ \
 		TOKEN(DollarDollar)			   /* $$ */ \
-		TOKEN(TripleDot)			  /* ... */ \
+		TOKEN(DotDotDot)			  /* ... */ \
 		TOKEN(DocMultipleStart)		 /* / *** */ \
 		TOKEN(DocSingleStart)		  /* /// */ \
 		/* KEYWORDS DECLARATION */ 				\
