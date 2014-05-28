@@ -30,6 +30,7 @@ THE SOFTWARE.
 #include <culcore/AnyPtr.hpp>
 #include <memory>
 #include <vector>
+#include <unordered_map>
 
 namespace plf {
 	
@@ -45,6 +46,9 @@ using WeakPtr = std::weak_ptr<T>;
 
 template<class T> 
 using List = std::vector<T>;
+
+template<class K, class V, class H = std::hash<K>>
+using Map = std::unordered_map<K, V, H>;
 
 	
 } //end namespace plf

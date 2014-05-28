@@ -40,6 +40,8 @@ enum class TypeKind
 	PrimaryType,
 	DeclType,
 	UnsolvedType, //unsolved type
+	PathType,
+	IdentType,
 	OwnedPtrType,
 	BorrowedPtrType,
 	RawPtrType,
@@ -156,6 +158,34 @@ public:
 	{}
 	
 	List<BufferPtr> idents;
+};
+
+/**
+ * @brief The IdentType class
+ */
+class IdentType final : public Type
+{
+public:
+	static const TypeKind Kind = TypeKind::IdentType;
+	IdentType() : Type(Kind)
+	{}
+
+	BufferPtr ident;
+};
+
+/**
+ * @brief The PathType class
+ * Similiar to binary Expression
+ */
+class PathType final : public Type
+{
+public:
+	static const TypeKind Kind = TypeKind::PathType;
+	PathType() : Type(Kind)
+	{}
+
+	TypePtr left;
+	TypePtr right;
 };
 
 /**

@@ -85,6 +85,9 @@ public:
 	static const NodeKind Kind = NodeKind::MatchStmt;
 	MatchStmt() : Statement(Kind) {}
 
+	ExprPtr value;
+
+	//Pattern?
 	//format of conditions?
 };
 

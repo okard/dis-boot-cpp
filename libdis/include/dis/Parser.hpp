@@ -29,9 +29,10 @@ THE SOFTWARE.
 
 #include "Lexer.hpp"
 
+//forward declarations
 namespace plf {
 	//Declaration
-	enum class DeclFlags : unsigned char;
+	enum class DeclFlags : unsigned short;
 	class FunctionDecl;
 	//Expression
 	enum class UnaryOperator;
@@ -102,6 +103,8 @@ private:
 	//parse a Ident : Type
 
 	//parseAttribute
+
+	void parseTplParameter();
 	
 	////////////////////////////////////////////////////////////////////
 	// Statements
@@ -130,6 +133,8 @@ private:
 
 	////////////////////////////////////////////////////////////////////
 	// DataType
+	plf::TypePtr parseDataTypeSingle();
+	plf::TypePtr parseDataTypeMulti();
 	plf::TypePtr parseDataType();
 	
 	////////////////////////////////////////////////////////////////////

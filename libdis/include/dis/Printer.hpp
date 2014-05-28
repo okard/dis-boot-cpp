@@ -27,10 +27,11 @@ THE SOFTWARE.
 
 #include <plf/ast/Visitor.hpp>
 
+//forward declarations
 namespace plf {
 	class Buffer;
 	typedef std::shared_ptr<Buffer> BufferPtr;
-	enum class DeclFlags : unsigned char;
+	enum class DeclFlags : unsigned short;
 }
 
 namespace dis {

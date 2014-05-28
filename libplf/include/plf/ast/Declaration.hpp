@@ -43,7 +43,7 @@ class FunctionType;
 /**
 * Flags for declarations
 */
-enum class DeclFlags : unsigned char
+enum class DeclFlags : unsigned short
 {
 	None		= 0,
 	Public 		= 1<<0,
@@ -54,8 +54,10 @@ enum class DeclFlags : unsigned char
 	Abstract	= 1<<4,
 	Static 		= 1<<5,
 	Const 		= 1<<6,
-	
-	External    = 1<<7
+
+	External    = 1<<7,
+
+	Unsafe		= 1<<8
 };
 
 DeclFlags operator|(DeclFlags a, DeclFlags b);
@@ -218,9 +220,8 @@ public:
 
 	BufferPtr name;
 
-	TypePtr inheritType;
+	TypePtr inheritType;//multiple inheritance
 	List<TemplateParameter> tpl_params;
-
 	List<StructField> fields;
 
 	//instances for struct tpls
@@ -304,7 +305,7 @@ public:
 	StmtPtr body;
 	TypePtr returnType; //leave unset for unkown?
 
-	//the function type for declaration?
+	//the function type for declaration? no function type for tpl_func
 	SharedPtr<FunctionType> func_type;
 
 	//instances of template functions?

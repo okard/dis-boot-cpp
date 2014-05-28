@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include <iostream>
 
 
+#include <plf/base/Exception.hpp>
 #include <plf/ast/Declaration.hpp>
 
 #include <plf/sem/TypeResolver.hpp>
@@ -162,38 +163,53 @@ int Compiler::run(int argc, char *argv[])
 
 bool Compiler::parse()
 {
+	bool parse_valid = true;
+
 	//std::cout << "CompilationUnits: " << units_.size() << std::endl;
 	for(unsigned int i = 0; i < units_.size(); i++)
 	{
 		CompilationUnit& unit =  units_[i];
 
 		if(!unit.sourcePtr)
-			std::cout << "invalid source" << std::endl;
+		{
+			parse_valid = false;
+			std::cerr << "ICE: invalid source in CompilationUnit" << std::endl;
+			continue;
+		}
 
 		std::cout << "->parse[" << unit.sourcePtr->identifier() << "]" << std::endl;
 
-		//lexer
-		lexer_.open(unit.sourcePtr);
-		parser_.reset();
 
-		//parse it complete
-		NodePtr n;
-		do
+		try
 		{
-			n = parser_.parse();
+			//lexer
+			lexer_.open(unit.sourcePtr);
+			parser_.reset();
 
-
-			if(n->kind != NodeKind::Error)
+			//parse it complete
+			NodePtr n;
+			do
 			{
-				auto decl = n->to<Declaration>(); //Declaration.hpp required because of knowing inheritance
-				//add to crate
-				unit.crate.decls.push_back(decl);
+				n = parser_.parse();
+
+
+				if(n->kind != NodeKind::Error)
+				{
+					auto decl = n->to<Declaration>(); //Declaration.hpp required because of knowing inheritance
+					//add to crate
+					unit.crate.decls.push_back(decl);
+				}
 			}
+			while(n && n->kind != NodeKind::Error);
 		}
-		while(n && n->kind != NodeKind::Error);
+		catch(std::exception& exc)
+		{
+			parse_valid = false;
+			std::cerr << "Parser Exception: " << exc.what() << std::endl;
+		}
 	}
 
-	return true;
+	return parse_valid;
 }
 
 bool Compiler::semantic()

@@ -141,6 +141,8 @@ public:
 	
 	
 	//TODO MemoryPool for Node Allocation?
+		//use a big array for nodes and ids for referencing?
+		//ptr? because different size of nodes?
 	// void* operator new(size_t);
     // void operator delete(void*);
     

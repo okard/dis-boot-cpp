@@ -299,11 +299,29 @@ public:
 };
 
 
+/**
+ * @brief The IfExpr class
+ */
+class IfExpr final : public Expression
+{
+public:
+	static const NodeKind Kind = NodeKind::IfExpr;
+	IfExpr() : Expression(Kind) {}
 
-//IfExpr
-//MatchExpr
+	//Condition
+};
 
-//pathexpression
+/**
+ * @brief The MatchExpr class
+ */
+class MatchExpr final : public Expression
+{
+public:
+	static const NodeKind Kind = NodeKind::MatchExpr;
+	MatchExpr() : Expression(Kind) {}
+};
+
+//path expression??
 
 
 } //end namespace plf

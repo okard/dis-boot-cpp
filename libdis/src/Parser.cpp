@@ -202,6 +202,12 @@ void Parser::parseDeclFlags(DeclFlags& flags)
 			parseDeclFlags(flags);
 			break;
 
+		case TokenId::KwUnsafe:
+			flags = flags | DeclFlags::Unsafe;
+			next();
+			parseDeclFlags(flags);
+			break;
+
 		//TODO how to define following stuff:
 		//-static
 		//-final
@@ -543,7 +549,7 @@ DeclPtr Parser::parseStructDecl()
 		{
 			check(TokenId::Ident);
 			auto name = transfer(tok_.buffer);
-			next();
+			next(); //skip ident
 
 			TypePtr type;
 			if(tok_.id == TokenId::Colon)
@@ -553,6 +559,9 @@ DeclPtr Parser::parseStructDecl()
 			}
 			//structDecl->tpl_params.push_back(TemplateParameter(name, type));
 			structDecl->tpl_params.emplace_back(name, type);
+
+			if(tok_.id == TokenId::Comma)
+				next();
 		}
 		check(TokenId::RCBracket);
 		next();
@@ -783,6 +792,12 @@ plf::DeclPtr Parser::parseInstanceDecl(ParseOption p)
 	return inst;
 }
 
+void Parser::parseTplParameter()
+{
+	//Ident : Type
+
+}
+
 ////////////////////////////////////////////////////////////////////////
 // Statements
 ////////////////////////////////////////////////////////////////////////
@@ -813,6 +828,7 @@ StmtPtr Parser::parseStatement()
 		case TokenId::COBracket:
 			return parseBlockStmt();
 			break;
+		//syntax: unsafe { }
 		case TokenId::KwUnsafe:
 		{
 			next();
@@ -837,6 +853,9 @@ StmtPtr Parser::parseStatement()
 		//handle mixins or static execution
 		case TokenId::DollarDollar:
 			throw Exception("parseStatement: Compile Time Execution stuff not yet implemented");
+
+		//doing a peek here?
+			// peek(1),
 		*/
 
 		default:
@@ -1027,8 +1046,30 @@ StmtPtr Parser::parseIfStmt()
 StmtPtr Parser::parseMatchStmt()
 {
 	assert(tok_.id == TokenId::KwMatch);
+	next();
 
-	throw FormatException("parseSwitchStmt: Not yet fully implemented or invalid token [%s]", toString(tok_.id));
+	auto match = Node::create<MatchStmt>();
+
+	//parse (<value>)
+	check(TokenId::ROBracket);
+	next();
+
+	match->value = parseExpression();
+
+	check(TokenId::RCBracket);
+	next();
+
+
+	check(TokenId::COBracket);
+	next();
+
+	//parse pattern => {} or <expr>
+	//TODO Match Syntax!!! -> case Syntax
+
+	check(TokenId::CCBracket);
+	next();
+
+	throw FormatException("parseMatchStmt: Not yet fully implemented or invalid token [%s]", toString(tok_.id));
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -1337,11 +1378,89 @@ ExprPtr Parser::parseMatchExpr()
 	throw Exception("Match-Expression parsing not yet implemented");
 }
 
-
-
 ////////////////////////////////////////////////////////////////////////
 // DataType
 ////////////////////////////////////////////////////////////////////////
+
+TypePtr Parser::parseDataTypeSingle()
+{
+	//prefix
+		//$
+	if(current(TokenId::Dollar))
+	{
+		next(); //skip $
+		auto type = Type::create<CTType>();
+		type->type = parseDataTypeSingle();
+		return type;
+	}
+
+	//prefix ::
+
+	TypePtr type;
+
+	//main:
+	switch(tok_.id)
+	{
+		case TokenId::Ident:
+		{
+			type = checkForBuiltinType(tok_.buffer);
+			next(); //skip ident
+			break;
+		}
+	default: break;
+	}
+
+
+	//postfix
+			//!type
+			//!(type)
+	switch(tok_.id)
+	{
+		case TokenId::EPoint:
+		{
+			throw Exception("error no tpl type instance parsing");
+			break;
+		}
+	default:break;
+	}
+
+
+	//down here something has to been in type
+	if(!type)
+		throw FormatException("(%d, %d) parseDataTypeSingle: not yet implemented or invalid type (%s)",tok_.loc.line, tok_.loc.column, toString(tok_.id));
+
+	return type;
+}
+
+/**
+ * @brief Parser::parseDataTypeMulti
+ *			parse type paths (similiar binary expr parsing)
+ * @return TypePtr - ptr to data type
+ */
+TypePtr Parser::parseDataTypeMulti()
+{
+	TypePtr left = parseDataTypeSingle();
+
+	while(true)
+	{
+		if(current(TokenId::ColonColon))
+		{
+			next(); //skip ::
+			TypePtr right = parseDataTypeMulti();
+
+			//TODO return path expression
+			auto path = Type::create<PathType>();
+			path->left = left;
+			path->right = right;
+			left = path;
+		}
+		else
+			break;
+	}
+
+	return left;
+}
+
 
 /**
 * : id
@@ -1360,26 +1479,52 @@ ExprPtr Parser::parseMatchExpr()
 */
 TypePtr Parser::parseDataType()
 {
-	TypePtr t = UnkownType::getInstance();
+	// function types can't be nested
+	// def(type, type, ...) : type
+	if(current( TokenId::KwDef))
+	{
+		checkNext(TokenId::ROBracket);
+		next();
+
+		auto func_type = Type::create<FunctionType>();
+
+		//parse parameter
+		while(true)
+		{
+			if(tok_.id == TokenId::RCBracket)
+				break;
+
+			auto type = parseDataType();
+			func_type->params.push_back(type);
+
+			if(tok_.id != TokenId::Comma)
+				break;
+			else
+				next(); //skip comma
+		}
+		check(TokenId::RCBracket);
+		next();
+
+		//parse return type
+		if(tok_.id == TokenId::Colon)
+		{
+			next();
+			auto rettype = parseDataType();
+			func_type->returnType = rettype;
+		}
+		return func_type;
+	}
 	
+
 	//start tokens
 	switch(tok_.id)
-	{
-		case TokenId::Ident:
-		{
-			auto type = checkForBuiltinType(tok_.buffer);
-			next();
-			t = type;
-			//quicksolve builtin types?
-			break;
-		}
-		
+	{	
 		//heap owned ptr type
 		case TokenId::Tilde:
 		{
 			next();
 			auto opt = Type::create<OwnedPtrType>();
-			opt->targetType = parseDataType();
+			opt->targetType = parseDataTypeMulti();
 			return opt;
 		}
 			
@@ -1388,7 +1533,7 @@ TypePtr Parser::parseDataType()
 		{
 			next();
 			auto bpt = Type::create<BorrowedPtrType>();
-			bpt->targetType = parseDataType();
+			bpt->targetType =  parseDataTypeMulti();
 			return bpt;
 		}
 			
@@ -1397,27 +1542,31 @@ TypePtr Parser::parseDataType()
 		{
 			next();
 			auto rpt = Type::create<RawPtrType>();
-			rpt->targetType = parseDataType();
+			rpt->targetType =  parseDataTypeMulti();
 			return rpt;
 		}
 		
+		//also [] array types
+		//arrays also alone standing?
 		case TokenId::SOBracket:
 		{
-			next();
+			next(); //skip over [
+
 			auto type = Type::create<ArrayType>();
 
+			//sized array
 			if(tok_.id == TokenId::IntLiteral)
 			{
+				throw Exception("parseDataType: sized array parsing not fully implemented");
 				//size hint
 				type->size = 0;
 				next();
 			}
 
 			check(TokenId::SCBracket);
-			next();
+			next(); //skip over ]
 
-			auto datatype = parseDataType();
-
+			auto datatype = parseDataTypeMulti(); //also step in?
 			type->targetType = datatype;
 			return type;
 		}
@@ -1425,60 +1574,11 @@ TypePtr Parser::parseDataType()
 		case TokenId::ConstraintStart:
 			throw FormatException("parseDataType: parsing of type constraints not yet implemented");
 
-		case TokenId::KwDef: // def(type, type, ...) : type
-		{
-			checkNext(TokenId::ROBracket);
-			next();
-
-			auto func_type = Type::create<FunctionType>();
-
-			//parse parameter
-			while(true)
-			{
-				if(tok_.id == TokenId::RCBracket)
-					break;
-
-				auto type = parseDataType();
-				func_type->params.push_back(type);
-
-				if(tok_.id != TokenId::Comma)
-					break;
-				else
-					next(); //skip comma
-			}
-			check(TokenId::RCBracket);
-			next();
-
-			//parse return type
-			if(tok_.id == TokenId::Colon)
-			{
-				next();
-				auto rettype = parseDataType();
-				func_type->returnType = rettype;
-			}
-			return func_type;
-		}
-
-		case TokenId::Dollar:
-			throw Exception("parseDatatype: Compile Time Types not yet implemented");
-
-		default:
-			throw FormatException("(%d, %d) parseDataType: not yet implemented or invalid type (%s)",tok_.loc.line, tok_.loc.column, toString(tok_.id));
+		//default go into parseDataTypeMulti
+		default:break;
 	}
-	
-	//follow up
-	switch(tok_.id)
-	{
-		//double colon?
-		case TokenId::Dot:	//.
-		case TokenId::EPoint: //!
-			throw FormatException("parseDataType: not yet implemented");
-			break;
-		default:
-			break;
-	}
-	
-	return t;
+
+	return parseDataTypeMulti();
 }
 
 

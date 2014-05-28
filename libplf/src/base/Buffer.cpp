@@ -164,3 +164,14 @@ void Buffer::dump()
 //void * memset ( void * ptr, int value, size_t num );
 // memset(buffer_, '\0', size_);
 
+
+
+size_t hash_BufferPtr::operator()(const BufferPtr& buf) const
+{
+	unsigned hash = 5381;
+	for (std::size_t pos = buf->size() -1; pos != -1; pos-- ) //warning is ok here
+	{
+		hash = static_cast<unsigned int>(buf->ptr()[pos] + ((hash << 5) + hash)); /* hash * 33+ c*/
+	}
+	return hash;
+}

@@ -92,6 +92,12 @@ public:
 
 typedef SharedPtr<Buffer> BufferPtr;
 
+//Hasher for
+struct hash_BufferPtr
+{
+  size_t operator()(const BufferPtr& buf) const;
+};
+
 	
 } // end namespace plf
 

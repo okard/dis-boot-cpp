@@ -264,8 +264,8 @@ inline static TypePtr checkForBuiltinType(BufferPtr& buf)
 	}
 	else
 	{
-		auto type = Type::create<UnsolvedType>();
-		type->idents.push_back(transfer(buf));
+		auto type = Type::create<IdentType>();
+		type->ident = transfer(buf);
 		return type;
 	}
 }

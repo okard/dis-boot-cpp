@@ -25,6 +25,9 @@ THE SOFTWARE.
 #ifndef PLF_SYMBOLTABLE_HPP
 #define PLF_SYMBOLTABLE_HPP
 
+#include <plf/base/External.hpp>
+#include <plf/base/Buffer.hpp>
+
 namespace plf {
 
 enum class SymbolType
@@ -38,8 +41,9 @@ enum class SymbolType
 */
 class Symbol
 {
+	//NodePtr
 
-	//global variables
+	//global variables ( general global, static member, (TLS variables?))
 	//functions
 
 	//name(mangled?) BufferPtr (mangled name)
@@ -48,6 +52,8 @@ class Symbol
 	//static not exported symbols package internal only
 	//use_counter //is referenced or not used
 	//external type? (RTTI relevant)
+
+	//symbol attribute
 };
 
 
@@ -55,16 +61,21 @@ class Symbol
 //class FunctionSymbol : public Symbol { FunctionDecl& decl; pointer? }
 //class DataSymbol : public Symbol { }
 
+typedef SharedPtr<Symbol> SymbolPtr;
 
 /**
 * Complete (native) SymbolTable
+* means a flat table with mangled names
 */
 class SymbolTable
 {
+	//data/function split?
+
 	//symbol list
 	//map<mangled name, symbol>
 	//list <symbol>
 	
+	Map<BufferPtr, SymbolPtr, hash_BufferPtr> symbols;
 };
 	
 	
