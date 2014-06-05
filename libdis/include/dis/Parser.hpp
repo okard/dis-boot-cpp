@@ -102,7 +102,7 @@ private:
 	
 	//parse a Ident : Type
 
-	//parseAttribute
+	plf::AttrPtr parseAttribute();
 
 	void parseTplParameter();
 	
@@ -116,9 +116,6 @@ private:
 	plf::StmtPtr parseWhileStmt();
 
 	//parseDoWhileStmt?
-
-	plf::StmtPtr parseIfStmt();
-	plf::StmtPtr parseMatchStmt();
 	
 	
 	////////////////////////////////////////////////////////////////////

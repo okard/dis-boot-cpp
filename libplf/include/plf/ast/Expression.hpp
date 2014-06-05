@@ -308,7 +308,10 @@ public:
 	static const NodeKind Kind = NodeKind::IfExpr;
 	IfExpr() : Expression(Kind) {}
 
-	//Condition
+	ExprPtr condition;
+	StmtPtr stmt;
+	StmtPtr tail;
+
 };
 
 /**
@@ -319,6 +322,8 @@ class MatchExpr final : public Expression
 public:
 	static const NodeKind Kind = NodeKind::MatchExpr;
 	MatchExpr() : Expression(Kind) {}
+
+	ExprPtr value;
 };
 
 //path expression??

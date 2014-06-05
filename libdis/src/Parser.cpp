@@ -792,6 +792,13 @@ plf::DeclPtr Parser::parseInstanceDecl(ParseOption p)
 	return inst;
 }
 
+AttrPtr Parser::parseAttribute()
+{
+	//multiple #![<attr>] -> parseAttributes
+
+	throw Exception("Not yet implemented");
+}
+
 void Parser::parseTplParameter()
 {
 	//Ident : Type
@@ -813,12 +820,6 @@ StmtPtr Parser::parseStatement()
 
 	switch(tok_.id)
 	{
-		case TokenId::KwIf:
-			return parseIfStmt();
-			break;
-		case TokenId::KwMatch:
-			return parseMatchStmt();
-			break;
 		case TokenId::KwFor:
 			return parseForStmt();
 			break;
@@ -907,6 +908,8 @@ plf::StmtPtr Parser::parseBlockStmt()
 	{
 		auto stmt = parseStatement();
 
+		//only expression; expression ...
+
 		//TODO check error
 		if(stmt->kind == NodeKind::Error)
 		{
@@ -981,13 +984,7 @@ StmtPtr Parser::parseWhileStmt()
 	auto whilestmt = Node::create<WhileStmt>();
 
 	//condition
-	check(TokenId::ROBracket);
-	next();
-
 	whilestmt->cond = parseExpression();
-
-	check(TokenId::RCBracket);
-	next();
 
 	//body { }
 	check(TokenId::COBracket);
@@ -996,81 +993,7 @@ StmtPtr Parser::parseWhileStmt()
 	return whilestmt;
 }
 
-/**
- * @brief Parser::parseIfStmt
- *	parse if (<expr>) { } [ else ... ]
- * @return a stmt
- */
-StmtPtr Parser::parseIfStmt()
-{
-	assert(tok_.id == TokenId::KwIf);
-	next();
 
-	auto ifstmt = Node::create<IfStmt>();
-
-	check(TokenId::ROBracket);
-	next();
-	ifstmt->condition = parseExpression();
-	ifstmt->condition->parent = ifstmt;
-	check(TokenId::RCBracket);
-	next();
-
-	check(TokenId::COBracket);
-	ifstmt->stmt = parseBlockStmt();
-	ifstmt->stmt->parent = ifstmt;
-
-	if(tok_.id == TokenId::KwElse)
-	{
-		next(); //skip else
-
-		//else block
-		if(tok_.id == TokenId::COBracket)
-		{
-			ifstmt->tail = parseBlockStmt();
-			return ifstmt;
-		}
-
-		//else if
-		if(tok_.id == TokenId::KwIf)
-		{
-			ifstmt->tail = parseIfStmt();
-			return ifstmt;
-		}
-	}
-
-	return ifstmt;
-
-	throw FormatException("parseIfStmt: Not yet fully implemented or invalid token [%s]", toString(tok_.id));
-}
-
-StmtPtr Parser::parseMatchStmt()
-{
-	assert(tok_.id == TokenId::KwMatch);
-	next();
-
-	auto match = Node::create<MatchStmt>();
-
-	//parse (<value>)
-	check(TokenId::ROBracket);
-	next();
-
-	match->value = parseExpression();
-
-	check(TokenId::RCBracket);
-	next();
-
-
-	check(TokenId::COBracket);
-	next();
-
-	//parse pattern => {} or <expr>
-	//TODO Match Syntax!!! -> case Syntax
-
-	check(TokenId::CCBracket);
-	next();
-
-	throw FormatException("parseMatchStmt: Not yet fully implemented or invalid token [%s]", toString(tok_.id));
-}
 
 ////////////////////////////////////////////////////////////////////////
 // Expression
@@ -1367,14 +1290,64 @@ ExprPtr Parser::parseExprBinary(int min_prec)
 */
 ExprPtr Parser::parseIfExpr()
 {
-	throw Exception("If-Expression parsing not yet implemented");
+	assert(current(TokenId::KwIf));
+	next();
+
+	auto ifexpr = Node::create<IfExpr>();
+
+	ifexpr->condition = parseExpression();
+	ifexpr->condition->parent = ifexpr;
+
+
+	check(TokenId::COBracket);
+	ifexpr->stmt = parseBlockStmt();
+	ifexpr->stmt->parent = ifexpr;
+
+	if(tok_.id == TokenId::KwElse)
+	{
+		next(); //skip else
+
+		//else block
+		if(tok_.id == TokenId::COBracket)
+		{
+			ifexpr->tail = parseBlockStmt();
+			return ifexpr;
+		}
+
+		//else if
+		if(tok_.id == TokenId::KwIf)
+		{
+			auto stmt =  Node::create<ExprStmt>();
+			stmt->expr =  parseIfExpr();
+			ifexpr->tail = stmt;
+			return ifexpr;
+		}
+	}
+
+	return ifexpr;
 }
 
 /*
-* match(<expr>)
+* match <expr> { }
 */
 ExprPtr Parser::parseMatchExpr()
 {
+	assert(current(TokenId::KwMatch));
+	next();
+
+	auto match = Node::create<MatchExpr>();
+
+	match->value = parseExpression();
+
+	check(TokenId::COBracket);
+	next();
+
+	//parse pattern => {} or <expr>
+	//TODO Match Syntax!!! -> case Syntax
+
+	check(TokenId::CCBracket);
+	next();
+
 	throw Exception("Match-Expression parsing not yet implemented");
 }
 

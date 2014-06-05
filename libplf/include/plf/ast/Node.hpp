@@ -77,7 +77,7 @@ enum class NodeKind : unsigned short
 	ClassDecl,
 	TraitDecl,
 	StructDecl,
-	AliasDecl,
+	AliasDecl, //type declaration
 	EnumDecl,
 	TupleDecl,
 	//-Instance Decl
@@ -86,8 +86,6 @@ enum class NodeKind : unsigned short
 	//Statement---------------------------------------------------------
 	BlockStmt,
 	ReturnStmt,
-	IfStmt,
-	MatchStmt,
 	ForStmt,
 	WhileStmt,
 	ExprStmt,

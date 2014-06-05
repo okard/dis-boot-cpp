@@ -65,33 +65,6 @@ public:
 };
 
 
-//if stmt
-class IfStmt final : public Statement
-{
-public:
-	static const NodeKind Kind = NodeKind::IfStmt;
-	IfStmt() : Statement(Kind) {}
-
-	ExprPtr condition;
-	StmtPtr stmt;
-
-	StmtPtr tail;
-};
-
-//match stmt
-class MatchStmt final : public Statement
-{
-public:
-	static const NodeKind Kind = NodeKind::MatchStmt;
-	MatchStmt() : Statement(Kind) {}
-
-	ExprPtr value;
-
-	//Pattern?
-	//format of conditions?
-};
-
-
 /**
 * Statement for 'for' loop
 * for(init; cond; after)
