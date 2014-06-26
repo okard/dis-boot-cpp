@@ -36,7 +36,7 @@ namespace plf {
 class Buffer
 {
 public:
-	typedef char byte;
+	typedef unsigned char byte;
 private:
 	size_t size_;
 	//TODO safe a used_ size ?
@@ -48,6 +48,7 @@ public:
 	Buffer(size_t size);
 	Buffer(const byte* ptr);
 	Buffer(const byte* ptr, size_t size);
+	Buffer(const char* ptr);
 	Buffer(const Buffer& buf);
 	//move ctor?
 	virtual ~Buffer();
@@ -76,6 +77,9 @@ public:
 	bool operator==(const Buffer& buf) const;
 	bool operator==(const char* str) const;
 
+	// [] subscript operator
+	byte operator[] (size_t index);
+
 	//buffer is empty
 	inline bool is_empty() const { return size_==0; }
 
@@ -85,6 +89,8 @@ public:
 	//access to buffer memory
 	inline const byte* ptr() const { return buffer_; }
 	inline byte* ptr() { return buffer_; }
+
+	inline const char* str() const { return reinterpret_cast<const char*>(buffer_); }
 	
 	//debug
 	void dump();

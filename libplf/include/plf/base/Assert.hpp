@@ -1,7 +1,7 @@
 /*
 Programming Language Framework (PLF)
 
-Copyright (c) 2013 okard
+Copyright (c) 2014 okard
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,78 +22,40 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef PLF_SOURCE_HPP
-#define PLF_SOURCE_HPP
+#ifndef PLF_ASSERT_HPP
+#define PLF_ASSERT_HPP
 
-#include <cstddef>
-#include <memory>
+#include <plf/base/Exception.hpp>
 
 namespace plf {
-	
-//Forward Declaration:	
-class Buffer;
-	
-//Source ID
-typedef unsigned int SourceId;
 
-enum class Encoding 
+//throw specific exception
+template<typename T>
+static inline void assert(bool expr, const char* msg)
 {
-	ASCII,
-	UTF8,
-	UTF16,
-	UTF32
-};
+	if(!expr)
+		throw T(msg);
+}
 
-/**
-* Source representation
-* can be a file, a memory string ...
-*/
-class Source
+
+//basic assert macro
+static inline void assert(bool expr, const char* msg)
 {
-private:
-	SourceId id_;
-	
-protected:
-	Encoding encoding_;
-
-public:	
-	
-	//get buffer?
-
-	//reads a specific chunk of source into buffer
-	//virtual size_t readComplete(Buffer&, size_t start, size_t end) = 0;
-	
-	//read to buffer
-	virtual size_t readComplete(Buffer&) = 0;
-
-	/**
-	* Get id for source manager
-	*/
-	inline SourceId getId() const { return id_; }
-	
-	/**
-	* Get encoding of source
-	*/
-	inline Encoding getEncoding() const { return encoding_; }
-	
-	/**
-	* get an identifier for the source file
-	*/
-	virtual const char* identifier() const;
-	
-	/**
-	* get source size
-	*/
-	virtual size_t size() const = 0;
-	
-	
-	friend class SourceManager;
-};
+	if(!expr)
+		throw Exception(msg);
+}
 
 
-typedef std::shared_ptr<Source> SourcePtr;
-	
-	
-} //end namespace
+//basic assert macro (rely on optimization)
+static inline void assertd(bool expr, const char* msg)
+{
+	#ifndef NDEBUG
+	if(!expr)
+		throw Exception(msg);
+	#endif
+}
 
-#endif //PLF_SOURCE_HPP
+
+}
+
+#endif // PLF_ASSERT_HPP

@@ -40,7 +40,7 @@ Buffer::Buffer(size_t size)
 }
 
 Buffer::Buffer(const byte* ptr)
-	: size_(strlen(ptr)), buffer_(new byte[strlen(ptr)])
+	: size_(strlen(reinterpret_cast<const char*>(ptr))), buffer_(new byte[strlen(reinterpret_cast<const char*>(ptr))])
 {
 	//TODO check
 	memcpy(buffer_, ptr, size_);
@@ -48,6 +48,12 @@ Buffer::Buffer(const byte* ptr)
 
 Buffer::Buffer(const byte* ptr, size_t size)
 	: size_(size), buffer_(new byte[size])
+{
+	memcpy(buffer_, ptr, size_);
+}
+
+Buffer::Buffer(const char* ptr)
+	: size_(strlen(ptr)), buffer_(new byte[strlen(ptr)])
 {
 	memcpy(buffer_, ptr, size_);
 }
@@ -111,6 +117,14 @@ bool Buffer::operator==(const char* str) const
 	return memcmp(buffer_, str, size)==0;
 }
 
+Buffer::byte Buffer::operator[](size_t index)
+{
+	if (!buffer_ || index >= size_)
+		return 0;
+
+	return buffer_[index];
+}
+
 void Buffer::alloc(size_t size)
 {
 	free();
@@ -154,7 +168,7 @@ void Buffer::free()
 void Buffer::dump()
 {
 	std::cout << "Dump Buffer: " << std::endl;
-	std::cout.write(buffer_, size_);
+	std::cout.write(reinterpret_cast<const char*>(buffer_), size_);
 	std::cout << std::endl;
 }
 

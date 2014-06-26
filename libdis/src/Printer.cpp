@@ -314,7 +314,7 @@ void PrettyPrinter::writeln(const char* str)
 
 void PrettyPrinter::write(const plf::BufferPtr& buf)
 {
-	std::cout.write(buf->ptr(), buf->size());
+	std::cout.write(reinterpret_cast<char*>(buf->ptr()), buf->size());
 }
 
 

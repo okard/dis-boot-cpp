@@ -29,6 +29,9 @@ THE SOFTWARE.
 
 namespace plf {
 
+//runtime attributes
+//compile time attributes
+
 /**
 * Basic Attribute class 
 * #[attr(param)]

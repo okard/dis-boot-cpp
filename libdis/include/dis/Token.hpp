@@ -129,6 +129,7 @@ enum class TokenId
 {
 	#define TOKEN(x) x,
 	DIS_TOKEN
+	#undef TOKEN
 };
 
 /**

@@ -58,6 +58,11 @@ public:
 	
 	//SourcePtr loadBuffer(BufferPtr& buf);
 	//SourcePtr loadBuffer(Buffer& buf);
+
+	/*
+	retrieve(Id, SourceSpan) -> BufferPtr
+	CodeMap/FileMap { lines int->offset, }
+	*/
 	
 	
 	///get singleton instance of source manager

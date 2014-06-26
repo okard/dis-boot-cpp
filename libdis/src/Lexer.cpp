@@ -78,7 +78,7 @@ inline static void checkKeyword(Token& tok)
 		{ const_hash("as"), TokenId::KwAs }
 	};
 
-	auto it = keywordMap.find(hash(tok.buffer->ptr(), tok.buffer->size()));
+	auto it = keywordMap.find(hash(tok.buffer->str(), tok.buffer->size()));
 	if(it != keywordMap.end())
 	{
 		tok.id=it->second;

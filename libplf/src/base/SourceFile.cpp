@@ -65,7 +65,7 @@ size_t SourceFile::readComplete(Buffer& buf)
 	
 	if(filestream_)
 	{
-		filestream_.read(buf.ptr(), size);
+		filestream_.read(reinterpret_cast<char*>(buf.ptr()), size);
 		auto bytesRead = filestream_.gcount();
 		//buf.setEnd(bytesRead+buf.pos());
 		return bytesRead;

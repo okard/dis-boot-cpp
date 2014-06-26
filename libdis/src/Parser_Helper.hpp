@@ -257,7 +257,7 @@ inline static TypePtr checkForBuiltinType(BufferPtr& buf)
 		//f64
 	};
 
-	auto it = keywordMap.find(hash(buf->ptr(), buf->size()));
+	auto it = keywordMap.find(hash(buf->str(), buf->size()));
 	if(it != keywordMap.end())
 	{
 		return it->second;

@@ -38,6 +38,8 @@ THE SOFTWARE.
 
 #include <dis/Printer.hpp>
 
+#include "ColoredOutput.hpp"
+
 using namespace plf;
 using namespace dis;
 
@@ -123,6 +125,7 @@ int Compiler::run(int argc, char *argv[])
 		//-llvm dump ir
 
 		//when -c compile each file in a own crate (append path)
+			//multiple CompilationUnits in this case
 
 
 		//TODO all files using only one central crate?
@@ -205,7 +208,7 @@ bool Compiler::parse()
 		catch(std::exception& exc)
 		{
 			parse_valid = false;
-			std::cerr << "Parser Exception: " << exc.what() << std::endl;
+			std::cerr << red << "Parser Exception: " << reset_color << exc.what() << std::endl;
 		}
 	}
 
@@ -278,7 +281,7 @@ void Compiler::testLex(const char* filename)
 		if(tok.buffer)
 		{
 			std::cout << " Buffer: ";
-			std::cout.write(tok.buffer->ptr(), tok.buffer->size());
+			std::cout.write(tok.buffer->str(), tok.buffer->size());
 		}
 		std::cout << std::endl;
 	}

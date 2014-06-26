@@ -8,3 +8,10 @@ include_directories("include")
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_LIST_DIR}/lib)
 add_library(plf STATIC ${LIBPLF_SOURCES})
 target_link_libraries(plf culio)
+
+# tests
+file(GLOB_RECURSE LIBPLF_TESTS tests/*.cpp)
+add_executable(libplf_tests EXCLUDE_FROM_ALL ${LIBPLF_TESTS})
+target_link_libraries(libplf_tests plf)
+add_custom_target(check COMMAND libplf_tests DEPENDS libplf_tests)
+

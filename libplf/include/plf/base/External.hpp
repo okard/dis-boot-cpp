@@ -37,13 +37,17 @@ namespace plf {
 //AnyPtr
 typedef cul::AnyPtr AnyPtr;
 
-//Memory/List
+//Memory:
 template<class T> 
 using SharedPtr = std::shared_ptr<T>;
 
 template<class T>
 using WeakPtr = std::weak_ptr<T>;
 
+template<class T>
+using UniquePtr = std::unique_ptr<T>;
+
+// Collections:
 template<class T> 
 using List = std::vector<T>;
 

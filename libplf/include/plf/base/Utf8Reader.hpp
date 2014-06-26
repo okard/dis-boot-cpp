@@ -22,78 +22,44 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#ifndef PLF_SOURCE_HPP
-#define PLF_SOURCE_HPP
+#ifndef PLF_UTF8READER_HPP
+#define PLF_UTF8READER_HPP
 
-#include <cstddef>
-#include <memory>
+#include <plf/base/Source.hpp>
+#include <plf/base/Buffer.hpp>
 
 namespace plf {
-	
-//Forward Declaration:	
-class Buffer;
-	
-//Source ID
-typedef unsigned int SourceId;
 
-enum class Encoding 
-{
-	ASCII,
-	UTF8,
-	UTF16,
-	UTF32
-};
+typedef unsigned int uchar; //codepoint
+
+static_assert(sizeof(uchar) == 4, "unicode char requires size of 32 bits");
 
 /**
-* Source representation
-* can be a file, a memory string ...
+* @brief The Utf8Reader class
 */
-class Source
+class Utf8Reader
 {
 private:
-	SourceId id_;
-	
-protected:
-	Encoding encoding_;
 
-public:	
-	
-	//get buffer?
+	//ringbuffer reading?
+	Buffer buf_;
+	size_t currentPos_ = 0;
+public:
 
-	//reads a specific chunk of source into buffer
-	//virtual size_t readComplete(Buffer&, size_t start, size_t end) = 0;
-	
-	//read to buffer
-	virtual size_t readComplete(Buffer&) = 0;
+	//access to buffer to load from SourcePtr
 
-	/**
-	* Get id for source manager
-	*/
-	inline SourceId getId() const { return id_; }
-	
-	/**
-	* Get encoding of source
-	*/
-	inline Encoding getEncoding() const { return encoding_; }
-	
-	/**
-	* get an identifier for the source file
-	*/
-	virtual const char* identifier() const;
-	
-	/**
-	* get source size
-	*/
-	virtual size_t size() const = 0;
-	
-	
-	friend class SourceManager;
+	//create new buffer from slice(start, stop);
+
+	uchar read_uchar();
+
+
+	inline size_t pos() const { return currentPos_; }
+	inline const Buffer& buf() const { return buf_; }
+	inline Buffer& buf() { return buf_; }
 };
 
 
-typedef std::shared_ptr<Source> SourcePtr;
-	
-	
-} //end namespace
 
-#endif //PLF_SOURCE_HPP
+} //end namespace plf
+
+#endif // PLF_UTF8READER_HPP
