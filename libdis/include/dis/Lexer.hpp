@@ -30,6 +30,7 @@ THE SOFTWARE.
 #include <plf/base/External.hpp>
 #include <plf/base/Source.hpp>
 #include <plf/base/SourceReader.hpp>
+#include <plf/base/Utf8Reader.hpp>
 
 #include "Token.hpp"
 
@@ -41,8 +42,10 @@ namespace dis {
 class Lexer
 {
 private:
-	//reader to handle source input
-	plf::SourceReader reader_;
+	plf::SourcePtr source_;
+	plf::Utf8Reader reader_;
+
+	plf::uchar curchar_ = 0;
 	
 	//lex doc comments
 	bool doc_comment_enabled;
@@ -77,11 +80,8 @@ private:
 	
 	//use int32 as utf32 representation?
 	inline void nextChar();
-	inline char& current();
-	inline char& peekChar(size_t n);
-	inline void skip(int i);
 	
-	inline void checkForChar(Token& tok, char c, TokenId id);
+	inline void checkForChar(Token& tok, plf::uchar c, TokenId id);
 };
 
 

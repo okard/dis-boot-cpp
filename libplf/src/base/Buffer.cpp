@@ -27,6 +27,8 @@ THE SOFTWARE.
 
 #include <plf/base/Exception.hpp>
 
+#include <culcore/Assert.hpp>
+
 using namespace plf;
 
 Buffer::Buffer()
@@ -161,6 +163,16 @@ void Buffer::free()
 		buffer_ = nullptr;
 		size_ = 0;
 	}
+}
+
+void Buffer::set_from(Buffer& buf, size_t start, size_t end)
+{
+	cul::assert(start < end, "start has to be smaller than end");
+	cul::assert(buf.size() >= end, "buf not big enough");
+
+	const size_t to_copy = end - start;
+	alloc(to_copy);
+	memcpy(static_cast<void*>(buffer_), &(buf.ptr()[start]), to_copy);
 }
 
 //debug

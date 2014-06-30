@@ -68,6 +68,9 @@ public:
 
 	//create null termination?
 
+	void set_from(Buffer& buf, size_t start, size_t end);
+	//void append_from(Buffer& buf, size_t start, size_t end);
+
 
 	//assign other buffer/ 0-terminated strings
 	Buffer& operator=(const Buffer& buf);
@@ -90,7 +93,9 @@ public:
 	inline const byte* ptr() const { return buffer_; }
 	inline byte* ptr() { return buffer_; }
 
+	//for access via signed char
 	inline const char* str() const { return reinterpret_cast<const char*>(buffer_); }
+	inline char* str() { return reinterpret_cast<char*>(buffer_); }
 	
 	//debug
 	void dump();

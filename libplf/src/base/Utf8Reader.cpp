@@ -2,10 +2,11 @@
 #include <plf/base/Utf8Reader.hpp>
 
 
-#include <plf/base/Assert.hpp>
+#include <culcore/Assert.hpp>
 #include <plf/base/FormatException.hpp>
 
 using namespace plf;
+using namespace cul;
 
 
 static inline bool is_followbyte(unsigned char c)
@@ -17,6 +18,7 @@ static inline bool is_followbyte(unsigned char c)
 
 uchar Utf8Reader::read_uchar()
 {
+	lastPos_ = currentPos_;
 	uchar c = buf_[currentPos_];
 
 	//single char ascii
@@ -83,4 +85,17 @@ uchar Utf8Reader::read_uchar()
 	//FE–FF not defined
 
 	throw FormatException("Invalid UTF8 sequence or not yet implemented byte: %x", c);
+}
+
+void Utf8Reader::reset()
+{
+	currentPos_ = 0;
+}
+
+size_t Utf8Reader::bytes_left() const
+{
+	if(currentPos_ > buf_.size())
+		return 0;
+
+	return  buf_.size() - currentPos_;
 }

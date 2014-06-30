@@ -24,9 +24,9 @@ THE SOFTWARE.
 #include <dis/Lexer.hpp>
 
 #include <cstring>
-#include <cassert>
 #include <unordered_map>
 
+#include <culcore/Assert.hpp>
 #include <plf/base/Exception.hpp>
 #include <plf/base/FormatException.hpp>
 
@@ -35,6 +35,7 @@ THE SOFTWARE.
 
 using namespace dis;
 using namespace plf;
+using namespace cul;
 
 ////////////////////////
 // Helper
@@ -97,8 +98,12 @@ Lexer::~Lexer()
 
 void Lexer::open(plf::SourcePtr srcptr)
 {
-	//open in reader
-	reader_.load(srcptr);
+	source_ = srcptr;
+	reader_.buf().alloc(source_->size());
+	source_->readComplete(reader_.buf());
+	reader_.reset();
+	nextChar(); //first char
+
 	
 	//TODO reset internal status
 	column_ = 1;
@@ -110,13 +115,14 @@ void Lexer::next(Token& token)
 {
 	//token.buffer = std::make_shared<Buffer>();
 	token.buffer->free();
+	token.id = TokenId::NotInitialized;
 	lexToken(token);
 }
 
 void  Lexer::lexToken(Token& tok)
 {	
 	//eos is set after parsing the last valid token!
-	if(reader_.eos())
+	if(reader_.is_eob())
 	{
 		tok.id = TokenId::Eof;
 		tok.loc.column = column_;
@@ -124,11 +130,11 @@ void  Lexer::lexToken(Token& tok)
 		return;
 	}
 	
-	while(isWhitespace(current()))
+	while(isWhitespace(curchar_))
 	{
 		nextChar();
 		//can go eos here
-		if(reader_.eos())
+		if(reader_.is_eob())
 		{
 			tok.id = TokenId::Eof;
 			tok.loc.column = column_;
@@ -137,7 +143,7 @@ void  Lexer::lexToken(Token& tok)
 		}
 	}
 
-	char c = current();
+	uchar c = curchar_;
 	tok.loc.column = column_;
 	tok.loc.line = line_;
 	
@@ -205,13 +211,12 @@ void  Lexer::lexToken(Token& tok)
 	}
 	
 	//check for comments
-	if(tok.id == TokenId::Div
-	&& current() == '/')
+	if(tok.id == TokenId::Div && curchar_ == '/')
 	{
-		while(!reader_.eos())
+		while(!reader_.is_eob())
 		{
 			nextChar();
-			if(current() == '\n')
+			if(curchar_ == '\n')
 			{
 				break;
 			}
@@ -271,96 +276,100 @@ void Lexer::lexId(Token& tok)
 {
 	tok.id = TokenId::Ident;
 	
-	int i;
-	for(i = 0; isAlpha(peekChar(i)) || isNumeric(peekChar(i)); i++); //TODO check for eob
+	size_t i = reader_.last_pos();
+
+	while (isAlpha(curchar_) || isNumeric(curchar_))
+	{
+		nextChar();
+	}
 	
 	//read bufv_.ptr() size i into token
 	//std::string str(bufv_.ptr(), i);
 	//std::cout << "Lex id: " << str << std::endl;
 	
 	//add the id to token buffer
-	reader_.copyto(*tok.buffer, reader_.pos(), i); 
+	tok.buffer->set_from(reader_.buf(), i, reader_.last_pos());
 	
 	checkKeyword(tok);
-	
-	//skip over
-	reader_.skip(i);
-	column_ += i;
 }
 
 void Lexer::lexNumber(Token& tok)
 {
 	tok.id = TokenId::IntLiteral;
 	
-	assert(isNumeric(current()));
+	assert(isNumeric(curchar_), "Lexer::lexNumber not a numeric char");
 	
+	size_t start = reader_.last_pos();
+
 	//binary
-	if(current() == '0' 
-	&& peekChar(1) == 'b')
+	if(curchar_ == '0')
 	{
-		tok.id = TokenId::BinaryLiteral;
-		nextChar(); //now b
-		nextChar(); //now first digit
-		
-		int i;
-		for(i = 0; isBin(peekChar(i)); i++); //TODO check for eob
-		
-		reader_.copyto(*tok.buffer, reader_.pos(), i);
-		//skip over
-		reader_.skip(i);
-		return;
+		nextChar();
+
+		if(curchar_ == 'b')
+		{
+			nextChar(); //skip b
+			tok.id = TokenId::BinaryLiteral;
+
+			size_t start = reader_.last_pos();
+			while(isBin(curchar_))
+			{
+				nextChar();
+			}
+
+			tok.buffer->set_from(reader_.buf(), start, reader_.last_pos());
+			return;
+		}
+
+		if(curchar_ == 'x')
+		{
+			nextChar(); //skip x
+			tok.id = TokenId::HexLiteral;
+
+			size_t start = reader_.last_pos();
+			while(isHex(curchar_)) {
+				nextChar();
+			}
+
+			tok.buffer->set_from(reader_.buf(), start, reader_.last_pos());
+			return;
+		}
+
 	}
 	
-	//hex
-	if(current() == '0' 
-	&& peekChar(1) == 'x')
+	//eating numchars
+	while(isNumeric(curchar_))
 	{
-		tok.id = TokenId::HexLiteral;
-		nextChar(); //now x
-		nextChar(); //now first digit
-		
-		int i;
-		for(i = 0; isHex(peekChar(i)); i++); //TODO check for eob
-		reader_.copyto(*tok.buffer, reader_.pos(), i);
-		//skip over
-		reader_.skip(i);
-		return;
+		nextChar();
 	}
-	
-	
-	int i=0;
-	for(i = 0; isNumeric(peekChar(i)); i++);
-	
-	//float/doubles
-	if(peekChar(i) == '.')
+
+	//if there is a dot recognize as floating point and read rest
+	if(curchar_ == '.')
 	{
 		tok.id = TokenId::FloatLiteral;
-		i++;
-		for(; isNumeric(peekChar(i)); i++);
+		nextChar();
+		while(isNumeric(curchar_))
+		{
+			nextChar();
+		}
 	}
-	
-	reader_.copyto(*tok.buffer, reader_.pos(), i);
-		//skip over
-		
-	
-	//normal number
-	//dot == double
-	//only one dot allowed
-	//if dot and ends with .f or .{num}f
-	
-	//skip over
-	reader_.skip(i);
-	column_ += i; 
+
+	//create the token buffer
+	tok.buffer->set_from(reader_.buf(), start, reader_.last_pos());
 }
 
 void Lexer::lexString(Token& tok)
 {
-	assert(current() == '"');
+	assert(curchar_ == '"', "Lexer::lexString: not a expected '\"'");
 	tok.id = TokenId::StringLiteral;
 	
 	nextChar(); //skip "
-	int i;
-	for(i = 0; peekChar(i) != '"'; i++); //TODO check for eob
+
+	size_t start = reader_.last_pos();
+
+	while(curchar_ != '"') {
+		nextChar();
+	}
 	
 	//TODO check for \n etc, allowed are alpha and so on
 	
@@ -368,51 +377,34 @@ void Lexer::lexString(Token& tok)
 	//std::cout << "Lex string: " << str << std::endl;
 	
 	//into buffer
-	reader_.copyto(*tok.buffer, reader_.pos(), i);
-	reader_.skip(i+1); //skip "
-	
-	column_ += i;
+	tok.buffer->set_from(reader_.buf(), start, reader_.last_pos());
+
+	nextChar(); //skip "
 }
 
 void Lexer::lexComment(Token& tok)
 {
 	//look for doc comments
 	//create doc comment tokens or 
-	throw Exception("Lexer::lexComment not yet implemented");
+	throw plf::Exception("Lexer::lexComment not yet implemented");
 }
 
 inline void Lexer::nextChar()
 {
-	if(current() == '\n')
+	if(curchar_ == '\n')
 	{
 		column_ = 1;
 		line_++;
 	}
-	reader_.next<char>();
+	curchar_ = reader_.read_uchar();
 	column_++;
 	//std::cout << "char: " << std::hex << reader_.current<char>() << std::endl;
 }
-
-inline char& Lexer::current()
-{
-	return reader_.current<char>();
-}
-
-inline char& Lexer::peekChar(size_t n)
-{
-	return reader_.peek<char>(n);
-}
-
-inline void Lexer::skip(int i)
-{
-	reader_.skip(i);
-	column_ += i;
-}
 	
 //checks if the current token is c then set tok id to id and go to next char
-inline void Lexer::checkForChar(Token& tok, char c, TokenId id)
+inline void Lexer::checkForChar(Token& tok, uchar c, TokenId id)
 {
-	if(current() == c)
+	if(curchar_ == c)
 	{
 		tok.id = id;
 		nextChar();

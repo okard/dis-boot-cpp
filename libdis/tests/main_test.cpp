@@ -1,5 +1,5 @@
 /*
-Programming Language Framework (PLF)
+Dis Programming Language Frontend Library
 
 Copyright (c) 2014 okard
 
@@ -21,41 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#pragma once
-#ifndef PLF_ASSERT_HPP
-#define PLF_ASSERT_HPP
 
-#include <plf/base/Exception.hpp>
+#include <cultest/TestImpl.hpp>
 
-namespace plf {
-
-//throw specific exception
-template<typename T>
-static inline void assert(bool expr, const char* msg)
+int main(int argc, char *argv[])
 {
-	if(!expr)
-		throw T(msg);
+	cul::TestRunner::run_tests();
 }
-
-
-//basic assert macro
-static inline void assert(bool expr, const char* msg)
-{
-	if(!expr)
-		throw Exception(msg);
-}
-
-
-//basic assert macro (rely on optimization)
-static inline void assertd(bool expr, const char* msg)
-{
-	#ifndef NDEBUG
-	if(!expr)
-		throw Exception(msg);
-	#endif
-}
-
-
-}
-
-#endif // PLF_ASSERT_HPP

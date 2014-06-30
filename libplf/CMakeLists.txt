@@ -11,7 +11,7 @@ target_link_libraries(plf culio)
 
 # tests
 file(GLOB_RECURSE LIBPLF_TESTS tests/*.cpp)
-add_executable(libplf_tests EXCLUDE_FROM_ALL ${LIBPLF_TESTS})
+add_executable(libplf_tests ${LIBPLF_TESTS})
 target_link_libraries(libplf_tests plf)
-add_custom_target(check COMMAND libplf_tests DEPENDS libplf_tests)
+add_custom_target(check_libplf COMMAND libplf_tests DEPENDS libplf_tests)
 

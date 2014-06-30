@@ -34,6 +34,8 @@ typedef unsigned int uchar; //codepoint
 
 static_assert(sizeof(uchar) == 4, "unicode char requires size of 32 bits");
 
+//todo rename it to UtfReader and add multiple reading modes?
+
 /**
 * @brief The Utf8Reader class
 */
@@ -44,6 +46,7 @@ private:
 	//ringbuffer reading?
 	Buffer buf_;
 	size_t currentPos_ = 0;
+	size_t lastPos_ = 0;
 public:
 
 	//access to buffer to load from SourcePtr
@@ -52,12 +55,15 @@ public:
 
 	uchar read_uchar();
 
+	void reset();
 
+	inline bool is_eob() const { return bytes_left()==0; }
+	size_t bytes_left() const;
 	inline size_t pos() const { return currentPos_; }
+	inline size_t last_pos() const { return lastPos_; }
 	inline const Buffer& buf() const { return buf_; }
 	inline Buffer& buf() { return buf_; }
 };
-
 
 
 } //end namespace plf
